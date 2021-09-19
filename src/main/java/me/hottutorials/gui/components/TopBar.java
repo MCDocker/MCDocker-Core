@@ -3,6 +3,7 @@ package me.hottutorials.gui.components;
 import me.hottutorials.gui.GUIUtils;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class TopBar extends JPanel {
@@ -20,6 +21,8 @@ public class TopBar extends JPanel {
 
         JPanel btnContainer = new JPanel();
         btnContainer.setLayout(new BorderLayout());
+        btnContainer.setBorder(new EmptyBorder(10, 10, 10, 10));
+        btnContainer.setBackground(GUIUtils.backgroundDarkDark);
 
         JButton closeBtn = new JButton("x");
         closeBtn.setBackground(Color.red);
