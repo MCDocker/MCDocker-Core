@@ -4,6 +4,7 @@ import me.hottutorials.gui.components.layout.ListLayout;
 import me.hottutorials.gui.components.panels.EPanel;
 import me.hottutorials.gui.components.panels.IPanel;
 import me.hottutorials.gui.components.layout.ListEntry;
+import me.hottutorials.utils.OSUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -15,11 +16,16 @@ public class SettingsPanel implements IPanel {
     public JPanel init() {
         ListLayout panel = new ListLayout();
 
-        panel.addEntries("test", Arrays.asList(
-                new ListEntry("Test", "Nice test ngl lol", new JTextField("nice")),
-                new ListEntry("awnawawawawaw", "Nice test ngl lol", new JTextField("nice")),
-                new ListEntry("nawa", "Nice test ngl lol", new JTextField("n")))
-        );
+        JComboBox themes = new JComboBox(new String[] {"Dark", "Light"});
+        themes.setSelectedIndex(0);
+
+        panel.addEntries("General", Arrays.asList(
+                new ListEntry("Config folder", "Used to store logs, containers and more", new JTextField(OSUtils.getUserData()))
+        ));
+
+        panel.addEntries("Appearance", Arrays.asList(
+                new ListEntry("Theme", "Sets the Theme", themes)
+        ));
 
         panel.update();
 

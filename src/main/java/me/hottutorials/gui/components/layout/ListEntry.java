@@ -31,6 +31,7 @@ public class ListEntry extends JPanel {
         JLabel descriptionLabel = new JLabel(description);
         descriptionLabel.setForeground(new Color(255, 255, 255, 60));
         descriptionLabel.setBorder(new EmptyBorder(0, 2, 0, 2));
+
         leftContainer.add(descriptionLabel, BorderLayout.SOUTH);
         leftContainer.setBackground(GUIUtils.backgroundDarkDark);
 
