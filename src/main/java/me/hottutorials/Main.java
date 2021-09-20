@@ -1,5 +1,8 @@
 package me.hottutorials;
 
+import me.grison.jtoml.impl.Toml;
+import me.hottutorials.config.Config;
+import me.hottutorials.config.ConfigSerializer;
 import me.hottutorials.gui.MainWindow;
 import me.hottutorials.utils.Logger;
 import me.hottutorials.utils.OSUtils;
@@ -12,8 +15,11 @@ public class Main {
         OSUtils.getUserDataFile().mkdir();
 
         Logger.log("MCDocker starting");
+        Logger.log("Using Java Version - " + System.getProperty("java.version"));
         Logger.log("MCDocker resources location: " + OSUtils.getUserData());
-        Logger.log("Using Java Version - " + String.class.getPackage().getImplementationVersion() + " - " + String.class.getPackage().getSpecificationVersion());
+
+        Config.getConfig().init();
+
         Logger.log("Operating System - " + OSUtils.getOperatingSystem().getName());
 
         Thread shutDownHook = new Thread(Main::shutDownMethod);
@@ -21,7 +27,6 @@ public class Main {
 
         MainWindow window = new MainWindow();
         window.init();
-
     }
 
     private static void shutDownMethod() {

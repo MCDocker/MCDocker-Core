@@ -12,6 +12,19 @@ public class OSUtils {
         return new File(OSUtils.getUserData());
     }
 
+    public static String getMinecraftPath() {
+        switch (getOperatingSystem()) {
+            case WINDOWS:
+                return System.getenv("APPDATA") + File.separator + ".minecraft/";
+            case LINUX:
+                return System.getProperty("user.home") + File.separator + ".minecraft/";
+            case MACOS:
+                return System.getProperty("user.home") + File.separator + "Library" + File.separator + "Application Support" + File.separator + "minecraft/";
+            default:
+                return null;
+        }
+    }
+
     public enum OperatingSystem {
         WINDOWS("Windows"),
         MACOS("MacOS"),

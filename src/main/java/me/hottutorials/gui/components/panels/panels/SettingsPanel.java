@@ -7,8 +7,6 @@ import me.hottutorials.gui.components.layout.ListEntry;
 import me.hottutorials.utils.OSUtils;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
 import java.util.Arrays;
 
 public class SettingsPanel implements IPanel {
@@ -20,7 +18,7 @@ public class SettingsPanel implements IPanel {
         themes.setSelectedIndex(0);
 
         panel.addEntries("General", Arrays.asList(
-                new ListEntry("Config folder", "Used to store logs, containers and more", new JTextField(OSUtils.getUserData()))
+                new ListEntry("Assets folder", "Used to store logs, containers and more", new JTextField(OSUtils.getUserData()))
         ));
 
         panel.addEntries("Appearance", Arrays.asList(
