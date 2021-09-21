@@ -1,5 +1,6 @@
 package me.hottutorials.gui.components.layout;
 
+import me.hottutorials.config.ConfigSerializer;
 import me.hottutorials.gui.GUIUtils;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ public class ListEntry extends JPanel {
 
     private final String name;
     private final String description;
+    private final JComponent component;
 
     @Override
     public String getName() {
@@ -23,11 +25,17 @@ public class ListEntry extends JPanel {
     public ListEntry(String name, String description, JComponent component) {
         this.name = name;
         this.description = description;
+        this.component = component;
+        render();
+    }
 
+    private void render() {
         setLayout(new BorderLayout());
 
         JPanel leftContainer = new JPanel(new BorderLayout());
-        leftContainer.add(new JLabel(name), BorderLayout.NORTH);
+        JLabel nameLabel = new JLabel(name);
+        nameLabel.setFont(new Font(nameLabel.getFont().getFontName(), Font.PLAIN, 15));
+        leftContainer.add(nameLabel, BorderLayout.NORTH);
         JLabel descriptionLabel = new JLabel(description);
         descriptionLabel.setForeground(new Color(255, 255, 255, 60));
         descriptionLabel.setBorder(new EmptyBorder(0, 2, 0, 2));
@@ -43,7 +51,6 @@ public class ListEntry extends JPanel {
         setPreferredSize(new Dimension(600, 60));
         setBackground(GUIUtils.backgroundDarkDark);
         setBorder(new EmptyBorder(10, 10, 10, 10));
-
     }
 
 }

@@ -18,6 +18,11 @@
             <id>jtoml</id>
             <url>https://raw.github.com/agrison/jtoml/mvn-repo/</url>
         </repository>
+        <repository>
+            <id>central</id>
+            <name>bintray</name>
+            <url>http://jcenter.bintray.com</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -31,6 +36,7 @@
             <artifactId>flatlaf</artifactId>
             <version>1.6</version>
         </dependency>
+
     </dependencies>
 
 </project>

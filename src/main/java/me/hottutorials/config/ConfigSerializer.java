@@ -12,8 +12,7 @@ public class ConfigSerializer {
     }
 
     public static class General {
-        public String resourcesPath = OSUtils.getUserData();
-        public String minecraftPath = OSUtils.getMinecraftPath();
+        public String minecraft_path = OSUtils.getMinecraftPath();
     }
 
 }

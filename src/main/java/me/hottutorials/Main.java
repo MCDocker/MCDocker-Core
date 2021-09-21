@@ -1,7 +1,7 @@
 package me.hottutorials;
 
-import me.grison.jtoml.impl.Toml;
 import me.hottutorials.config.Config;
+import me.hottutorials.config.ConfigBuilder;
 import me.hottutorials.config.ConfigSerializer;
 import me.hottutorials.gui.MainWindow;
 import me.hottutorials.utils.Logger;
@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         OSUtils.getUserDataFile().mkdir();
 
         Logger.log("MCDocker starting");
