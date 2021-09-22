@@ -1,5 +1,6 @@
 package me.hottutorials;
 
+import me.grison.jtoml.impl.Toml;
 import me.hottutorials.config.Config;
 import me.hottutorials.config.ConfigBuilder;
 import me.hottutorials.config.ConfigSerializer;

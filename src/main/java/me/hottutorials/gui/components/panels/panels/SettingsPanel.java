@@ -39,13 +39,13 @@ public class SettingsPanel implements IPanel {
             List<ListEntry> entries = new ArrayList<>();
             for(Map.Entry<String, Object> field : category.getValue().entrySet()) {
                 JComponent component;
-                if (field.getValue() == String.class) component = new JTextField();
+
+                if (field.getValue() == String.class) component = new JTextField(String.valueOf(Config.getConfig().getObject("config." + category.getKey() + "." + field.getKey())));
                 else if(field.getValue() == Boolean.class) component = new JCheckBox();
                 else if(field.getValue() == Integer.class || field.getValue() == Double.class) component = new JSpinner();
                 else if(field.getValue() == List.class) component = new JComboBox<>();
                 else component = null;
 
-                // TODO: Add loading from settings file
                 // TODO: Add i18n support for descriptions names etc
 
                 if(component != null) entries.add(new ListEntry(StringUtils.upperCaseFirstLetterEachWord(field.getKey().replaceAll("_", " ")), "Sadg", component));

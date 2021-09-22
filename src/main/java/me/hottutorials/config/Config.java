@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Config {
 
@@ -27,6 +28,25 @@ public class Config {
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public Object getObject(String name) {
+        return deepSearch(name, Toml.parse(getSettings()));
+    }
+
+    public Object deepSearch(String name, Toml obj) {
+        List<String> path = new LinkedList<>(Arrays.asList(name.split("\\.")));
+        if(path.size() == 1) {
+            return obj.get(path.get(0));
+        } else {
+
+            Object newValue = obj.get(path.get(0));
+            path.remove(0);
+            StringBuilder builder = new StringBuilder();
+            path.forEach(s -> builder.append(s).append("."));
+            builder.deleteCharAt(builder.toString().length() - 1).toString();
+            return deepSearch(builder.toString(), Toml.parse(Toml.serialize(newValue)));
         }
     }
 
@@ -50,8 +70,6 @@ public class Config {
     public String getSettings() {
         return Toml.parse(file).serialize();
     }
-
-    // TODO: Make Deep Search using `.` to go to a nested value
 
     public ConfigSerializer getDefaultSettings() {
         return new ConfigSerializer();
