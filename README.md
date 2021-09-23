@@ -1,3 +1,4 @@
+<img src="https://raw.githubusercontent.com/MCDocker/Assets/main/banner.png" />
 # MCDocker
 ## Status: Not Done
 MCDocker is a custom launcher and instance manager for [Minecraft](https://minecraft.net). It lets you manage containers (Game Instances) which you can share and let others experience your custom container. This will let you download mods, maps / worlds, texture packs and skins by only clicking a button!
