@@ -1,11 +1,20 @@
+<img src="https://raw.githubusercontent.com/MCDocker/Assets/main/banner.png" /><br>
 # MCDocker
 ## Status: Not Done
-MCDocker is a custom launcher and instance manager for [Minecraft](https://minecraft.net). It lets you manage "containers" in which you can share to others and let them experience your custom made container.
+MCDocker is a custom launcher and instance manager for [Minecraft](https://minecraft.net). It lets you manage containers (Game Instances) which you can share and let others experience your custom container. This will let you download mods, maps / worlds, texture packs and skins by only clicking a button!
 
-## Checklist
-- [x] GUI Base
-- [x] Creating Containers
-- [ ] Sharing Containers 
-- [ ] Launching Minecraft, including vanilla, [Forge](https://files.minecraftforge.net/net/minecraftforge/forge/), [Fabric](https://fabricmc.net) and even custom versions such as Clients.
-- [ ] Downloading Mods, Texture Packs and Maps / Worlds
-- [ ] Skin Library and Changer
+[<img src="https://img.shields.io/discord/678156929259929641?color=blue&label=DISCORD%20CHAT&style=for-the-badge" />](https://discord.gg/nvCdrr5r2a)
+
+## Developer Checklist 
+- [x] Finish off Settings
+- [ ] HTTP Stuff (Download, Meta fetching, Requests)
+- [ ] Provider integration and toggling them: Modrinth, Curseforge, External (off by default)
+- [ ] Search, Filters, Sorting
+- [ ] Displaying Versions
+- [ ] Launch Wrapper. Downloading natives, assets and libraries for a chosen version
+- [ ] Authentication, Mojang + Microsoft
+- [ ] Alternative Forge/Fabric URLs set in Advanced category
+- [ ] UI Improvements
+
+## Uses
+TOML, Maven, Swing (Will switch to JavaFX later)
