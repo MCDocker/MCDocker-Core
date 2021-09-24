@@ -34,8 +34,6 @@ public class TopBar extends JPanel {
         btnContainer.add(minimizeBtn, BorderLayout.WEST);
 
         add(btnContainer, BorderLayout.EAST);
-
-        GUIUtils.makeDraggableFrame(this, frame);
     }
 
 }

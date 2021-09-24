@@ -1,5 +1,6 @@
 package me.hottutorials;
 
+import com.google.gson.JsonArray;
 import me.grison.jtoml.impl.Toml;
 import me.hottutorials.config.Config;
 import me.hottutorials.config.ConfigBuilder;
@@ -7,6 +8,9 @@ import me.hottutorials.config.ConfigSerializer;
 import me.hottutorials.gui.MainWindow;
 import me.hottutorials.utils.Logger;
 import me.hottutorials.utils.OSUtils;
+import me.hottutorials.utils.http.Method;
+import me.hottutorials.utils.http.Request;
+import me.hottutorials.utils.http.RequestBuilder;
 
 import java.io.IOException;
 

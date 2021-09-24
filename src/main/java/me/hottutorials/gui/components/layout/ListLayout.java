@@ -19,7 +19,8 @@ public class ListLayout extends JPanel {
     }
 
     public void update() {
-        setLayout(new FlowLayout());
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
         for(Map.Entry<String, List<ListEntry>> entry : lists.entrySet()) {
@@ -41,9 +42,14 @@ public class ListLayout extends JPanel {
             }
 
             category.add(categoryEntries, BorderLayout.SOUTH);
-            add(category);
 
+            category.setMaximumSize(new Dimension(category.getPreferredSize().width, category.getPreferredSize().height));
+            category.setPreferredSize(category.getMaximumSize());
+
+            add(category);
+            add(Box.createRigidArea(new Dimension(10, 10)));
         }
+
     }
 
     public ListLayout addEntry(String group, ListEntry listEntry) {
