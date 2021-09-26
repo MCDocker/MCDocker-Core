@@ -17,4 +17,20 @@ MCDocker is a custom launcher and instance manager for [Minecraft](https://minec
 - [ ] UI Improvements
 
 ## Uses
-TOML, Maven, Swing (Will switch to JavaFX later)
+TOML, Maven, JavaFX
+
+## Setting up in a development environment
+You don't really need to do anything apart from install dependencies. That includs **JavaFX**.<br>
+Here is a guide on how to install it:
+
+### Locally Installed JavaFX
+If you have a locally installed version of JavaFX and would prefer to use that:
+1. Get your JavaFX path (Mine is in `/usr/lib/jvm/`)
+2. Find the `lib` folder inside of the installation and copy its path. In my case it will be `/usr/lib/jvm/javafx-sdk-17.0.0.1/lib/`
+3. In your desired IDE find your VM Options.
+- For Intellij: Task > Edit Configurations > VM Options (You might need to press modify options and select VM Options)
+4. In the VM Options, copy this line `--module-path "Your path from step 2" --add-modules=javafx.base,javafx.controls,javafx.graphics,javafx.media,javafx.fxml`
+
+### JavaFX from Maven
+If you do not have a locally installed version of JavaFX and/or prefer to use the JavaFX dependency from the pom:
+- Just import / sync all the dependencies and let the IDE do it for you
