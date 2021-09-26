@@ -1,6 +1,6 @@
 package me.hottutorials.utils;
 
-public class constants {
+public class Constants {
 
     public enum URLs {
 

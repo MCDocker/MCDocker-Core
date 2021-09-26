@@ -1,11 +1,9 @@
-package me.hottutorials.gui.components.panels;
+package me.hottutorials.gui.panels;
 
 import me.hottutorials.gui.GUIUtils;
-import me.hottutorials.gui.MainWindow;
-import me.hottutorials.gui.components.panels.panels.ContainersPanel;
-import me.hottutorials.gui.components.panels.panels.HomePanel;
-import me.hottutorials.gui.components.panels.panels.SettingsPanel;
-import me.hottutorials.gui.components.panels.panels.SkinsPanel;
+import me.hottutorials.gui.panels.panels.ContainersPanel;
+import me.hottutorials.gui.panels.panels.HomePanel;
+import me.hottutorials.gui.panels.panels.SettingsPanel;
 
 import javax.swing.*;
 import java.util.ArrayList;

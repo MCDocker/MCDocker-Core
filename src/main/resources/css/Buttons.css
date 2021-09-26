@@ -1,0 +1,7 @@
+.play-button {
+    -fx-background-color: accent;
+}
+
+Button:hover {
+    -fx-opacity: 0.7;
+}

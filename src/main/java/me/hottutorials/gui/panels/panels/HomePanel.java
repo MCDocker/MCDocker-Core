@@ -1,7 +1,7 @@
-package me.hottutorials.gui.components.panels.panels;
+package me.hottutorials.gui.panels.panels;
 
-import me.hottutorials.gui.components.panels.EPanel;
-import me.hottutorials.gui.components.panels.IPanel;
+import me.hottutorials.gui.panels.EPanel;
+import me.hottutorials.gui.panels.IPanel;
 
 import javax.swing.*;
 

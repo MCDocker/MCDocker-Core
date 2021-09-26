@@ -1,8 +1,7 @@
 package me.hottutorials.gui.components.sidebar;
 
 import me.hottutorials.gui.GUIUtils;
-import me.hottutorials.gui.MainWindow;
-import me.hottutorials.gui.components.panels.EPanel;
+import me.hottutorials.gui.panels.EPanel;
 
 import javax.swing.*;
 import java.awt.*;

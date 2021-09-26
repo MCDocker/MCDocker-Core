@@ -1,22 +1,14 @@
 package me.hottutorials;
 
-import com.google.gson.JsonArray;
-import me.grison.jtoml.impl.Toml;
 import me.hottutorials.config.Config;
-import me.hottutorials.config.ConfigBuilder;
-import me.hottutorials.config.ConfigSerializer;
+import me.hottutorials.fx.MainScene;
 import me.hottutorials.gui.MainWindow;
 import me.hottutorials.utils.Logger;
 import me.hottutorials.utils.OSUtils;
-import me.hottutorials.utils.http.Method;
-import me.hottutorials.utils.http.Request;
-import me.hottutorials.utils.http.RequestBuilder;
-
-import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         OSUtils.getUserDataFile().mkdir();
 
         Logger.log("MCDocker starting");
@@ -30,8 +22,11 @@ public class Main {
         Thread shutDownHook = new Thread(Main::shutDownMethod);
         Runtime.getRuntime().addShutdownHook(shutDownHook);
 
-        MainWindow window = new MainWindow();
-        window.init();
+//        MainWindow window = new MainWindow();
+//        window.init();
+
+        MainScene.launch(MainScene.class, args);
+
     }
 
     private static void shutDownMethod() {

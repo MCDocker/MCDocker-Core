@@ -1,0 +1,9 @@
+.sidebar-button {
+    -fx-background-color: background-dark;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: background-darker;
+    -fx-text-fill: #ffffffff;
+    -fx-font-weight: bold;
+}

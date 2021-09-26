@@ -1,4 +1,4 @@
-package me.hottutorials.gui.components.panels;
+package me.hottutorials.gui.panels;
 
 public enum EPanel {
 

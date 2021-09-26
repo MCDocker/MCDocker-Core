@@ -1,0 +1,9 @@
+@import url("./Sidebar.css");
+@import url("./Buttons.css");
+
+* {
+    background: #474747;
+    background-dark: #3E3E3E;
+    background-darker: #393939;
+    accent: #4285F4;
+}

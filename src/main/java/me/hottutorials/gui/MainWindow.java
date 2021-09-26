@@ -1,9 +1,8 @@
 package me.hottutorials.gui;
 
 import com.formdev.flatlaf.FlatDarkLaf;
-import me.hottutorials.gui.components.panels.PanelManager;
+import me.hottutorials.gui.panels.PanelManager;
 import me.hottutorials.gui.components.sidebar.Sidebar;
-import me.hottutorials.gui.components.TopBar;
 import me.hottutorials.utils.Logger;
 
 import javax.swing.*;
@@ -30,7 +29,7 @@ public class MainWindow {
         frame.setPreferredSize(new Dimension(900, 600));
         frame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width / 2) - 450, Toolkit.getDefaultToolkit().getScreenSize().height / 2 - 300);
         frame.setTitle("MCDocker");
-        frame.setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("iconWithBackgroundRound.png"))).getImage());
+        frame.setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("img/iconWithBackgroundRound.png"))).getImage());
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 //        frame.setResizable(false);
 

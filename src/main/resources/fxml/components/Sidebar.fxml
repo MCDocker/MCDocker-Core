@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<fx:root id="sidebar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="200.0" style="-fx-background-color: background-dark;" styleClass="sidebar" type="VBox" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="70.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+         <Image url="@../../img/bannerSmall.png" />
+      </ImageView>
+      <Button fx:id="homeButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="68.0" prefWidth="200.0" styleClass="sidebar-button" text="HOME" textFill="#ffffffa9">
+         <font>
+            <Font name="Roboto Bold" size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="containersSidebarButton" layoutX="10.0" layoutY="78.0" mnemonicParsing="false" prefHeight="68.0" prefWidth="200.0" styleClass="sidebar-button" text="CONTAINERS" textFill="#ffffffa9">
+         <font>
+            <Font name="Roboto Bold" size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="settingsSidebarButton" layoutX="10.0" layoutY="146.0" mnemonicParsing="false" prefHeight="68.0" prefWidth="200.0" styleClass="sidebar-button" text="SETTINGS" textFill="#ffffffa9">
+         <font>
+            <Font name="Roboto Bold" size="16.0" />
+         </font>
+      </Button>
+   </children>
+</fx:root>

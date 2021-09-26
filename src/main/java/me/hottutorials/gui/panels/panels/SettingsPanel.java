@@ -1,18 +1,16 @@
-package me.hottutorials.gui.components.panels.panels;
+package me.hottutorials.gui.panels.panels;
 
 import me.hottutorials.config.Config;
 import me.hottutorials.config.ConfigSerializer;
 import me.hottutorials.gui.GUIUtils;
 import me.hottutorials.gui.components.layout.ListLayout;
-import me.hottutorials.gui.components.panels.EPanel;
-import me.hottutorials.gui.components.panels.IPanel;
+import me.hottutorials.gui.panels.EPanel;
+import me.hottutorials.gui.panels.IPanel;
 import me.hottutorials.gui.components.layout.ListEntry;
-import me.hottutorials.utils.OSUtils;
 import me.hottutorials.utils.StringUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;

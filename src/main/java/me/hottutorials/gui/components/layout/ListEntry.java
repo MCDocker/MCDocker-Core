@@ -29,7 +29,7 @@ public class ListEntry extends JPanel {
         render();
     }
 
-    private void render() {
+    public void render() {
         setLayout(new BorderLayout());
 
         JPanel leftContainer = new JPanel(new BorderLayout());
