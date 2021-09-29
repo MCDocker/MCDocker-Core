@@ -9,7 +9,7 @@ public class RequestBuilder {
 
     private String url;
     private List<Header> headers = new ArrayList<>();
-    private JsonElement body;
+    private String body;
     private Method method;
 
     private final static RequestBuilder INSTANCE = new RequestBuilder();
@@ -36,7 +36,7 @@ public class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder setBody(JsonElement body) {
+    public RequestBuilder setBody(String body) {
         this.body = body;
         return this;
     }

@@ -1,10 +1,16 @@
 package me.hottutorials;
 
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
 import me.hottutorials.config.Config;
 import me.hottutorials.fx.MainScene;
 import me.hottutorials.gui.MainWindow;
 import me.hottutorials.utils.Logger;
 import me.hottutorials.utils.OSUtils;
+import me.hottutorials.utils.StringUtils;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class Main {
 
@@ -21,9 +27,6 @@ public class Main {
 
         Thread shutDownHook = new Thread(Main::shutDownMethod);
         Runtime.getRuntime().addShutdownHook(shutDownHook);
-
-//        MainWindow window = new MainWindow();
-//        window.init();
 
         MainScene.launch(MainScene.class, args);
 

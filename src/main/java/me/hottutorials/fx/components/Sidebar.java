@@ -16,6 +16,7 @@ public class Sidebar extends VBox {
 
         try {
             sidebar.load();
+//            Button button = (Button) lookup("#");
         } catch (IOException e) {
             e.printStackTrace();
         }

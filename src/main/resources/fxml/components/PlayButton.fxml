@@ -4,12 +4,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<fx:root id="playButton" prefHeight="65.0" prefWidth="600.0" type="AnchorPane" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1">
-    <Button id="playButton" mnemonicParsing="false" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
-            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" styleClass="play-button" text="PLAY"
-            textAlignment="CENTER" textFill="WHITE">
+<fx:root id="playButtonContainer" prefHeight="65.0" prefWidth="600.0" type="AnchorPane" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <Button id="playButton" mnemonicParsing="false" styleClass="play-button" text="PLAY" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <font>
-          <Font name="Roboto Black" size="34.0"/>
+          <Font name="Roboto Black" size="34.0" />
         </font>
     </Button>
+   <Label id="playLabel" layoutX="282.0" layoutY="43.0" text="Label" />
 </fx:root>

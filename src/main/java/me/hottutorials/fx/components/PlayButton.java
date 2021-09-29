@@ -6,8 +6,10 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import me.hottutorials.launch.Authenticator;
 
 import java.io.IOException;
 
@@ -21,10 +23,12 @@ public class PlayButton extends AnchorPane {
         try {
             button.load();
 
-//            Button btn = (Button) lookup("#playButton");
-//            btn.setOnAction(actionEvent -> {
-//                System.out.println("Hello World");
-//            });
+            Button btn = (Button) lookup("#playButton");
+//            Label status = (Label) lookup("#playLabel");
+            btn.setOnAction(actionEvent -> {
+//                Authenticator.Microsoft microsoft = new Authenticator.Microsoft();
+//                microsoft.init(status);
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }

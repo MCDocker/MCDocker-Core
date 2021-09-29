@@ -11,7 +11,7 @@ public class Logger {
     private static String date = new SimpleDateFormat("dd-MM-yy").format(new Date().getTime());
     private final static File logFile = new File(OSUtils.getUserData() + "logs/log-" + date + ".log");
 
-    public static void log(String log) {
+    public static void log(Object log) {
         try {
             logToFile(true, log);
         } catch (IOException e) {
@@ -19,7 +19,7 @@ public class Logger {
         }
     }
 
-    public static void err(String err) {
+    public static void err(Object err) {
         try {
             logToFile(false, err);
         } catch (IOException e) {
@@ -27,7 +27,7 @@ public class Logger {
         }
     }
 
-    private static void logToFile(boolean normal, String message) throws IOException {
+    private static void logToFile(boolean normal, Object message) throws IOException {
         if(!logFile.exists()) {
             logFile.getParentFile().mkdir();
             logFile.createNewFile();

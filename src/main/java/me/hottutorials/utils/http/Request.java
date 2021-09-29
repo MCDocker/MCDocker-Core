@@ -21,7 +21,7 @@ public class Request {
     private final String url;
     private final Method method;
     private final List<Header> headers;
-    private final JsonElement body;
+    private final String body;
 
     private final Gson gson = new Gson();
 
@@ -31,7 +31,7 @@ public class Request {
         this.headers = new ArrayList<>();
         this.body = null;
     }
-    public Request(String url, Method method, JsonElement body) {
+    public Request(String url, Method method, String body) {
         this.url = url;
         this.method = method;
         this.headers = new ArrayList<>();
@@ -43,7 +43,7 @@ public class Request {
         this.headers = headers;
         this.body = null;
     }
-    public Request(String url, Method method, List<Header> headers, JsonElement body) {
+    public Request(String url, Method method, List<Header> headers, String body) {
         this.url = url;
         this.method = method;
         this.headers = headers;
@@ -53,7 +53,7 @@ public class Request {
     public String getURL() { return this.url; }
     public Method getMethod() { return this.method; }
     public List<Header> getHeaders() { return this.headers; }
-    public JsonElement getBody() { return this.body; }
+    public String getBody() { return this.body; }
 
     public String send() {
         return send(false);
@@ -70,7 +70,7 @@ public class Request {
                 connection.setDoOutput(true);
                 OutputStream outStream = connection.getOutputStream();
                 OutputStreamWriter outStreamWriter = new OutputStreamWriter(outStream, StandardCharsets.UTF_8);
-                outStreamWriter.write(gson.toJson(body));
+                outStreamWriter.write(body);
                 outStreamWriter.flush();
                 outStreamWriter.close();
                 outStream.close();

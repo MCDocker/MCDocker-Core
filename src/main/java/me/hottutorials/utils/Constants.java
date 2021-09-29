@@ -14,6 +14,7 @@ public class Constants {
         public String getURL() { return url; };
 
         URLs(String url) { this.url = url; }
+
     }
 
 }
