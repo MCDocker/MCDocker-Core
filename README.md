@@ -29,7 +29,7 @@ If you have a locally installed version of JavaFX and would prefer to use that:
 2. Find the `lib` folder inside of the installation and copy its path. In my case it will be `/usr/lib/jvm/javafx-sdk-17.0.0.1/lib/`
 3. In your desired IDE find your VM Options.
 - For Intellij: Task > Edit Configurations > VM Options (You might need to press modify options and select VM Options)
-4. In the VM Options, copy this line `--module-path "Your path from step 2" --add-modules=javafx.base,javafx.controls,javafx.graphics,javafx.media,javafx.fxml`
+4. In the VM Options, copy this line `--module-path "Your path from step 2" --add-modules=javafx.base,javafx.controls,javafx.graphics,javafx.media,javafx.fxml,javafx.web`
 
 ### JavaFX from Maven
 If you do not have a locally installed version of JavaFX and/or prefer to use the JavaFX dependency from the pom:
