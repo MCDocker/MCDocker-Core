@@ -24,10 +24,8 @@ public class PlayButton extends AnchorPane {
             button.load();
 
             Button btn = (Button) lookup("#playButton");
-//            Label status = (Label) lookup("#playLabel");
             btn.setOnAction(actionEvent -> {
-//                Authenticator.Microsoft microsoft = new Authenticator.Microsoft();
-//                microsoft.init(status);
+
             });
         } catch (IOException e) {
             e.printStackTrace();

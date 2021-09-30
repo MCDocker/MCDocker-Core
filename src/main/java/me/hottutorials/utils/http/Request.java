@@ -61,7 +61,8 @@ public class Request {
 
     public String send(boolean pretty) {
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            String newUrl = url.replaceAll("\"", "%22");
+            HttpURLConnection connection = (HttpURLConnection) new URL(newUrl).openConnection();
             connection.setRequestMethod(method.name().toUpperCase());
             for(Header header : headers)
                 connection.setRequestProperty(header.getKey(), header.getValue());
