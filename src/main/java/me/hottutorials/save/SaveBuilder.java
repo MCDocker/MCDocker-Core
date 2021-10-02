@@ -1,7 +1,6 @@
 package me.hottutorials.save;
 
-import me.hottutorials.save.formats.BuildFormat;
-import me.hottutorials.save.formats.ClientTypes;
+import me.hottutorials.content.ClientType;
 import me.hottutorials.save.formats.ModFormat;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ public class SaveBuilder {
     private String description;
     private String author;
     private String version;
-    private ClientTypes type;
+    private ClientType type;
     private final List<ModFormat> mods = new ArrayList<>();
     private String buildVersion;
 
@@ -37,7 +36,7 @@ public class SaveBuilder {
         return this;
     }
 
-    public SaveBuilder setBuildType(ClientTypes type) {
+    public SaveBuilder setBuildType(ClientType type) {
         this.type = type;
         return this;
     }

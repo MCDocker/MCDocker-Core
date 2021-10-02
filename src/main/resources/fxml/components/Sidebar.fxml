@@ -10,7 +10,7 @@
       <ImageView fitHeight="70.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
          <Image url="@../../img/bannerSmall.png" />
       </ImageView>
-      <Button fx:id="homeButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="68.0" prefWidth="200.0" styleClass="sidebar-button" text="HOME" textFill="#ffffffa9">
+      <Button fx:id="homeSidebarButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="68.0" prefWidth="200.0" styleClass="sidebar-button" text="HOME" textFill="#ffffffa9">
          <font>
             <Font name="Roboto Bold" size="16.0" />
          </font>

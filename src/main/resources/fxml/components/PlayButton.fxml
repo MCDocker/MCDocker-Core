@@ -10,5 +10,4 @@
           <Font name="Roboto Black" size="34.0" />
         </font>
     </Button>
-   <Label id="playLabel" layoutX="282.0" layoutY="43.0" text="Label" />
 </fx:root>

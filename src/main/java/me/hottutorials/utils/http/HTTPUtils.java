@@ -1,5 +1,7 @@
 package me.hottutorials.utils.http;
 
+import me.hottutorials.utils.Logger;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -20,7 +22,7 @@ public class HTTPUtils {
             }
             return map;
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Logger.err("URL `" + url + "` is malformed. Message: " + e.getMessage());
             return null;
         }
     }

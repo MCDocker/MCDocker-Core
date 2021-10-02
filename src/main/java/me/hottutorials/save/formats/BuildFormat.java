@@ -1,5 +1,7 @@
 package me.hottutorials.save.formats;
 
+import me.hottutorials.content.ClientType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,7 @@ public class BuildFormat {
     public String getType() { return type; }
     public String getVersion() { return version; }
 
-    public BuildFormat(ClientTypes type, String version, List<ModFormat> mods) {
+    public BuildFormat(ClientType type, String version, List<ModFormat> mods) {
 
         List<String> modStrings = new ArrayList<>();
 
@@ -21,7 +23,7 @@ public class BuildFormat {
 
         this.version = version;
         this.mods = modStrings;
-        this.type = type.name.toLowerCase();
+        this.type = type.name().toLowerCase();
     }
 
 

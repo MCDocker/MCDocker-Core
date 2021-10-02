@@ -1,7 +1,7 @@
 package me.hottutorials.save;
 
+import me.hottutorials.content.ClientType;
 import me.hottutorials.save.formats.BuildFormat;
-import me.hottutorials.save.formats.ClientTypes;
 import me.hottutorials.save.formats.ModFormat;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class Save {
     public String getAuthor() { return author; }
     public String getVersion() { return version; }
 
-    public Save(String name, String description, String version, String author, ClientTypes type, String buildVersion, List<ModFormat> mods) {
+    public Save(String name, String description, String version, String author, ClientType type, String buildVersion, List<ModFormat> mods) {
         this.name = name;
         this.description = description;
         this.version = version;

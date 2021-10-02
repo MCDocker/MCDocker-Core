@@ -79,6 +79,12 @@
             <version>17.0.0.1</version>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
         <!-- JavaFX End -->
 
 

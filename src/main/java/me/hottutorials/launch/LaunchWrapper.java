@@ -1,12 +1,11 @@
 package me.hottutorials.launch;
 
-import me.hottutorials.save.formats.BuildFormat;
-import me.hottutorials.save.formats.ClientTypes;
+import me.hottutorials.content.ClientType;
 
 public class LaunchWrapper {
 
-    public void launch(String version, ClientTypes type, String[] jvmArgs) {
-
-    }
+//    public void launch(String version, ClientType type, String[] jvmArgs) {
+//
+//    }
 
 }
