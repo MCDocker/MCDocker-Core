@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="fxml.components.ModEntry"
-            prefHeight="400.0" prefWidth="600.0" >
+<fx:root prefHeight="60.0" style="-fx-background-color: background-dark;" type="Button" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <graphic>
+      <HBox prefHeight="230.0" prefWidth="660.0">
+         <BorderPane HBox.hgrow="ALWAYS">
+            <left>
+               <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                  <Image preserveRatio="true" url="@../../img/pack.png" />
+               </ImageView>
+            </left>
 
-</AnchorPane>
+            <center>
+               <VBox>
+                  <Label fx:id="modTitle" text="Title" />
+                  <Label fx:id="modDesc" text="Description" />
+               </VBox>
+            </center>
+         </BorderPane>
+      </HBox>
+   </graphic>
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
+</fx:root>

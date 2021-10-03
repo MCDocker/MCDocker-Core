@@ -6,4 +6,15 @@
     background-dark: #3E3E3E;
     background-darker: #393939;
     accent: #4285F4;
+    ninetyText: #ffffffe5;
+    sixtyText: FFFFFF99;
+    thirtyText: #FFFFFF4D;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: background;
+  }
+
+.scroll-pane {
+    -fx-background-color:transparent;
 }

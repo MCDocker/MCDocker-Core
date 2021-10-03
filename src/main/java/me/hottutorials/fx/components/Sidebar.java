@@ -11,6 +11,10 @@ import javafx.scene.layout.VBox;
 import me.hottutorials.fx.ContainersScene;
 import me.hottutorials.fx.HomeScene;
 import me.hottutorials.fx.MainScene;
+import me.hottutorials.fx.SettingsScene;
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
+import org.kordamp.ikonli.bootstrapicons.BootstrapIconsIkonProvider;
 
 import java.io.IOException;
 
@@ -21,21 +25,17 @@ public class Sidebar extends VBox {
         sidebar.setController(this);
         sidebar.setRoot(this);
 
-
-
         try {
             sidebar.load();
 
             Button home = (Button) lookup("#homeSidebarButton");
             Button containers = (Button) lookup("#containersSidebarButton");
+            Button settings = (Button) lookup("#settingsSidebarButton");
 
-            containers.setOnAction((e) -> {
-                setActivePanel(ContainersScene.class);
-            });
+            containers.setOnAction((e) -> setActivePanel(ContainersScene.class));
+            home.setOnAction((e) -> setActivePanel(HomeScene.class));
+            settings.setOnAction((e) -> setActivePanel(SettingsScene.class));
 
-            home.setOnAction((e) -> {
-                setActivePanel(HomeScene.class);
-            });
         } catch (IOException e) {
             e.printStackTrace();
         }

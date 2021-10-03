@@ -8,12 +8,12 @@ import java.io.IOException;
 public class HomeScene extends VBox {
 
     public HomeScene() {
-        FXMLLoader sidebar = new FXMLLoader(getClass().getClassLoader().getResource("fxml/HomeScene.fxml"));
-        sidebar.setController(this);
-        sidebar.setRoot(this);
+        FXMLLoader scene = new FXMLLoader(getClass().getClassLoader().getResource("fxml/HomeScene.fxml"));
+        scene.setController(this);
+        scene.setRoot(this);
 
         try {
-            sidebar.load();
+            scene.load();
         } catch (IOException e) {
             e.printStackTrace();
         }

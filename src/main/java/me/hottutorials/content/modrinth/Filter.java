@@ -5,13 +5,13 @@ import java.util.List;
 
 public class Filter {
 
-    private final List<Category> categories;
+    private final List<ModrinthCategories> categories;
     private final List<String> versions;
     private final String license;
     private final String clientSide;
     private final String serverSide;
 
-    public Filter(List<Category> categories, List<String> versions, String license, String clientSide, String serverSide) {
+    public Filter(List<ModrinthCategories> categories, List<String> versions, String license, String clientSide, String serverSide) {
         this.categories = categories;
         this.versions = versions;
         this.license = license;
@@ -24,7 +24,7 @@ public class Filter {
         builder.append("filters=");
 
         // Category Adder
-        for (Category category : categories) builder.append("categories=\"").append(category.name().toLowerCase()).append("\"").append("AND");
+        for (ModrinthCategories category : categories) builder.append("categories=\"").append(category.name().toLowerCase()).append("\"").append("AND");
 
         // Version Adder
         for (String version : versions) builder.append("versions=\"").append(version.toLowerCase()).append("\"AND");
@@ -37,7 +37,7 @@ public class Filter {
 
     }
 
-    public List<Category> getCategories() { return categories; }
+    public List<ModrinthCategories> getCategories() { return categories; }
     public String getClientSide() { return clientSide; }
     public String getServerSide() { return serverSide; }
     public String getLicense() { return license; }
@@ -47,18 +47,18 @@ public class Filter {
         private static final FilterBuilder FILTERS = new FilterBuilder();
         public static FilterBuilder getFilterBuilder() { return FILTERS; }
 
-        private final List<Category> categories = new ArrayList<>();
+        private final List<ModrinthCategories> categories = new ArrayList<>();
         private final List<String> versions = new ArrayList<>();
         private String license = null;
         private String clientSide = null;
         private String serverSide = null;
 
-        public FilterBuilder addCategory(Category category) {
+        public FilterBuilder addCategory(ModrinthCategories category) {
             categories.add(category);
             return this;
         }
 
-        public FilterBuilder addCategories(List<Category> categorys) {
+        public FilterBuilder addCategories(List<ModrinthCategories> categorys) {
             categories.addAll(categorys);
             return this;
         }
@@ -92,23 +92,6 @@ public class Filter {
             return new Filter(categories, versions, license, clientSide, serverSide);
         }
 
-    }
-
-    public enum Category {
-        WORLDGEN,
-        TECHNOLOGY,
-        FOOD,
-        MAGIC,
-        STORAGE,
-        LIBRARY,
-        ADVENTURE,
-        UTILITY,
-        DECORATION,
-        MISC,
-        EQUIPMENT,
-        CURSED,
-        FABRIC,
-        FORGE
     }
 
 }

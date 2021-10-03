@@ -1,6 +1,7 @@
 package me.hottutorials;
 
 import me.hottutorials.config.Config;
+import me.hottutorials.content.modrinth.Modrinth;
 import me.hottutorials.fx.MainScene;
 import me.hottutorials.utils.Logger;
 import me.hottutorials.utils.OSUtils;
@@ -22,7 +23,6 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(shutDownHook);
 
         MainScene.launch(MainScene.class, args);
-
     }
 
     private static void shutDownMethod() {

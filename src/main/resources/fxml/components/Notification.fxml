@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<BorderPane prefHeight="80.0" prefWidth="350.0" style="-fx-background-color: background; -fx-border-color: background-dark" stylesheets="@../../css/Main.css" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="titleLabel" text="Title" textFill="#ffffffe6">
+               <font>
+                  <Font name="Roboto Black" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="contentLabel" text="Label" textFill="#ffffff98" />
+         </children>
+      </VBox>
+   </center>
+   <left>
+      <FontIcon fx:id="fontIcon" iconSize="32" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <Button fx:id="closeNotiButton">
+         <graphic>
+            <FontIcon iconSize="32" strokeWidth="4.0" style="-fx-fill: background-dark;" iconLiteral="bi-x" />
+         </graphic>
+      </Button>
+   </right>
+</BorderPane>

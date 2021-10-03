@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import me.hottutorials.fx.components.*?>
 
-<fx:root type="ScrollPane" id="containersScene" xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml">
+<?import me.hottutorials.content.ModEntry?>
+<fx:root id="containersScene" hbarPolicy="NEVER" style="-fx-background-color: background;" fitToHeight="true" type="ScrollPane" fitToWidth="true" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <padding>
+        <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+    </padding>
 
-    <VBox>
-        <Label text="test" />
+    <VBox prefWidth="660.0" fx:id="container" spacing="10.0" style="-fx-background-color: #fff;">
+        <ModEntry />
     </VBox>
-
 </fx:root>

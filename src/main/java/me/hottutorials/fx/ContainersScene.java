@@ -16,9 +16,9 @@ public class ContainersScene extends ScrollPane {
         scene.setController(this);
         scene.setRoot(this);
 
-        VBox list = (VBox) lookup("#containersScene");
+//        VBox list = (VBox) lookup("#containersScene");
 //        list.getChildren().add(new ModEntry(Mod.ModProperties.getBuilder().setName("LOL").setLink("ok").setDescription("a").setType(ClientType.FORGE).getMod()));
-        setContent(list);
+//        setContent(list);
 
         try {
             scene.load();

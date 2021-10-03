@@ -17,4 +17,11 @@ public class Modrinth {
         return getMods(null);
     }
 
+    public static String getMod(String id) {
+        return RequestBuilder.getBuilder()
+                .setURL(Constants.URLs.MODRINTH_API.getURL() + "api/v1/mod/" + id)
+                .setMethod(Method.GET)
+                .send(true);
+    }
+
 }

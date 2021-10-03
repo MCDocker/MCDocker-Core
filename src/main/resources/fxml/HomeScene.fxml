@@ -9,22 +9,22 @@
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
+    <HBox layoutX="30.0" layoutY="30.0" prefHeight="230.0" prefWidth="660.0" style="-fx-background-color: background-dark;" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+        </padding>
+        <Pane prefHeight="230.0" prefWidth="700.0" style="-fx-background-color: #696969;" HBox.hgrow="ALWAYS" />
+    </HBox>
 
     <HBox prefHeight="155.0" prefWidth="660.0" spacing="20.0">
         <opaqueInsets>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
         </opaqueInsets>
-        <Pane prefHeight="155.0" prefWidth="480.0" style="-fx-background-color: background-dark;" />
+        <Pane prefHeight="155.0" prefWidth="480.0" style="-fx-background-color: background-dark;" HBox.hgrow="ALWAYS" />
         <Pane prefHeight="155.0" prefWidth="160.0" style="-fx-background-color: background-dark;" />
     </HBox>
-    <HBox layoutX="30.0" layoutY="30.0" prefHeight="230.0" prefWidth="660.0" style="-fx-background-color: background-dark;">
-        <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-        </padding>
-        <Pane prefHeight="230.0" prefWidth="700.0" style="-fx-background-color: #696969;" />
-    </HBox>
     <HBox layoutX="30.0" layoutY="205.0" prefHeight="65.0" prefWidth="660.0">
-        <PlayButton prefHeight="60.0" prefWidth="700.0" />
+        <PlayButton prefHeight="60.0" prefWidth="700.0" HBox.hgrow="ALWAYS" />
     </HBox>
    <opaqueInsets>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

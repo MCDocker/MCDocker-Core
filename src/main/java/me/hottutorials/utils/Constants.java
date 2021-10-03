@@ -11,7 +11,7 @@ public class Constants {
     private final static Gson gson = new GsonBuilder().create();
 
     private static JsonObject getLatestMC() {
-        return gson.fromJson(RequestBuilder.getBuilder().setURL("https://launchermeta.mojang.com/mc/game/version_manifest.json").setMethod(Method.GET).send(), JsonObject.class).getAsJsonObject("latest");
+            return gson.fromJson(RequestBuilder.getBuilder().setURL("https://launchermeta.mojang.com/mc/game/version_manifest.json").setMethod(Method.GET).send(), JsonObject.class).getAsJsonObject("latest");
     }
 
     public enum URLs {
@@ -19,9 +19,7 @@ public class Constants {
         MODRINTH_API("https://api.modrinth.com/"),
         MOJANG_API("https://api.mojang.com/"),
         MOJANG_STATUS("https://status.mojang.com/check"),
-        MOJANG_AUTH("https://authserver.mojang.com"),
-        LATEST_MC_SNAPSHOT(getLatestMC().get("snapshot").getAsString()),
-        LATEST_MC_RELEASE(getLatestMC().get("release").getAsString());
+        MOJANG_AUTH("https://authserver.mojang.com");
 
         private String url;
         public String getURL() { return url; };

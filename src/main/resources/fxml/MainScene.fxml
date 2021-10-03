@@ -16,7 +16,7 @@
          </Label>
       </center>
    </BorderPane>
-   <StackPane id="panelContainer" layoutX="200.0" layoutY="60.0" prefHeight="540.0" prefWidth="700.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0">
+   <StackPane id="panelContainer" layoutX="200.0" layoutY="60.0" prefHeight="540.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
 
    </StackPane>
 
