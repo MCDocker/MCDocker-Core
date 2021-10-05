@@ -10,8 +10,8 @@
       <HBox prefHeight="230.0" prefWidth="660.0">
          <BorderPane HBox.hgrow="ALWAYS">
             <left>
-               <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
-                  <Image preserveRatio="true" url="@../../img/pack.png" />
+               <ImageView fx:id="modIconView" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+
                </ImageView>
             </left>
 

@@ -3,9 +3,8 @@ package me.hottutorials.fx;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
-import me.hottutorials.content.ClientType;
 import me.hottutorials.content.Mod;
-import me.hottutorials.content.ModEntry;
+import me.hottutorials.fx.components.ModEntry;
 
 import java.io.IOException;
 
@@ -16,12 +15,14 @@ public class ContainersScene extends ScrollPane {
         scene.setController(this);
         scene.setRoot(this);
 
-//        VBox list = (VBox) lookup("#containersScene");
-//        list.getChildren().add(new ModEntry(Mod.ModProperties.getBuilder().setName("LOL").setLink("ok").setDescription("a").setType(ClientType.FORGE).getMod()));
-//        setContent(list);
-
         try {
             scene.load();
+
+            VBox container = (VBox) scene.getNamespace().get("modsContainer");
+            for(int i = 0; i < 5; i++) {
+                container.getChildren().add(new ModEntry(new Mod.ModProperties().setName("test " + i).setDescription("cool " + i).getMod()));
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

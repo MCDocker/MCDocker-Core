@@ -1,5 +1,6 @@
 package me.hottutorials.fx.components;
 
+import javafx.animation.PauseTransition;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,9 +10,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -35,22 +38,19 @@ public class Notification extends BorderPane {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/components/Notification.fxml"));
             Parent root = loader.load();
+            root.getStyleClass().add("dark-mode");
+            root.setStyle("-fx-background-color: #474747;");
             Scene scene = new Scene(root);
             loader.setController(this);
 
             Stage stage = new Stage();
             stage.setScene(scene);
-            stage.setHeight(80);
-            stage.setWidth(300);
             stage.setResizable(false);
             stage.setAlwaysOnTop(true);
             stage.initStyle(StageStyle.UNDECORATED);
 
             double sWidth = Screen.getPrimary().getBounds().getWidth();
             double sHeight = Screen.getPrimary().getBounds().getHeight();
-
-            stage.setX(sWidth - stage.getWidth() - 10);
-            stage.setY(sHeight - stage.getHeight() - 10);
 
             Button button = (Button) loader.getNamespace().get("closeNotiButton");
             button.setOnAction((e) -> stage.close());
@@ -69,9 +69,23 @@ public class Notification extends BorderPane {
             }
 
             Label titleLabel = (Label) loader.getNamespace().get("titleLabel");
-            Label contentLabel = (Label) loader.getNamespace().get("contentLabel");
+            Text contentLabel = (Text) loader.getNamespace().get("contentLabel");
             titleLabel.setText(title);
             contentLabel.setText(content);
+            contentLabel.setWrappingWidth(100);
+
+            stage.setHeight(stage.getMinHeight() + contentLabel.getLayoutBounds().getHeight());
+            stage.setMinHeight(80);
+            stage.setWidth(300);
+
+            stage.setX(sWidth - stage.getWidth() - 10);
+            stage.setY(sHeight - stage.getHeight() - 10);
+
+            PauseTransition delay = new PauseTransition(Duration.seconds(5));
+            delay.setOnFinished((e) -> stage.close());
+            delay.play();
+
+            scene.setOnMouseEntered(mouseEvent -> delay.stop());
 
             stage.show();
 

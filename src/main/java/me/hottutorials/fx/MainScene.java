@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class MainScene extends Application {
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/MainScene.fxml"));
         Scene scene = new Scene(root);
+        root.getStyleClass().add("dark-mode");
+        root.setStyle("-fx-background-color: #474747;");
 
         registerPanels();
 
@@ -39,6 +42,7 @@ public class MainScene extends Application {
             if(panel.getClass() == HomeScene.class) panel.setVisible(true);
             panels.getChildren().add(panel);
         }
+
     }
 
     public static List<Region> getPanelsList() {

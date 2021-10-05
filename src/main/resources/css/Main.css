@@ -1,7 +1,17 @@
 @import url("./Sidebar.css");
 @import url("./Buttons.css");
 
-* {
+.dark-mode * {
+    background: #474747;
+    background-dark: #3E3E3E;
+    background-darker: #393939;
+    accent: #4285F4;
+    ninetyText: #ffffffe5;
+    sixtyText: FFFFFF99;
+    thirtyText: #FFFFFF4D;
+}
+
+.light-mode * {
     background: #474747;
     background-dark: #3E3E3E;
     background-darker: #393939;

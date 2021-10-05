@@ -5,7 +5,7 @@
 <?import javafx.scene.text.*?>
 <?import me.hottutorials.fx.components.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: background;" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.hottutorials.fx.MainScene">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.hottutorials.fx.MainScene">
    <Sidebar AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
    <BorderPane layoutX="200.0" layoutY="-1.0" prefHeight="60.0" prefWidth="700.0" style="-fx-background-color: background-dark;" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0">
       <center>
