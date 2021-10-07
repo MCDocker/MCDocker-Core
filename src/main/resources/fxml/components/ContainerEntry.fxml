@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<fx:root prefHeight="60.0" prefWidth="Infinity" style="-fx-background-color: background-dark;" type="Button" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <graphic>
+      <HBox prefHeight="230.0">
+         <BorderPane HBox.hgrow="ALWAYS">
+            <left>
+               <ImageView fx:id="contIconView" fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true"  >
+                  <BorderPane.margin>
+                     <Insets right="10.0" />
+                  </BorderPane.margin></ImageView>
+            </left>
+
+            <center>
+               <VBox>
+                  <Label fx:id="contTitle" style="-fx-text-fill: sixtyText;" text="Title">
+                     <font>
+                        <Font name="Roboto Black" size="20.0" />
+                     </font></Label>
+                  <Label fx:id="contDesc" style="-fx-text-fill: thirtyText;" text="Description">
+                     <font>
+                        <Font name="Roboto Medium" size="16.0" />
+                     </font></Label>
+               </VBox>
+            </center>
+         </BorderPane>
+      </HBox>
+   </graphic>
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
+</fx:root>

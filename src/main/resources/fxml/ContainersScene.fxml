@@ -3,14 +3,13 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import me.hottutorials.fx.components.*?>
 
 <fx:root id="containersScene" hbarPolicy="NEVER" style="-fx-background-color: background;" fitToHeight="true" type="ScrollPane" fitToWidth="true" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
         <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
     </padding>
 
-    <VBox prefWidth="660.0" fx:id="modsContainer" spacing="10.0" style="-fx-background-color: background;">
+    <VBox prefWidth="660.0" fx:id="contContainer" spacing="10.0" style="-fx-background-color: background;">
 
     </VBox>
 </fx:root>

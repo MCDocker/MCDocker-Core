@@ -1,5 +1,6 @@
 @import url("./Sidebar.css");
 @import url("./Buttons.css");
+@import url("./Other.css");
 
 .dark-mode * {
     background: #474747;
@@ -19,6 +20,10 @@
     ninetyText: #ffffffe5;
     sixtyText: FFFFFF99;
     thirtyText: #FFFFFF4D;
+}
+
+Button:focused {
+
 }
 
 .scroll-pane .viewport {

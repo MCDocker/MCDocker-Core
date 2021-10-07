@@ -1,0 +1,17 @@
+.track {
+    -fx-background-color: background;
+}
+
+.thumb {
+    -fx-background-color: background-dark;
+}
+
+.increment-button, .decrement-button, .increment-arrow, .decrement-arrow, .corner {
+    -fx-pref-width: 0;
+    -fx-opacity: 0;
+    -fx-background-color: transparent;
+}
+
+:vertical {
+    -fx-shape: " ";
+}

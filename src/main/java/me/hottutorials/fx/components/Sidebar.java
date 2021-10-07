@@ -32,19 +32,24 @@ public class Sidebar extends VBox {
             Button containers = (Button) lookup("#containersSidebarButton");
             Button settings = (Button) lookup("#settingsSidebarButton");
 
-            containers.setOnAction((e) -> setActivePanel(ContainersScene.class));
-            home.setOnAction((e) -> setActivePanel(HomeScene.class));
-            settings.setOnAction((e) -> setActivePanel(SettingsScene.class));
+            containers.setOnAction((e) -> setActivePanel(containers, ContainersScene.class));
+            home.setOnAction((e) -> setActivePanel(home, HomeScene.class));
+            settings.setOnAction((e) -> setActivePanel(settings, SettingsScene.class));
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void setActivePanel(Class clazz) {
+    private void setActivePanel(Button button, Class clazz) {
         for(Region panel : MainScene.getPanelsList()) {
             panel.setVisible(false);
-            if(panel.getClass() == clazz) panel.setVisible(true);
+//            button.getStyleClass().clear();
+//            button.getStyleClass().add("sidebar-button");
+            if(panel.getClass() == clazz) {
+                panel.setVisible(true);
+//                button.getStyleClass().add("active-sidebar-button");
+            }
         }
     }
 

@@ -4,6 +4,14 @@
 
 .sidebar-button:hover {
     -fx-background-color: background-darker;
-    -fx-text-fill: #ffffffff;
+    -fx-text-fill: ninetyText;
     -fx-font-weight: bold;
+}
+
+.sidebar-button:focused, .active-sidebar-button {
+    -fx-background-color: background-darker;
+    -fx-text-fill: ninetyText;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Roboto Black';
+    -fx-font-size: 20px;
 }
