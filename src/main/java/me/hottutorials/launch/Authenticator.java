@@ -112,14 +112,14 @@ public class Authenticator {
                             return;
                         }
 
-                        JsonObject account = getAccount(mcAccessToken);
-                        if(account.has("error")) {
+                        MCProfile account = getAccount(mcAccessToken);
+                        if(account == null) {
                             status.setText("Minecraft Account could not be found");
                             return;
                         }
 
-                        String uuid = account.get("id").getAsString();
-                        String name = account.get("name").getAsString();
+                        String uuid = account.getUuid();
+                        String name = account.getName();
 
                         try {
                             status.setText("Saving account");
@@ -239,14 +239,20 @@ public class Authenticator {
 
         }
 
-        private JsonObject getAccount(String accessToken) {
+        private MCProfile getAccount(String accessToken) {
             String res = RequestBuilder.getBuilder()
                     .setURL("https://api.minecraftservices.com/minecraft/profile")
                     .setMethod(Method.GET)
                     .addHeader("Authorization", "Bearer " + accessToken)
                     .send(true);
 
-            return gson.fromJson(res, JsonObject.class);
+            JsonObject profile = gson.fromJson(res, JsonObject.class);
+
+            if(profile.has("error")) {
+                return null;
+            }
+
+            return new MCProfile(profile.get("name").getAsString(), profile.get("id").getAsString(), profile.get("skins").getAsJsonArray());
 
         }
 

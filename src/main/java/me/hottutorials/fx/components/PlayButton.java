@@ -9,8 +9,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import me.hottutorials.content.ClientType;
 import me.hottutorials.content.modrinth.Modrinth;
 import me.hottutorials.launch.Authenticator;
+import me.hottutorials.launch.LaunchWrapper;
 import me.hottutorials.utils.http.Method;
 import me.hottutorials.utils.http.RequestBuilder;
 
@@ -28,7 +30,7 @@ public class PlayButton extends AnchorPane {
 
             Button btn = (Button) lookup("#playButton");
             btn.setOnAction(actionEvent -> {
-
+                new LaunchWrapper("1.8.9", ClientType.VANILLA, new String[]{});
             });
         } catch (IOException e) {
             e.printStackTrace();

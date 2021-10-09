@@ -1,5 +1,7 @@
 package me.hottutorials.utils;
 
+import me.hottutorials.Main;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +15,7 @@ public class Logger {
 
     public static void log(Object log) {
         try {
-            logToFile(true, log);
+            logToFile(" ", log);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -21,13 +23,23 @@ public class Logger {
 
     public static void err(Object err) {
         try {
-            logToFile(false, err);
+            logToFile(" Error: ", err);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void logToFile(boolean normal, Object message) throws IOException {
+    public static void debug(Object log) {
+        try {
+            if(Main.getArgument("debugMode").equalsIgnoreCase("true")) {
+                logToFile(" Debug: ", log);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void logToFile(String type, Object message) throws IOException {
         if(!logFile.exists()) {
             logFile.getParentFile().mkdir();
             logFile.createNewFile();
@@ -37,10 +49,9 @@ public class Logger {
         FileWriter writer = new FileWriter(logFile, true);
         String prefix = "[ " + new SimpleDateFormat("HH:mm:ss").format(new Date().getTime()) + " ]";
 
-        String msg = prefix + (normal ? " " : " Error: ") + message;
+        String msg = prefix + type + message;
 
-        if(normal) System.out.println(msg);
-        else System.err.println(msg);
+        System.out.println(msg);
 
         writer.write(msg + "\r\n");
         writer.flush();

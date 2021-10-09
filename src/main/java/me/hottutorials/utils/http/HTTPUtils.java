@@ -2,6 +2,9 @@ package me.hottutorials.utils.http;
 
 import me.hottutorials.utils.Logger;
 
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -25,6 +28,20 @@ public class HTTPUtils {
             Logger.err("URL `" + url + "` is malformed. Message: " + e.getMessage());
             return null;
         }
+    }
+
+    public static void download(String url, String target) {
+        try (BufferedInputStream inputStream = new BufferedInputStream(new URL(url).openStream());
+             FileOutputStream outputStream = new FileOutputStream(target)) {
+            byte[] data = new byte[1024];
+            int byteContent;
+            while ((byteContent = inputStream.read(data, 0, 1024)) != -1) {
+                outputStream.write(data, 0, byteContent);
+            }
+        } catch (IOException e) {
+            Logger.err(e);
+        }
+
     }
 
 }
