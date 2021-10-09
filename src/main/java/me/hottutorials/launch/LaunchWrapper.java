@@ -16,7 +16,9 @@ import me.hottutorials.utils.http.RequestBuilder;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -73,6 +75,78 @@ public class LaunchWrapper {
         nativesFolder.mkdir();
 
         for(JsonElement nativ : natives) {
+            JsonObject n = nativ.getAsJsonObject();
+
+            boolean extract = false;
+
+            if(n.has("extract") && n.has("natives")) extract = true;
+//            if(n.has("rules")) {
+//                List<Map<String, JsonElement>> rules = new ArrayList<>();
+//
+//                for(JsonElement rul : n.getAsJsonArray("rules")) {
+//                    JsonObject rule = rul.getAsJsonObject();
+//                    Map<String, JsonElement> rools = new HashMap<>();
+//                    for(Map.Entry<String, JsonElement> entry : rule.entrySet()) {
+//                        rools.put(entry.getKey(), entry.getValue());
+//                    }
+//                    rules.add(rools);
+//                }
+//
+//                for(Map<String, JsonElement> map : rules) {
+//                    for(Map.Entry<String, JsonElement> entry : map.entrySet()) {
+//                        boolean action = false;
+//                        String os = null;
+//                        if(entry.getKey().equalsIgnoreCase("action")) {
+//                            if(entry.getValue().getAsString().equalsIgnoreCase("allow")) action = true;
+//                            else action = false;
+//                        }
+//
+//                        if(entry.getKey().equalsIgnoreCase("os"))
+//                            os = entry.getValue().getAsJsonObject().get("name").getAsString();
+//
+//                        if(action) {
+//                            switch (OSUtils.getOperatingSystem()) {
+//                                case LINUX:
+//
+//                            }
+//                        }
+//
+//                    }
+//                }
+//
+//            }
+
+            if(extract) {
+
+                JsonObject classifiers = n.getAsJsonObject("downloads").getAsJsonObject("classifiers");
+                JsonObject nativePlatform = null;
+
+
+                switch (OSUtils.getOperatingSystem()) {
+                    case WINDOWS:
+                        nativePlatform = classifiers.getAsJsonObject("natives-windows");
+                        break;
+                    case LINUX:
+                        nativePlatform = classifiers.getAsJsonObject("natives-linux");
+                        break;
+                    case MACOS:
+                        nativePlatform = classifiers.getAsJsonObject("natives-osx");
+                        break;
+                    case OTHER:
+                        System.exit(1);
+                        break;
+                }
+
+                String path = nativePlatform.get("path").getAsString();
+                String url = nativePlatform.get("url").getAsString();
+                long size = nativePlatform.get("size").getAsLong();
+
+                String foldersPath = path.substring(0, path.length() - path.split("/")[path.split("/").length - 1].length());
+                String outputFileName = path.split("/")[path.split("/").length - 1];
+
+                FSUtils.createDirRecursively(nativesFolder.getAbsolutePath(), foldersPath);
+                HTTPUtils.download(url, nativesFolder + "/" + path);
+            }
 
         }
     }
@@ -97,12 +171,11 @@ public class LaunchWrapper {
                 long size = artifact.get("size").getAsLong();
 
                 String foldersPath = path.substring(0, path.length() - path.split("/")[path.split("/").length - 1].length());
+                String outputFileName = path.split("/")[path.split("/").length - 1];
 
-                FSUtils.createDirRecursively(librariesFolder.getAbsolutePath(), foldersPath);
-                HTTPUtils.download(url, librariesFolder + "/" + path);
+//                FSUtils.createDirRecursively(librariesFolder.getAbsolutePath(), foldersPath);
+//                HTTPUtils.download(url, librariesFolder + "/" + path);
             }
-
-            System.out.println(natives);
 
             downloadNatives(natives);
 

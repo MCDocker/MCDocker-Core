@@ -1,6 +1,8 @@
 package me.hottutorials.utils;
 
 import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -35,6 +37,13 @@ public class FSUtils {
             builder.deleteCharAt(builder.toString().length() - 1);
 
             return createDirRecursively(base, builder.toString());
+        }
+    }
+
+    public void extractZip(Path zip, String file, Path output) throws IOException {
+        try (FileSystem fileSystem = FileSystems.newFileSystem(zip, null)) {
+            Path fileToExtract = fileSystem.getPath(file);
+            Files.copy(fileToExtract, output);
         }
     }
 
