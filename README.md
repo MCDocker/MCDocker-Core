@@ -6,15 +6,15 @@ MCDocker is a custom launcher and instance manager for [Minecraft](https://minec
 [<img src="https://img.shields.io/discord/678156929259929641?color=blue&label=DISCORD%20CHAT&style=for-the-badge" />](https://discord.gg/nvCdrr5r2a)
 
 ## Developer Checklist 
-- [x] Finish off Settings
-- [ ] HTTP Stuff (Download, Meta fetching, Requests)
-- [ ] Provider integration and toggling them: Modrinth, Curseforge, External (off by default)
+- [ ] Finish off Settings
+- [x] HTTP Stuff (Download, Meta fetching, Requests)
+- [x] (Sort of done) Provider integration and toggling them: Modrinth, Curseforge, External (off by default)
 - [ ] Search, Filters, Sorting
 - [ ] Displaying Versions
-- [ ] Launch Wrapper. Downloading natives, assets and libraries for a chosen version
-- [ ] Authentication, Mojang + Microsoft
+- [x] (Supports versions 1.0 - 1.12.2 for now) Launch Wrapper. Downloading natives, assets and libraries for a chosen version
+- [x] Authentication, Microsoft
 - [ ] Alternative Forge/Fabric URLs set in Advanced category
-- [ ] UI Improvements
+- [x] UI Improvements
 
 ## Uses
 TOML, Maven, JavaFX
