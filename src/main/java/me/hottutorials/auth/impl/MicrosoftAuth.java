@@ -27,8 +27,8 @@ public class MicrosoftAuth implements Authentication<MicrosoftAuth> {
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Override
-    public CompletableFuture<Account<MicrosoftAuth>> authenticate(Consumer<String> status) {
-        CompletableFuture<Account<MicrosoftAuth>> future = new CompletableFuture<>();
+    public CompletableFuture<Account> authenticate(Consumer<String> status) {
+        CompletableFuture<Account> future = new CompletableFuture<>();
 
         WebView webView = new WebView();
         webView.getEngine().load(oauthURL);
@@ -83,7 +83,7 @@ public class MicrosoftAuth implements Authentication<MicrosoftAuth> {
                     return;
                 }
 
-                Account<MicrosoftAuth> account = getAccount(mcAccessToken);
+                Account account = getAccount(mcAccessToken);
                 if (account == null) {
                     future.completeExceptionally(new MicrosoftAuthenticationException("Minecraft Account could not be found."));
                     return;
@@ -174,7 +174,7 @@ public class MicrosoftAuth implements Authentication<MicrosoftAuth> {
 
     }
 
-    private Account<MicrosoftAuth> getAccount(String accessToken) {
+    private Account getAccount(String accessToken) {
         String res = RequestBuilder.getBuilder()
                 .setURL("https://api.minecraftservices.com/minecraft/profile")
                 .setMethod(Method.GET)
@@ -185,7 +185,7 @@ public class MicrosoftAuth implements Authentication<MicrosoftAuth> {
 
         if(profile.has("error")) return null;
 
-        return new Account<>(this, profile.get("name").getAsString(), profile.get("id").getAsString(), profile.get("skins").getAsJsonArray());
+        return new Account(profile.get("name").getAsString(), profile.get("id").getAsString(), accessToken, profile.get("skins").getAsJsonArray());
     }
 
 

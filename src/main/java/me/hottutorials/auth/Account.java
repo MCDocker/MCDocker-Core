@@ -2,17 +2,17 @@ package me.hottutorials.auth;
 
 import com.google.gson.JsonArray;
 
-public class Account<T extends Authentication<T>> {
+public class Account {
 
-    private final T authMethod;
     private final String username;
     private final String uuid;
+    private final String accessToken;
     private final JsonArray skins;
 
-    public Account(T authMethod, String username, String uuid, JsonArray skins) {
-        this.authMethod = authMethod;
+    public Account(String username, String uuid, String accessToken, JsonArray skins) {
         this.username = username;
         this.uuid = uuid;
+        this.accessToken = accessToken;
         this.skins = skins;
     }
 
@@ -24,12 +24,12 @@ public class Account<T extends Authentication<T>> {
         return uuid;
     }
 
-    public JsonArray getSkins() {
-        return skins;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public T getAuthMethod() {
-        return authMethod;
+    public JsonArray getSkins() {
+        return skins;
     }
 
 }
