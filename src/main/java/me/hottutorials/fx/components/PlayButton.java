@@ -1,20 +1,10 @@
 package me.hottutorials.fx.components;
 
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import me.hottutorials.content.ClientType;
-import me.hottutorials.content.modrinth.Modrinth;
-import me.hottutorials.launch.Authenticator;
 import me.hottutorials.launch.LaunchWrapper;
-import me.hottutorials.utils.http.Method;
-import me.hottutorials.utils.http.RequestBuilder;
 
 import java.io.IOException;
 
