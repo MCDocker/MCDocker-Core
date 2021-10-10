@@ -30,7 +30,7 @@ public class PlayButton extends AnchorPane {
 
             Button btn = (Button) lookup("#playButton");
             btn.setOnAction(actionEvent -> {
-                new LaunchWrapper("1.8.9", ClientType.VANILLA, new String[]{});
+                new LaunchWrapper("1.8.9", ClientType.VANILLA);
             });
         } catch (IOException e) {
             e.printStackTrace();

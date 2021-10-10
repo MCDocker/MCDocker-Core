@@ -5,22 +5,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
 import me.hottutorials.content.ClientType;
 import me.hottutorials.utils.FSUtils;
 import me.hottutorials.utils.Logger;
 import me.hottutorials.utils.OSUtils;
+import me.hottutorials.utils.StringUtils;
 import me.hottutorials.utils.http.HTTPUtils;
 import me.hottutorials.utils.http.Method;
 import me.hottutorials.utils.http.RequestBuilder;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 public class LaunchWrapper {
 
@@ -33,28 +30,31 @@ public class LaunchWrapper {
     private final ClientType type;
     private final String version;
 
-    public LaunchWrapper(String version, ClientType type, String[] arguments) {
+    private final List<String> librariesList = new ArrayList<>();
+
+    public LaunchWrapper(String version, ClientType type, String... arguments) {
         Logger.log("Launch Wrapper Called");
 
         this.type = type;
         this.version = version;
 
         try {
+            OptionParser parser = new OptionParser("reinstall");
+            parser.allowsUnrecognizedOptions();
+            parser.accepts("reinstall");
+
+            OptionSet options = parser.parse(arguments);
+
             versionsFolder.mkdir();
 
             Logger.debug("Setting version manifest");
             versionManifestFolder.mkdir();
             setVersionManifest();
 
-            Logger.debug("Preparing for client download");
-            downloadClient();
-            Logger.log("Finished downloading client");
-
-            Logger.debug("Preparing library download");
-            downloadLibraries();
-            Logger.log("Finished downloading libraries");
-
-
+            long start = System.currentTimeMillis();
+            download();
+            long end = System.currentTimeMillis();
+            Logger.log(StringUtils.format("Finished downloading in ${0}ms. Preparing launch", end - start));
 
             List<String> args = new ArrayList<>();
             args.add("-XX:-UseAdaptiveSizePolicy");
@@ -63,16 +63,61 @@ public class LaunchWrapper {
             args.add("-Dfml.ignoreInvalidMinecraftCertificates=true");
             args.add("-Dminecraft.launcher.brand=mc-docker");
 
-            args.add("-Djava.library.path=");
+            args.add("-Djava.library.path=" + nativesFolder + "/" + version + "/");
+            args.add("-Dminecraft.client.jar=" + versionsFolder + "/" + type.name().toLowerCase() + "/" + version + ".jar");
+
+            StringBuilder librariesBuilder = new StringBuilder();
+            librariesList.forEach(s -> librariesBuilder.append(s).append(":"));
+            if(librariesBuilder.length() == 0) throw new Exception("Libraries length is 0");
+            librariesBuilder.deleteCharAt(librariesBuilder.toString().length() - 1);
+            args.add("-cp " + librariesBuilder.toString() + ":" + versionsFolder + "/" + type.name().toLowerCase() + "/" + version + ".jar");
+
+            args.add("-Xmx3G");
+            args.add("net.minecraft.client.main.Main");
+            args.add("--username TypeScripter");
+            args.add("--version " + version);
+            args.add("--accessToken 0");
+            args.add("--userProperties {}");
+
+            StringBuilder argsBuilder = new StringBuilder();
+            args.forEach(arg -> argsBuilder.append(arg).append(" "));
+
+            Process child = Runtime.getRuntime().exec("java " + argsBuilder.toString() );
+
+            // TODO: improve logging output
+
+            BufferedReader input = new BufferedReader(new InputStreamReader(child.getInputStream()));
+            String line;
+            while ((line = input.readLine()) != null) Logger.debug(line);
+            input.close();
+
         } catch (Exception e) {
-            Logger.log(e);
+            e.printStackTrace();
         }
+
+    }
+
+    private void download() {
+
+        Logger.debug("Preparing for client download");
+        downloadClient();
+        Logger.log("Finished downloading client");
+
+        Logger.debug("Preparing library download");
+        JsonArray natives = downloadLibraries();
+        Logger.log("Finished downloading libraries");
+
+        Logger.debug("Preparing natives download");
+        downloadNatives(natives);
+        Logger.log("Finished downloading natives");
 
     }
 
 
     private void downloadNatives(JsonArray natives) {
         nativesFolder.mkdir();
+        File currentNativeFolder = new File(nativesFolder + "/" + version);
+        currentNativeFolder.mkdir();
 
         for(JsonElement nativ : natives) {
             JsonObject n = nativ.getAsJsonObject();
@@ -80,51 +125,17 @@ public class LaunchWrapper {
             boolean extract = false;
 
             if(n.has("extract") && n.has("natives")) extract = true;
-//            if(n.has("rules")) {
-//                List<Map<String, JsonElement>> rules = new ArrayList<>();
-//
-//                for(JsonElement rul : n.getAsJsonArray("rules")) {
-//                    JsonObject rule = rul.getAsJsonObject();
-//                    Map<String, JsonElement> rools = new HashMap<>();
-//                    for(Map.Entry<String, JsonElement> entry : rule.entrySet()) {
-//                        rools.put(entry.getKey(), entry.getValue());
-//                    }
-//                    rules.add(rools);
-//                }
-//
-//                for(Map<String, JsonElement> map : rules) {
-//                    for(Map.Entry<String, JsonElement> entry : map.entrySet()) {
-//                        boolean action = false;
-//                        String os = null;
-//                        if(entry.getKey().equalsIgnoreCase("action")) {
-//                            if(entry.getValue().getAsString().equalsIgnoreCase("allow")) action = true;
-//                            else action = false;
-//                        }
-//
-//                        if(entry.getKey().equalsIgnoreCase("os"))
-//                            os = entry.getValue().getAsJsonObject().get("name").getAsString();
-//
-//                        if(action) {
-//                            switch (OSUtils.getOperatingSystem()) {
-//                                case LINUX:
-//
-//                            }
-//                        }
-//
-//                    }
-//                }
-//
-//            }
 
             if(extract) {
 
                 JsonObject classifiers = n.getAsJsonObject("downloads").getAsJsonObject("classifiers");
-                JsonObject nativePlatform = null;
 
+                JsonObject nativePlatform = null;
 
                 switch (OSUtils.getOperatingSystem()) {
                     case WINDOWS:
-                        nativePlatform = classifiers.getAsJsonObject("natives-windows");
+                        if(classifiers.has("natives-windows")) nativePlatform = classifiers.getAsJsonObject("natives-windows");
+                        else nativePlatform = classifiers.getAsJsonObject("natives-windows-" + (System.getenv("ProgramFiles(x86)") != null ? "64" : "32"));
                         break;
                     case LINUX:
                         nativePlatform = classifiers.getAsJsonObject("natives-linux");
@@ -137,6 +148,8 @@ public class LaunchWrapper {
                         break;
                 }
 
+                if(nativePlatform == null) continue;
+
                 String path = nativePlatform.get("path").getAsString();
                 String url = nativePlatform.get("url").getAsString();
                 long size = nativePlatform.get("size").getAsLong();
@@ -144,56 +157,58 @@ public class LaunchWrapper {
                 String foldersPath = path.substring(0, path.length() - path.split("/")[path.split("/").length - 1].length());
                 String outputFileName = path.split("/")[path.split("/").length - 1];
 
-                FSUtils.createDirRecursively(nativesFolder.getAbsolutePath(), foldersPath);
-                HTTPUtils.download(url, nativesFolder + "/" + path);
-            }
+                if(new File(currentNativeFolder + "/" + outputFileName).exists()) continue;
 
+                HTTPUtils.download(url, currentNativeFolder + "/" + outputFileName);
+            }
         }
     }
 
-    private void downloadLibraries() throws InterruptedException {
-        CompletableFuture.runAsync(() -> {
-            librariesFolder.mkdir();
+    private JsonArray downloadLibraries() {
+        librariesFolder.mkdir();
 
-            JsonArray natives = new JsonArray();
+        JsonArray natives = new JsonArray();
 
-            for(JsonElement library : versionManifest.getAsJsonArray("libraries")) {
-                JsonObject lib = library.getAsJsonObject();
-                if(lib.has("natives") || lib.has("rules") || lib.has("extract")) {
-                    natives.add(lib);
-                    continue;
-                }
+        for(JsonElement library : versionManifest.getAsJsonArray("libraries")) {
+            JsonObject lib = library.getAsJsonObject();
+            if(lib.has("natives") || lib.has("extract")) {
+                natives.add(lib);
+                continue;
+            }
 
-                String name = lib.get("name").getAsString();
-                JsonObject artifact = lib.getAsJsonObject("downloads").getAsJsonObject("artifact");
-                String path = artifact.get("path").getAsString();
-                String url = artifact.get("url").getAsString();
-                long size = artifact.get("size").getAsLong();
+            String name = lib.get("name").getAsString();
+            JsonObject artifact = lib.getAsJsonObject("downloads").getAsJsonObject("artifact");
+            String path = artifact.get("path").getAsString();
+            String url = artifact.get("url").getAsString();
+            long size = artifact.get("size").getAsLong();
 
+            if(!new File(librariesFolder + "/" + path).exists()) {
                 String foldersPath = path.substring(0, path.length() - path.split("/")[path.split("/").length - 1].length());
                 String outputFileName = path.split("/")[path.split("/").length - 1];
 
-//                FSUtils.createDirRecursively(librariesFolder.getAbsolutePath(), foldersPath);
-//                HTTPUtils.download(url, librariesFolder + "/" + path);
+                FSUtils.createDirRecursively(librariesFolder.getAbsolutePath(), foldersPath);
+                HTTPUtils.download(url, librariesFolder + "/" + path);
             }
 
-            downloadNatives(natives);
+            librariesList.add(librariesFolder + "/" + path);
 
-        });
+        }
+        return natives;
     }
 
     private void downloadClient() {
+        File versionTypeFolder = new File(versionsFolder + "/" + type.name().toLowerCase());
+        versionTypeFolder.mkdir();
+
+        File client = new File(versionTypeFolder + "/" + version + ".jar");
+        if(client.exists()) return;
+
         long size = versionManifest.getAsJsonObject("downloads").getAsJsonObject("client").get("size").getAsLong();
         long sizeMB = size / 1000 / 1000;
         String url = versionManifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString();
 
-        File versionTypeFolder = new File(versionsFolder + "/" + type.name().toLowerCase());
-        versionTypeFolder.mkdir();
-        File client = new File(versionTypeFolder + "/" + version + ".jar");
-
         HTTPUtils.download(url, client.getAbsolutePath());
     }
-
 
     private void setVersionManifest() throws IOException {
         File manifestFile = new File(versionManifestFolder + "/" + version + ".manifest.json");
