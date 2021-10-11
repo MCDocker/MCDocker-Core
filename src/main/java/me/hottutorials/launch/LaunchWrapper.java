@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import me.hottutorials.auth.Account;
 import me.hottutorials.content.ClientType;
+import me.hottutorials.content.Version;
 import me.hottutorials.utils.FSUtils;
 import me.hottutorials.utils.Logger;
 import me.hottutorials.utils.OSUtils;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class LaunchWrapper {
 
@@ -34,11 +36,12 @@ public class LaunchWrapper {
     private final JsonObject versionManifest;
 
     private final ClientType type;
-    private final String version;
+    private final Version version;
 
     private final List<String> librariesList = new ArrayList<>();
+    private String javaPath = "java";
 
-    public LaunchWrapper(String version, ClientType type) throws IOException {
+    public LaunchWrapper(Version version, ClientType type) throws IOException {
         this.type = type;
         this.version = version;
 
@@ -58,7 +61,7 @@ public class LaunchWrapper {
             JsonArray versions = getVersions();
             for (JsonElement ver : versions) {
                 JsonObject v = ver.getAsJsonObject();
-                if(v.has("id") && v.get("id").getAsString().equalsIgnoreCase(version)) {
+                if(v.has("id") && v.get("id").getAsString().equalsIgnoreCase(version.getName())) {
                     String res = RequestBuilder.getBuilder()
                             .setURL(v.get("url").getAsString())
                             .setMethod(Method.GET).send();
@@ -110,7 +113,7 @@ public class LaunchWrapper {
                 args.forEach(arg -> argsBuilder.append(arg).append(" "));
                 args.addAll(Arrays.asList(arguments));
 
-                return Runtime.getRuntime().exec("java " + argsBuilder);
+                return Runtime.getRuntime().exec(javaPath + " " + argsBuilder);
             } catch (Exception e) {
                 return null;
             }
@@ -120,6 +123,15 @@ public class LaunchWrapper {
     public CompletableFuture<Void> download() {
         return CompletableFuture.runAsync(() -> {
             long start = System.currentTimeMillis();
+
+            Logger.debug("Preparing for java download");
+            try {
+                File binFile = version.downloadJava().get();
+                if (binFile != null) javaPath = binFile.getPath() + File.separator + "java";
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+            Logger.debug("Finished downloading java");
 
             Logger.debug("Preparing for client download");
             downloadClient();

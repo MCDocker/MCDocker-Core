@@ -7,6 +7,7 @@ import javafx.scene.layout.AnchorPane;
 import me.hottutorials.auth.Authentication;
 import me.hottutorials.auth.impl.OfflineAuth;
 import me.hottutorials.content.ClientType;
+import me.hottutorials.content.Version;
 import me.hottutorials.launch.LaunchWrapper;
 import me.hottutorials.utils.Logger;
 
@@ -22,7 +23,7 @@ public class PlayButton extends AnchorPane {
         button.setRoot(this);
 
         try {
-            LaunchWrapper launchWrapper = new LaunchWrapper("1.8.9", ClientType.VANILLA);
+            LaunchWrapper launchWrapper = new LaunchWrapper(new Version("1.8.9",  8), ClientType.VANILLA);
             Authentication auth = /*new MicrosoftAuth();*/ new OfflineAuth();
 
             button.load();

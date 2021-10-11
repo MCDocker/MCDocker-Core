@@ -101,6 +101,12 @@
             <version>6.0-alpha-3</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.rauschig</groupId>
+            <artifactId>jarchivelib</artifactId>
+            <version>0.7.1</version>
+        </dependency>
+
     </dependencies>
 
 
