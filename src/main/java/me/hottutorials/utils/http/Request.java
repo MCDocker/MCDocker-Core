@@ -58,7 +58,7 @@ public class Request {
             try {
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             } catch (IOException ex) {
-                if(url.contains("authserver.mojang.com"))
+                if(url.contains("authserver.mojang.com") || url.contains("api.minecraftservices.com"))
                     reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
                 else {
                     sendConnectError(ex);

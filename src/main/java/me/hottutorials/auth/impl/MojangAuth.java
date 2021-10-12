@@ -49,8 +49,8 @@ public class MojangAuth implements Authentication {
     public CompletableFuture<Account> authenticate(Consumer<String> status) {
         CompletableFuture<Account> future = new CompletableFuture<>();
 
-        String email = "notmyemail@gmail.com";
-        String password = "notmypassword";
+        String email = "<email>";
+        String password = "<password>";
 
         JsonObject creds = credentials.deepCopy();
         creds.addProperty("username", email);
@@ -68,14 +68,11 @@ public class MojangAuth implements Authentication {
             return future;
         }
         JsonObject reply = gson.fromJson(res, JsonObject.class);
-
-        String accessToken = reply.get("accessToken").getAsString();
-        JsonObject checkOwnership = checkOwnership(accessToken);
-        System.out.println(checkOwnership.toString());
-        if (checkOwnership.getAsJsonArray("items").isEmpty()) {
+        if (!reply.has("accessToken")) {
             future.completeExceptionally(new MojangAuthenticationException("You do not own Minecraft. Please buy it at minecraft.net"));
             return future;
         }
+        String accessToken = reply.get("accessToken").getAsString();
         Account account = getAccount(accessToken);
         if (account == null) {
             future.completeExceptionally(new MojangAuthenticationException("Minecraft Account could not be found."));
@@ -88,16 +85,7 @@ public class MojangAuth implements Authentication {
         return future;
     }
 
-    private JsonObject checkOwnership(String accessToken) {
-        String res = RequestBuilder.getBuilder()
-                .setURL("https://api.minecraftservices.com/entitlements/mcstore")
-                .setMethod(Method.GET)
-                .addHeader("Authorization", "Bearer " + accessToken)
-                .send(true);
 
-        return gson.fromJson(res, JsonObject.class);
-
-    }
     private Account getAccount(String accessToken) {
         String res = RequestBuilder.getBuilder()
                 .setURL("https://api.minecraftservices.com/minecraft/profile")
