@@ -24,17 +24,19 @@ public class PlayButton extends AnchorPane {
         button.setRoot(this);
 
         try {
-            LaunchWrapper launchWrapper = new LaunchWrapper(Version.getVersion("1.8.9").get().get(), ClientType.VANILLA);
+            String version = "1.8.9";
+            LaunchWrapper launchWrapper = new LaunchWrapper(Version.getVersion(version).get().get(), ClientType.VANILLA);
             Authentication auth = /*new MicrosoftAuth();*/ new OfflineAuth();
 
             button.load();
 
             Button btn = (Button) lookup("#playButton");
-            String playText = btn.getText();
+            String playText = "PLAY " + version;
+            btn.setText(playText);
             btn.setOnAction(actionEvent -> auth.authenticate(btn::setText).thenAccept(account -> launchWrapper.launch(account).thenAcceptAsync(process -> {
                 Platform.runLater(() -> {
                     btn.setDisable(true);
-                    btn.setText("Launched");
+                    btn.setText("LAUNCHED");
                 });
                 try {
                     BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));

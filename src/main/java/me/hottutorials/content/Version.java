@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import me.hottutorials.utils.FSUtils;
 import me.hottutorials.utils.OSUtils;
 import me.hottutorials.utils.http.HTTPUtils;
 import me.hottutorials.utils.http.Method;
@@ -25,6 +26,9 @@ public class Version {
 
     private static final Gson gson = new Gson();
     private static final File javaFolder = new File(OSUtils.getUserData() + "java");
+    private static final File versionsFolder = new File(OSUtils.getUserData() + "versions");
+    private final static File librariesFolder = new File(OSUtils.getUserData() + "libraries");
+    private final static File nativesFolder = new File(OSUtils.getUserData() + "natives");
 
     private final JsonObject manifest;
 
@@ -37,7 +41,7 @@ public class Version {
     }
 
     public int getJavaVersion() {
-        return manifest.get("javaVersion").getAsJsonObject().get("majorVersion").getAsInt();
+        return manifest.has("javaVersion") ? manifest.get("javaVersion").getAsJsonObject().get("majorVersion").getAsInt() : 8;
     }
 
     @Override
@@ -90,6 +94,107 @@ public class Version {
                 return null;
             }
         });
+    }
+
+    public CompletableFuture<File> downloadClient(ClientType type) {
+        return CompletableFuture.supplyAsync(() -> {
+            File versionTypeFolder = new File(versionsFolder + "/" + type.name().toLowerCase());
+            versionTypeFolder.mkdir();
+
+            File client = new File(versionTypeFolder + "/" + getName() + ".jar");
+            if(client.exists()) return client;
+
+            String url = manifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString();
+
+            HTTPUtils.download(url, client.getAbsolutePath());
+
+            return client;
+        });
+    }
+
+    public CompletableFuture<List<String>> downloadLibraries() {
+        return CompletableFuture.supplyAsync(() -> {
+            librariesFolder.mkdir();
+
+            JsonArray natives = new JsonArray();
+            List<String> librariesList = new ArrayList<>();
+
+            for (JsonElement library : manifest.getAsJsonArray("libraries")) {
+                JsonObject lib = library.getAsJsonObject();
+                if(lib.has("natives") || lib.has("extract")) {
+                    natives.add(lib);
+                    continue;
+                }
+
+                JsonObject artifact = lib.getAsJsonObject("downloads").getAsJsonObject("artifact");
+                String path = artifact.get("path").getAsString();
+                String url = artifact.get("url").getAsString();
+
+                if(!new File(librariesFolder + "/" + path).exists()) {
+                    String foldersPath = path.substring(0, path.length() - path.split("/")[path.split("/").length - 1].length());
+
+                    FSUtils.createDirRecursively(librariesFolder.getAbsolutePath(), foldersPath);
+                    HTTPUtils.download(url, librariesFolder + "/" + path);
+                }
+
+                librariesList.add(librariesFolder + "/" + path);
+            }
+            downloadNatives(natives);
+            return librariesList;
+        });
+    }
+
+    private void downloadNatives(JsonArray natives) {
+        nativesFolder.mkdir();
+        File currentNativeFolder = new File(nativesFolder + "/" + getName());
+        currentNativeFolder.mkdir();
+
+        for(JsonElement nativ : natives) {
+            JsonObject n = nativ.getAsJsonObject();
+            boolean extract = n.has("extract") && n.has("natives");
+
+            if (extract) {
+                JsonObject classifiers = n.getAsJsonObject("downloads").getAsJsonObject("classifiers");
+
+                JsonObject nativePlatform = null;
+
+                switch (OSUtils.getOperatingSystem()) {
+                    case WINDOWS:
+                        if(classifiers.has("natives-windows")) nativePlatform = classifiers.getAsJsonObject("natives-windows");
+                        else nativePlatform = classifiers.getAsJsonObject("natives-windows-" + (System.getenv("ProgramFiles(x86)") != null ? "64" : "32"));
+                        break;
+                    case LINUX:
+                        nativePlatform = classifiers.getAsJsonObject("natives-linux");
+                        break;
+                    case MACOS:
+                        nativePlatform = classifiers.getAsJsonObject("natives-osx");
+                        break;
+                    case OTHER:
+                        System.exit(1);
+                        break;
+                }
+
+                if (nativePlatform == null) continue;
+
+                String path = nativePlatform.get("path").getAsString();
+                String url = nativePlatform.get("url").getAsString();
+
+                String outputFileName = path.split("/")[path.split("/").length - 1];
+
+                File nativeFolder = new File(currentNativeFolder + "/");
+                File nativeFile = new File(nativeFolder, outputFileName);
+                if (nativeFile.exists()) continue;
+
+                HTTPUtils.download(url, currentNativeFolder + "/" + outputFileName);
+                Archiver archiver = ArchiverFactory.createArchiver("jar");
+                try {
+                    archiver.extract(nativeFile, nativeFolder);
+                    nativeFile.delete();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     // getVersions().get().get(0).get().get().get();
