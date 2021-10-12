@@ -97,6 +97,7 @@ public class Version {
 
     public CompletableFuture<File> downloadClient(ClientType type) {
         return CompletableFuture.supplyAsync(() -> {
+            versionsFolder.mkdirs();
             File versionTypeFolder = new File(versionsFolder + "/" + type.name().toLowerCase());
             versionTypeFolder.mkdir();
 
@@ -105,7 +106,7 @@ public class Version {
 
             String url = manifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString();
 
-            HTTPUtils.download(url, client.getAbsolutePath());
+            HTTPUtils.download(url, client.getPath());
 
             return client;
         });
