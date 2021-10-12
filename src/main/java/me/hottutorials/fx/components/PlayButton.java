@@ -44,7 +44,7 @@ public class PlayButton extends AnchorPane {
                         btn.setDisable(true);
                         btn.setText("LAUNCHED");
                     });
-                    BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                    BufferedReader input = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                     String line;
                     while ((line = input.readLine()) != null) Logger.debug(line);
                     input.close();

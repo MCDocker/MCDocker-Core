@@ -62,10 +62,10 @@ public class LaunchWrapper {
                 args.add("-Dminecraft.client.jar=" + versionsFolder + "/" + type.name().toLowerCase() + "/" + version + ".jar");
 
                 StringBuilder librariesBuilder = new StringBuilder();
-                librariesList.forEach(s -> librariesBuilder.append(s.replace("\\", "/")).append(";"));
+                librariesList.forEach(s -> librariesBuilder.append(s.replace("\\", "/")).append((OSUtils.isWindows() ? ";" : ":")));
                 if (librariesBuilder.length() == 0) throw new Exception("Libraries length is 0");
                 librariesBuilder.deleteCharAt(librariesBuilder.toString().length() - 1);
-                args.add("-cp \"" + librariesBuilder + ";" + versionsFolder.getPath().replace("\\", "/") + "/" + type.name().toLowerCase() + "/" + version + ".jar\"");
+                args.add("-cp " + librariesBuilder + (OSUtils.isWindows() ? ";" : ":") + versionsFolder.getPath().replace("\\", "/") + "/" + type.name().toLowerCase() + "/" + version + ".jar");
 
                 // TODO: Parse args from manifest.
                 args.add("-Xmx3G");
@@ -83,6 +83,8 @@ public class LaunchWrapper {
                 args.forEach(arg -> argsBuilder.append(arg).append(" "));
                 args.addAll(Arrays.asList(arguments));
 
+
+                System.out.println(argsBuilder);
                 return Runtime.getRuntime().exec(javaPath.get() + " " + argsBuilder);
             } catch (Exception e) {
                 e.printStackTrace();

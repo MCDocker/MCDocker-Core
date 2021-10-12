@@ -1,0 +1,17 @@
+[16:53:15] [Client thread/INFO]: Setting user: TypeScripter
+[16:53:15] [Client thread/INFO]: (Session ID is token:0:0ff2e73222304a7a8262b4dddde22390)
+[16:53:17] [Client thread/INFO]: LWJGL Version: 2.9.4
+[16:53:17] [Client thread/INFO]: Reloading ResourceManager: Default
+[16:53:17] [Client thread/ERROR]: Couldn't initialize twitch stream
+[16:53:17] [Sound Library Loader/INFO]: Starting up SoundSystem...
+[16:53:17] [Thread-5/INFO]: Initializing LWJGL OpenAL
+[16:53:17] [Thread-5/INFO]: (The LWJGL binding of OpenAL.  For more information, see http://www.lwjgl.org)
+[16:53:18] [Thread-5/INFO]: OpenAL initialized.
+[16:53:18] [Sound Library Loader/INFO]: Sound engine started
+[16:53:19] [Client thread/INFO]: Created: 512x512 textures-atlas
+[16:53:25] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:music.menu
+[16:53:35] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:music.menu
+[16:53:47] [Client thread/WARN]: Unable to play unknown soundEvent: minecraft:gui.button.press
+[16:53:47] [Client thread/INFO]: Stopping!
+[16:53:47] [Client thread/INFO]: SoundSystem shutting down...
+[16:53:47] [Client thread/WARN]: Author: Paul Lamb, www.paulscode.com
