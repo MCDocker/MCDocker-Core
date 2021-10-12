@@ -44,12 +44,7 @@ public class MainScene extends Application {
             if(panel.getClass() == HomeScene.class) panel.setVisible(true);
             panels.getChildren().add(panel);
         }
-        new MojangAuth().authenticate(new Consumer<String>() {
-            @Override
-            public void accept(String s) {
-                System.out.println(s);
-            }
-        });
+
     }
 
     public static List<Region> getPanelsList() {
