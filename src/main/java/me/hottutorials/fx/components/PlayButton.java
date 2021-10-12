@@ -15,6 +15,7 @@ import me.hottutorials.utils.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class PlayButton extends AnchorPane {
@@ -27,6 +28,7 @@ public class PlayButton extends AnchorPane {
         try {
             String version = "1.8.9";
             Authentication auth = /*new MicrosoftAuth();*/ new OfflineAuth();
+            CompletableFuture<Account> accountFuture = auth.authenticate(Logger::debug);
 
             button.load();
 
@@ -37,8 +39,7 @@ public class PlayButton extends AnchorPane {
                 try {
                     if (v.isEmpty()) return;
                     LaunchWrapper launchWrapper = new LaunchWrapper(v.get(), ClientType.VANILLA);
-                    Account account = auth.authenticate(btn::setText).get();
-                    Process process = launchWrapper.launch(account).get();
+                    Process process = launchWrapper.launch(accountFuture.get()).get();
                     Platform.runLater(() -> {
                         btn.setDisable(true);
                         btn.setText("LAUNCHED");
