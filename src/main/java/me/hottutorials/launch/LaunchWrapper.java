@@ -102,11 +102,13 @@ public class LaunchWrapper {
                 librariesBuilder.deleteCharAt(librariesBuilder.toString().length() - 1);
                 args.add("-cp \"" + librariesBuilder + ";" + versionsFolder.getPath().replace("\\", "/") + "/" + type.name().toLowerCase() + "/" + version + ".jar\"");
 
+                // TODO: Parse args from manifest.
                 args.add("-Xmx3G");
                 args.add("net.minecraft.client.main.Main");
                 args.add("--username " + account.getUsername());
+                args.add("--uuid " + account.getUniqueId());
                 args.add("--version " + version);
-                args.add("--accessToken 0"); // TODO: Make this work.
+                args.add("--accessToken " + account.getAccessToken());
                 args.add("--userProperties {}");
 
                 StringBuilder argsBuilder = new StringBuilder();
