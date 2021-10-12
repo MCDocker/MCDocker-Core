@@ -15,7 +15,6 @@ import org.rauschig.jarchivelib.ArchiverFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -52,7 +51,7 @@ public class Version {
     public CompletableFuture<File> downloadJava() {
         if (!javaFolder.exists()) javaFolder.mkdirs();
         File javaVersionFolder = new File(javaFolder, getJavaVersion() + "");
-        if (javaVersionFolder.exists()) return CompletableFuture.completedFuture(new File(Arrays.stream(javaVersionFolder.listFiles()).findFirst().get(), "bin"));
+        if (javaVersionFolder.exists()) return CompletableFuture.completedFuture(new File(javaVersionFolder.listFiles()[0], "bin"));
 
         return CompletableFuture.supplyAsync(() -> {
             String tempOs = "linux";
@@ -88,7 +87,7 @@ public class Version {
             try {
                 archiver.extract(archiveFile, javaVersionFolder);
                 archiveFile.delete();
-                return new File(Arrays.stream(javaVersionFolder.listFiles()).findFirst().get(), "bin");
+                return new File(javaVersionFolder.listFiles()[0], "bin");
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
