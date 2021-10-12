@@ -15,6 +15,8 @@ import me.hottutorials.utils.StringUtils;
 import me.hottutorials.utils.http.HTTPUtils;
 import me.hottutorials.utils.http.Method;
 import me.hottutorials.utils.http.RequestBuilder;
+import org.rauschig.jarchivelib.Archiver;
+import org.rauschig.jarchivelib.ArchiverFactory;
 
 import java.io.File;
 import java.io.FileReader;
@@ -191,9 +193,18 @@ public class LaunchWrapper {
 
                 String outputFileName = path.split("/")[path.split("/").length - 1];
 
-                if(new File(currentNativeFolder + "/" + outputFileName).exists()) continue;
+                File nativeFolder = new File(currentNativeFolder + "/");
+                File nativeFile = new File(nativeFolder, outputFileName);
+                if (nativeFile.exists()) continue;
 
                 HTTPUtils.download(url, currentNativeFolder + "/" + outputFileName);
+                Archiver archiver = ArchiverFactory.createArchiver("jar");
+                try {
+                    archiver.extract(nativeFile, nativeFolder);
+                    nativeFile.delete();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
