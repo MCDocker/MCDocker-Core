@@ -39,9 +39,13 @@ public class LaunchWrapper {
                 CompletableFuture.allOf(
                         version.downloadJava().thenAccept(binFile -> {
                             if (binFile != null) javaPath.set(binFile.getPath() + File.separator + "java");
+                            Logger.log("[x] Downloaded Java");
                         }),
-                        version.downloadClient(type),
-                        version.downloadLibraries().thenAccept(librariesList::addAll)
+                        version.downloadClient(type).thenRun(() -> Logger.log("[x] Downloaded Client")),
+                        version.downloadLibraries().thenAccept(libraries -> {
+                            librariesList.addAll(libraries);
+                            Logger.log("[x] Downloaded Libraries");
+                        })
                 ).join();
 
                 long end = System.currentTimeMillis();
@@ -65,7 +69,10 @@ public class LaunchWrapper {
 
                 // TODO: Parse args from manifest.
                 args.add("-Xmx3G");
-                args.add("net.minecraft.client.main.Main");
+
+                // Main class argument
+                args.add(version.getManifest().get("mainClass").getAsString());
+
                 args.add("--username " + account.getUsername());
                 args.add("--uuid " + account.getUniqueId());
                 args.add("--version " + version);

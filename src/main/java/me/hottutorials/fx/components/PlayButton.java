@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import me.hottutorials.auth.Account;
 import me.hottutorials.auth.Authentication;
 import me.hottutorials.auth.impl.OfflineAuth;
 import me.hottutorials.content.ClientType;
@@ -14,6 +15,7 @@ import me.hottutorials.utils.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class PlayButton extends AnchorPane {
@@ -25,20 +27,23 @@ public class PlayButton extends AnchorPane {
 
         try {
             String version = "1.8.9";
-            LaunchWrapper launchWrapper = new LaunchWrapper(Version.getVersion(version).get().get(), ClientType.VANILLA);
             Authentication auth = /*new MicrosoftAuth();*/ new OfflineAuth();
+            CompletableFuture<Account> accountFuture = auth.authenticate(Logger::debug);
 
             button.load();
 
             Button btn = (Button) lookup("#playButton");
             String playText = "PLAY " + version;
             btn.setText(playText);
-            btn.setOnAction(actionEvent -> auth.authenticate(btn::setText).thenAccept(account -> launchWrapper.launch(account).thenAcceptAsync(process -> {
-                Platform.runLater(() -> {
-                    btn.setDisable(true);
-                    btn.setText("LAUNCHED");
-                });
+            btn.setOnAction(actionEvent -> Version.getVersion(version).thenAcceptAsync(v -> {
                 try {
+                    if (v.isEmpty()) return;
+                    LaunchWrapper launchWrapper = new LaunchWrapper(v.get(), ClientType.VANILLA);
+                    Process process = launchWrapper.launch(accountFuture.get()).get();
+                    Platform.runLater(() -> {
+                        btn.setDisable(true);
+                        btn.setText("LAUNCHED");
+                    });
                     BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
                     String line;
                     while ((line = input.readLine()) != null) Logger.debug(line);
@@ -47,11 +52,11 @@ public class PlayButton extends AnchorPane {
                         btn.setDisable(false);
                         btn.setText(playText);
                     });
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
-            })));
-        } catch (IOException | ExecutionException | InterruptedException e) {
+            }));
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

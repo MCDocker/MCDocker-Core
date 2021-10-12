@@ -46,7 +46,7 @@ public class OSUtils {
         switch (os.toLowerCase()) {
             default:
                 return OperatingSystem.OTHER;
-            case "win":
+            case "windows 10":
                 return OperatingSystem.WINDOWS;
             case "linux":
             case "nux":
@@ -57,6 +57,9 @@ public class OSUtils {
                 return OperatingSystem.MACOS;
         }
 
+    }
+    public static String getArchitecture() {
+        return System.getProperty("os.arch");
     }
     public static boolean isWindows() {
         return getOperatingSystem() == OperatingSystem.WINDOWS;

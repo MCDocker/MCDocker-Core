@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import me.hottutorials.content.ClientType;
 import me.hottutorials.content.Mod;
 import me.hottutorials.content.ModProvider;
-import me.hottutorials.content.Version;
+import me.hottutorials.content.ModVersion;
 import me.hottutorials.utils.http.Method;
 import me.hottutorials.utils.http.RequestBuilder;
 
@@ -49,16 +49,16 @@ public class Modrinth implements ModProvider<ModrinthFilter> {
                 mod.get("icon_url").getAsString()
         ) {
             @Override
-            public CompletableFuture<Set<Version>> getVersions() {
+            public CompletableFuture<Set<ModVersion>> getVersions() {
                 return CompletableFuture.supplyAsync(() -> {
                     JsonObject response = gson.fromJson(RequestBuilder.getBuilder()
                             .setURL(URL + "/api/v1/mod/" + mod.get("mod_id").getAsString().replace("local-", "")) // Why do I have to do this??
                             .setMethod(Method.GET)
                             .send(true), JsonObject.class);
-                    Set<Version> versions = new HashSet<>();
+                    Set<ModVersion> versions = new HashSet<>();
                     for (JsonElement v : response.get("versions").getAsJsonArray()) {
                         String version = v.getAsString();
-                        versions.add(new Version(version) {
+                        versions.add(new ModVersion(version) {
                             @Override
                             public CompletableFuture<String> getDownloadUrl() {
                                 return CompletableFuture.supplyAsync(() -> {

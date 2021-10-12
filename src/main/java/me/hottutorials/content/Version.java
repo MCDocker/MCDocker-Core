@@ -43,6 +43,10 @@ public class Version {
         return manifest.has("javaVersion") ? manifest.get("javaVersion").getAsJsonObject().get("majorVersion").getAsInt() : 8;
     }
 
+    public JsonObject getManifest() {
+        return manifest;
+    }
+
     @Override
     public String toString() {
         return getName();
@@ -97,6 +101,7 @@ public class Version {
 
     public CompletableFuture<File> downloadClient(ClientType type) {
         return CompletableFuture.supplyAsync(() -> {
+            versionsFolder.mkdirs();
             File versionTypeFolder = new File(versionsFolder + "/" + type.name().toLowerCase());
             versionTypeFolder.mkdir();
 
@@ -105,7 +110,7 @@ public class Version {
 
             String url = manifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString();
 
-            HTTPUtils.download(url, client.getAbsolutePath());
+            HTTPUtils.download(url, client.getPath());
 
             return client;
         });
@@ -146,6 +151,7 @@ public class Version {
     private void downloadNatives(JsonArray natives) {
         nativesFolder.mkdir();
         File currentNativeFolder = new File(nativesFolder + "/" + getName());
+        if (currentNativeFolder.exists()) return;
         currentNativeFolder.mkdir();
 
         for(JsonElement nativ : natives) {
