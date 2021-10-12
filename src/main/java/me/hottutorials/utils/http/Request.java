@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.CheckedOutputStream;
 
 public class Request {
 
@@ -53,8 +54,17 @@ public class Request {
                 outStreamWriter.close();
                 outStream.close();
             }
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            BufferedReader reader;
+            try {
+                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            } catch (IOException ex) {
+                if(url.contains("authserver.mojang.com"))
+                    reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+                else {
+                    sendConnectError(ex);
+                    return null;
+                }
+            }
             StringBuilder response = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) response.append(line);
@@ -62,12 +72,15 @@ public class Request {
             if(pretty) res = gson.newBuilder().setPrettyPrinting().create().toJson(JsonParser.parseString(res));
             return res;
         } catch (IOException e) {
-            Logger.err("Could not send request to `" + url + "`. Message: " + e.getMessage());
-
-            new Notification("Failed to connect", "Failed to connect to " + url + ". Please check your internet connection and try again", Notification.NotificationType.ERROR);
+            sendConnectError(e);
 
             return null;
         }
+    }
+    private void sendConnectError(IOException e) {
+        Logger.err("Could not send request to `" + url + "`. Message: " + e.getMessage());
+
+        new Notification("Failed to connect", "Failed to connect to " + url + ". Please check your internet connection and try again", Notification.NotificationType.ERROR);
     }
 
 }

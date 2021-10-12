@@ -1,10 +1,13 @@
 package me.hottutorials;
 
+import me.hottutorials.auth.impl.MojangAuth;
 import me.hottutorials.config.Config;
 import me.hottutorials.content.modrinth.Modrinth;
 import me.hottutorials.fx.MainScene;
 import me.hottutorials.utils.Logger;
 import me.hottutorials.utils.OSUtils;
+
+import java.util.function.Consumer;
 
 public class Main {
 
@@ -26,8 +29,9 @@ public class Main {
 
         Thread shutDownHook = new Thread(Main::shutDownMethod);
         Runtime.getRuntime().addShutdownHook(shutDownHook);
-
         MainScene.launch(MainScene.class, args);
+
+
     }
 
     public static String[] getArguments() { return arguments; }
