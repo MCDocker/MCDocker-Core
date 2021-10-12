@@ -14,6 +14,7 @@ import me.hottutorials.utils.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.ExecutionException;
 
 public class PlayButton extends AnchorPane {
 
@@ -23,7 +24,7 @@ public class PlayButton extends AnchorPane {
         button.setRoot(this);
 
         try {
-            LaunchWrapper launchWrapper = new LaunchWrapper(new Version("1.8.9",  8), ClientType.VANILLA);
+            LaunchWrapper launchWrapper = new LaunchWrapper(Version.getVersion("1.8.9").get().get(), ClientType.VANILLA);
             Authentication auth = /*new MicrosoftAuth();*/ new OfflineAuth();
 
             button.load();
@@ -48,7 +49,7 @@ public class PlayButton extends AnchorPane {
                     e.printStackTrace();
                 }
             })));
-        } catch (IOException e) {
+        } catch (IOException | ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
