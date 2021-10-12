@@ -147,6 +147,7 @@ public class Version {
     private void downloadNatives(JsonArray natives) {
         nativesFolder.mkdir();
         File currentNativeFolder = new File(nativesFolder + "/" + getName());
+        if (currentNativeFolder.exists()) return;
         currentNativeFolder.mkdir();
 
         for(JsonElement nativ : natives) {
