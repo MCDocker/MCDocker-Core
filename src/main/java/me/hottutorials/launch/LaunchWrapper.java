@@ -19,6 +19,7 @@ public class LaunchWrapper {
 
     private static final File versionsFolder = new File(OSUtils.getUserData() + "versions");
     private final static File nativesFolder = new File(OSUtils.getUserData() + "natives");
+    private final static File assetsFolder = new File(OSUtils.getUserData() + "assets");
 
     private final ClientType type;
     private final Version version;
@@ -32,6 +33,7 @@ public class LaunchWrapper {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 AtomicReference<String> javaPath = new AtomicReference<>("java");
+                AtomicReference<String> index = new AtomicReference<>();
                 List<String> librariesList = new ArrayList<>();
 
                 long start = System.currentTimeMillis();
@@ -45,6 +47,10 @@ public class LaunchWrapper {
                         version.downloadLibraries().thenAccept(libraries -> {
                             librariesList.addAll(libraries);
                             Logger.log("[x] Downloaded Libraries");
+                        }),
+                        version.downloadAssets().thenAccept(i -> {
+                            if (i != null) index.set(i);
+                            Logger.log("[x] Downloaded Assets");
                         })
                 ).join();
 
@@ -75,9 +81,11 @@ public class LaunchWrapper {
 
                 args.add("--username " + account.getUsername());
                 args.add("--uuid " + account.getUniqueId());
-                args.add("--version " + version);
+                args.add("--version " + version.getName());
                 args.add("--accessToken " + account.getAccessToken());
                 args.add("--userProperties {}");
+                args.add("--assetsDir " + assetsFolder.getPath());
+                args.add("--assetIndex " + index.get());
 
                 StringBuilder argsBuilder = new StringBuilder();
                 args.forEach(arg -> argsBuilder.append(arg).append(" "));

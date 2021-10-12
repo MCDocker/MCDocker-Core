@@ -3,6 +3,7 @@ package me.hottutorials.utils.http;
 import me.hottutorials.utils.Logger;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -31,6 +32,10 @@ public class HTTPUtils {
     }
 
     public static void download(String url, String target) {
+        download(url, new File(target));
+    }
+
+    public static void download(String url, File target) {
         try (BufferedInputStream inputStream = new BufferedInputStream(new URL(url).openStream());
              FileOutputStream outputStream = new FileOutputStream(target)) {
             byte[] data = new byte[1024];
@@ -41,7 +46,6 @@ public class HTTPUtils {
         } catch (IOException e) {
             Logger.err(e);
         }
-
     }
 
 }

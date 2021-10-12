@@ -13,6 +13,8 @@ import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ public class Version {
     private static final File versionsFolder = new File(OSUtils.getUserData() + "versions");
     private final static File librariesFolder = new File(OSUtils.getUserData() + "libraries");
     private final static File nativesFolder = new File(OSUtils.getUserData() + "natives");
+    private final static File assetsFolder = new File(OSUtils.getUserData() + "assets");
 
     private final JsonObject manifest;
 
@@ -200,6 +203,37 @@ public class Version {
                 }
             }
         }
+    }
+
+    public CompletableFuture<String> downloadAssets() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                if (!assetsFolder.exists()) assetsFolder.mkdirs();
+                File objectsFolder = new File(assetsFolder, "objects");
+                if (!objectsFolder.exists()) objectsFolder.mkdirs();
+                File indexesFolder = new File(assetsFolder, "indexes");
+                if (!indexesFolder.exists()) indexesFolder.mkdirs();
+                String indexId = manifest.get("assetIndex").getAsJsonObject().get("id").getAsString();
+                File index = new File(indexesFolder, indexId + ".json");
+                if (!index.exists()) HTTPUtils.download(manifest.get("assetIndex").getAsJsonObject().get("url").getAsString(), index);
+                JsonObject objects = gson.fromJson(new FileReader(index), JsonObject.class).get("objects").getAsJsonObject();
+
+                List<CompletableFuture<?>> futures = new ArrayList<>();
+                objects.keySet().forEach(asset -> futures.add(CompletableFuture.runAsync(() -> {
+                    String hash = objects.get(asset).getAsJsonObject().get("hash").getAsString();
+                    String shortHash = hash.substring(0, 2);
+                    File hashFolder = new File(objectsFolder, shortHash);
+                    if (!hashFolder.exists()) hashFolder.mkdirs();
+                    File object = new File(hashFolder, hash);
+                    if (!object.exists()) HTTPUtils.download("https://resources.download.minecraft.net/" + shortHash + "/" + hash, object);
+                })));
+                CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[]{})).join();
+                return indexId;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
     }
 
     // getVersions().get().get(0).get().get().get();
