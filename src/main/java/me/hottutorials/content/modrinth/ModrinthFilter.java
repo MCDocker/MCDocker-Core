@@ -1,9 +1,12 @@
 package me.hottutorials.content.modrinth;
 
+import me.hottutorials.content.Filter;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class Filter {
+public class ModrinthFilter implements Filter {
 
     private final List<ModrinthCategories> categories;
     private final List<String> versions;
@@ -11,7 +14,7 @@ public class Filter {
     private final String clientSide;
     private final String serverSide;
 
-    public Filter(List<ModrinthCategories> categories, List<String> versions, String license, String clientSide, String serverSide) {
+    public ModrinthFilter(List<ModrinthCategories> categories, List<String> versions, String license, String clientSide, String serverSide) {
         this.categories = categories;
         this.versions = versions;
         this.license = license;
@@ -58,8 +61,8 @@ public class Filter {
             return this;
         }
 
-        public FilterBuilder addCategories(List<ModrinthCategories> categorys) {
-            categories.addAll(categorys);
+        public FilterBuilder addCategories(ModrinthCategories... categories) {
+            this.categories.addAll(Arrays.asList(categories));
             return this;
         }
 
@@ -68,13 +71,13 @@ public class Filter {
             return this;
         }
 
-        public FilterBuilder addVersions(List<String> versiens) {
-            versions.addAll(versiens);
+        public FilterBuilder addVersions(String... versions) {
+            this.versions.addAll(Arrays.asList(versions));
             return this;
         }
 
-        public FilterBuilder setLicense(String licens) {
-            license = licens;
+        public FilterBuilder setLicense(String licence) {
+            this.license = license;
             return this;
         }
 
@@ -88,8 +91,8 @@ public class Filter {
             return this;
         }
 
-        public Filter build() {
-            return new Filter(categories, versions, license, clientSide, serverSide);
+        public ModrinthFilter build() {
+            return new ModrinthFilter(categories, versions, license, clientSide, serverSide);
         }
 
     }
