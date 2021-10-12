@@ -84,7 +84,7 @@ public class LaunchWrapper {
                 args.add("--version " + version.getName());
                 args.add("--accessToken " + account.getAccessToken());
                 args.add("--userProperties {}");
-                args.add("--assetsDir " + assetsFolder.getPath());
+                args.add("--assetsDir " + assetsFolder.getPath() + (index.get().equals("legacy") || index.get().equals("pre-1.6") ? "\\virtual\\" + index.get() : ""));
                 args.add("--assetIndex " + index.get());
 
                 StringBuilder argsBuilder = new StringBuilder();
