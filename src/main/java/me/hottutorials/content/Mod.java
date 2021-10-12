@@ -27,7 +27,7 @@ public abstract class Mod {
     public String getAuthor() { return author; }
     public String getLink() { return link; }
     public ClientType getType() { return type; }
-    public abstract CompletableFuture<Set<Version>> getVersions();
+    public abstract CompletableFuture<Set<ModVersion>> getVersions();
 
     @Override
     public String toString() {
