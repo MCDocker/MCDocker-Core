@@ -69,7 +69,10 @@ public class LaunchWrapper {
 
                 // TODO: Parse args from manifest.
                 args.add("-Xmx3G");
-                args.add("net.minecraft.client.main.Main");
+
+                // Main class argument
+                args.add(version.getManifest().get("mainClass").getAsString());
+
                 args.add("--username " + account.getUsername());
                 args.add("--uuid " + account.getUniqueId());
                 args.add("--version " + version);

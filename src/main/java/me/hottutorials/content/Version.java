@@ -43,6 +43,10 @@ public class Version {
         return manifest.has("javaVersion") ? manifest.get("javaVersion").getAsJsonObject().get("majorVersion").getAsInt() : 8;
     }
 
+    public JsonObject getManifest() {
+        return manifest;
+    }
+
     @Override
     public String toString() {
         return getName();
