@@ -26,7 +26,7 @@
    <Sidebar AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
    <BorderPane layoutX="200.0" layoutY="-1.0" prefHeight="60.0" prefWidth="700.0" style="-fx-background-color: background-dark;" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0">
       <center>
-         <Label text="HOME" textAlignment="CENTER" textFill="WHITE">
+         <Label id="panelTitle" text="HOME" textAlignment="CENTER" textFill="WHITE">
             <font>
                <Font name="Roboto Black" size="20.0" />
             </font>

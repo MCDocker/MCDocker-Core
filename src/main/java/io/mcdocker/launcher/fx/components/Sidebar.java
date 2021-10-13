@@ -24,8 +24,10 @@ import io.mcdocker.launcher.fx.MainScene;
 import io.mcdocker.launcher.fx.SettingsScene;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 
@@ -59,6 +61,8 @@ public class Sidebar extends VBox {
 //            button.getStyleClass().add("sidebar-button");
             if(panel.getClass() == clazz) {
                 panel.setVisible(true);
+                Label title = (Label) getParent().lookup("#panelTitle");
+                title.setText(button.getText().toUpperCase());
 //                button.getStyleClass().add("active-sidebar-button");
             }
         }
