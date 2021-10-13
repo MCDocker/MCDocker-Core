@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.hottutorials.utils.FSUtils;
 import me.hottutorials.utils.OSUtils;
 import me.hottutorials.utils.http.HTTPUtils;
 import me.hottutorials.utils.http.Method;
@@ -134,14 +133,12 @@ public class Version {
                 String path = artifact.get("path").getAsString();
                 String url = artifact.get("url").getAsString();
 
-                if(!new File(librariesFolder + "/" + path).exists()) {
-                    String foldersPath = path.substring(0, path.length() - path.split("/")[path.split("/").length - 1].length());
+                if (!librariesFolder.exists()) librariesFolder.mkdirs();
+                File libraryFile = new File(librariesFolder, path);
+                if (!libraryFile.getParentFile().exists()) libraryFile.getParentFile().mkdirs();
+                if(!libraryFile.exists()) HTTPUtils.download(url, libraryFile.getPath()); // TODO: Change once assets is pulled.
 
-                    FSUtils.createDirRecursively(librariesFolder.getAbsolutePath(), foldersPath);
-                    HTTPUtils.download(url, librariesFolder + "/" + path);
-                }
-
-                librariesList.add(librariesFolder + "/" + path);
+                librariesList.add(libraryFile.getPath());
             }
             downloadNatives(natives);
             return librariesList;

@@ -3,7 +3,6 @@ package me.hottutorials.fx;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
-import me.hottutorials.content.Mod;
 import me.hottutorials.fx.components.ContainerEntry;
 
 import java.io.IOException;

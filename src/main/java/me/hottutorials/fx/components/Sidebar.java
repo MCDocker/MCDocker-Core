@@ -1,20 +1,13 @@
 package me.hottutorials.fx.components;
 
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import me.hottutorials.fx.ContainersScene;
 import me.hottutorials.fx.HomeScene;
 import me.hottutorials.fx.MainScene;
 import me.hottutorials.fx.SettingsScene;
-import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
-import org.kordamp.ikonli.bootstrapicons.BootstrapIconsIkonProvider;
 
 import java.io.IOException;
 

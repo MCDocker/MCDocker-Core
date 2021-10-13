@@ -17,8 +17,7 @@ public class HTTPUtils {
             String query = new URL(url).getQuery();
             String[] params = query.split("&");
             Map<String, String> map = new HashMap<String, String>();
-            for (String param : params)
-            {
+            for (String param : params) {
                 String name = param.split("=")[0];
                 String value = param.split("=")[1];
                 map.put(name, value);

@@ -1,9 +1,7 @@
 package me.hottutorials.utils.http;
 
-import com.google.gson.JsonElement;
-import me.hottutorials.utils.Logger;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RequestBuilder {
 

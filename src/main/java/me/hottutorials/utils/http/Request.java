@@ -9,9 +9,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.CheckedOutputStream;
 
 public class Request {
 
@@ -80,7 +78,7 @@ public class Request {
     private void sendConnectError(IOException e) {
         Logger.err("Could not send request to `" + url + "`. Message: " + e.getMessage());
 
-        new Notification("Failed to connect", "Failed to connect to " + url + ". Please check your internet connection and try again", Notification.NotificationType.ERROR);
+        new Notification("Failed to connect", "Failed to connect to " + url + ". Please check your internet connection and try again", Notification.NotificationType.ERROR).display();
     }
 
 }

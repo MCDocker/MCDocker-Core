@@ -1,6 +1,6 @@
 package me.hottutorials.utils;
 
-import me.hottutorials.Main;
+import me.hottutorials.MCDocker;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -31,7 +31,7 @@ public class Logger {
 
     public static void debug(Object log) {
         try {
-            if(Main.getArgument("debugMode").equalsIgnoreCase("true")) {
+            if(MCDocker.getArgument("debugMode").equalsIgnoreCase("true")) {
                 logToFile(" Debug: ", log);
             }
         } catch (IOException e) {

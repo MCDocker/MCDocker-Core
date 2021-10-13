@@ -1,6 +1,5 @@
 package me.hottutorials.fx.components;
 
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
@@ -17,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import static me.hottutorials.utils.FXUtils.editFx;
 
 public class PlayButton extends AnchorPane {
 
@@ -40,7 +41,7 @@ public class PlayButton extends AnchorPane {
                     if (v.isEmpty()) return;
                     LaunchWrapper launchWrapper = new LaunchWrapper(v.get(), ClientType.VANILLA);
                     Process process = launchWrapper.launch(accountFuture.get()).get();
-                    Platform.runLater(() -> {
+                    editFx(() -> {
                         btn.setDisable(true);
                         btn.setText("LAUNCHED");
                     });
@@ -48,7 +49,7 @@ public class PlayButton extends AnchorPane {
                     String line;
                     while ((line = input.readLine()) != null) Logger.debug(line);
                     input.close();
-                    Platform.runLater(() -> {
+                    editFx(() -> {
                         btn.setDisable(false);
                         btn.setText(playText);
                     });

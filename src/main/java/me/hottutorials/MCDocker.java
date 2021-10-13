@@ -1,15 +1,11 @@
 package me.hottutorials;
 
-import me.hottutorials.auth.impl.MojangAuth;
 import me.hottutorials.config.Config;
-import me.hottutorials.content.modrinth.Modrinth;
 import me.hottutorials.fx.MainScene;
 import me.hottutorials.utils.Logger;
 import me.hottutorials.utils.OSUtils;
 
-import java.util.function.Consumer;
-
-public class Main {
+public class MCDocker {
 
     private static String[] arguments = new String[]{};
 
@@ -27,11 +23,9 @@ public class Main {
 
         Logger.log("Operating System - " + OSUtils.getOperatingSystem().getName());
 
-        Thread shutDownHook = new Thread(Main::shutDownMethod);
-        Runtime.getRuntime().addShutdownHook(shutDownHook);
+        Thread shutdownHook = new Thread(MCDocker::shutdown);
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
         MainScene.launch(MainScene.class, args);
-
-
     }
 
     public static String[] getArguments() { return arguments; }
@@ -45,7 +39,7 @@ public class Main {
         return "";
     }
 
-    private static void shutDownMethod() {
+    private static void shutdown() {
         Logger.log("MCDocker is shutting down\r\n");
     }
 
