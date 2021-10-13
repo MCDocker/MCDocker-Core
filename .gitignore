@@ -1,4 +1,13 @@
-.idea
-target
+.idea/
+target/
 src/test
 *.iml
+assets/
+crash-reports/
+logs/
+resourcepacks/
+saves/
+stats/
+level.dat
+options.txt
+usercache.json

@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+  ~ MCDocker, an open source Minecraft launcher.
+  ~ Copyright (C) 2021 MCDocker
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<?import io.mcdocker.launcher.fx.components.Sidebar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<?import me.hottutorials.fx.components.Sidebar?>
-<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.hottutorials.fx.MainScene">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/17.0.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mcdocker.launcher.fx.MainScene">
    <Sidebar AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
    <BorderPane layoutX="200.0" layoutY="-1.0" prefHeight="60.0" prefWidth="700.0" style="-fx-background-color: background-dark;" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0">
       <center>

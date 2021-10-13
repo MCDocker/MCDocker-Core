@@ -16,10 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.auth;
 
-Button:hover {
-    -fx-opacity: 0.7;
+public class AuthenticationException extends Exception {
+
+    public AuthenticationException() {
+        super("An unknown authentication error occurred.");
+    }
+
+    public AuthenticationException(String message) {
+        super(message);
+    }
+
 }

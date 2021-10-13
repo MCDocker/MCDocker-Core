@@ -16,10 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.content;
 
-Button:hover {
-    -fx-opacity: 0.7;
+import java.util.concurrent.CompletableFuture;
+
+public abstract class ModVersion {
+
+    private final String name;
+
+    public ModVersion(String name) {
+        this.name = name;
+    }
+
+    public abstract CompletableFuture<String> getDownloadUrl();
+
 }

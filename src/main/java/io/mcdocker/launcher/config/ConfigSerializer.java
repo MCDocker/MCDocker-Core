@@ -16,10 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.config;
 
-Button:hover {
-    -fx-opacity: 0.7;
+import io.mcdocker.launcher.utils.OSUtils;
+
+public class ConfigSerializer {
+
+    public Appearance appearance = new Appearance();
+    public General general = new General();
+
+    public static class Appearance {
+        public String theme = "dark";
+    }
+
+    public static class General {
+        public String minecraft_path = OSUtils.getMinecraftPath();
+    }
+
 }

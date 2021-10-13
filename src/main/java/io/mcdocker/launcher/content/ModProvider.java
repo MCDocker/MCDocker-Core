@@ -16,10 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.content;
 
-Button:hover {
-    -fx-opacity: 0.7;
+import io.mcdocker.launcher.content.modrinth.ModrinthFilter;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+public interface ModProvider<T extends ModrinthFilter> {
+
+    CompletableFuture<List<Mod>> getMods(T filter);
+    default CompletableFuture<List<Mod>> getMods() {
+        return getMods(null);
+    }
+
 }

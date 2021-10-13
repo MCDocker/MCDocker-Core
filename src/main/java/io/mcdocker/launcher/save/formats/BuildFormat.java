@@ -16,10 +16,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.save.formats;
 
-Button:hover {
-    -fx-opacity: 0.7;
+import io.mcdocker.launcher.content.ClientType;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class BuildFormat {
+
+    String version;
+    List<String> mods;
+    String type;
+
+    public List<String> getMods() { return mods; }
+    public String getType() { return type; }
+    public String getVersion() { return version; }
+
+    public BuildFormat(ClientType type, String version, List<ModFormat> mods) {
+
+        List<String> modStrings = new ArrayList<>();
+
+        mods.forEach(modFormat -> modStrings.add(modFormat.getCombinedString()));
+
+        this.version = version;
+        this.mods = modStrings;
+        this.type = type.name().toLowerCase();
+    }
+
+
 }

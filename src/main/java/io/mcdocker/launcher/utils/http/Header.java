@@ -16,10 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.utils.http;
 
-Button:hover {
-    -fx-opacity: 0.7;
+public class Header {
+
+    private final String key;
+    private final String value;
+
+    public Header(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public String getKey() { return key; }
+    public String getValue() { return value; }
 }
