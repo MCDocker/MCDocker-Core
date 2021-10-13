@@ -16,10 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.auth;
 
-Button:hover {
-    -fx-opacity: 0.7;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+
+public interface EmailPasswordAuthentication extends Authentication {
+
+    CompletableFuture<Account> authenticate(String email, String password, Consumer<String> status);
+    default CompletableFuture<Account> authenticate(String email, String password) {
+        return authenticate(email, password, status -> {});
+    }
+
 }

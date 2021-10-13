@@ -16,10 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.utils.http;
 
-Button:hover {
-    -fx-opacity: 0.7;
+public enum Method {
+
+    GET,
+    POST,
+    PUT,
+    DELETE
+
 }

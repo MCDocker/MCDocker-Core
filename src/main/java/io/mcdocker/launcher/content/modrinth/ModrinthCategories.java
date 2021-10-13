@@ -16,10 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.content.modrinth;
 
-Button:hover {
-    -fx-opacity: 0.7;
+public enum ModrinthCategories {
+    WORLDGEN,
+    TECHNOLOGY,
+    FOOD,
+    MAGIC,
+    STORAGE,
+    LIBRARY,
+    ADVENTURE,
+    UTILITY,
+    DECORATION,
+    MISC,
+    EQUIPMENT,
+    CURSED,
+    FABRIC,
+    FORGE;
 }

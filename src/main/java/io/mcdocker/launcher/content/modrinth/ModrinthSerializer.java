@@ -16,10 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.content.modrinth;
 
-Button:hover {
-    -fx-opacity: 0.7;
+import java.util.List;
+
+public class ModrinthSerializer {
+
+    public String id;
+    public String name;
+    public String description;
+    public String published;
+    public String updated;
+    public String license;
+    public String downloads;
+    public String icon;
+    public String body;
+
+    public List<ModrinthCategories> categories;
+    public List<String> versions;
+
 }

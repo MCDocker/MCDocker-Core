@@ -16,10 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.content;
 
-Button:hover {
-    -fx-opacity: 0.7;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
+
+public class MinVersion {
+
+    private final String name;
+    private final Supplier<CompletableFuture<Version>> version;
+
+    public MinVersion(String name, Supplier<CompletableFuture<Version>> version) {
+        this.name = name;
+        this.version = version;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Supplier<CompletableFuture<Version>> get() {
+        return version;
+    }
+
 }

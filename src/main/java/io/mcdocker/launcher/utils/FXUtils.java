@@ -16,10 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.utils;
 
-Button:hover {
-    -fx-opacity: 0.7;
+import javafx.application.Platform;
+import javafx.scene.Node;
+
+import java.util.function.Consumer;
+
+public class FXUtils {
+
+    public static <T extends Node> void editNode(T node, Consumer<T> consumer) {
+        editFx(() -> consumer.accept(node));
+    }
+
+    public static void editFx(Runnable runnable) {
+        Platform.runLater(runnable);
+    }
+
 }

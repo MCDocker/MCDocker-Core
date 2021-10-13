@@ -16,10 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.play-button {
-    -fx-background-color: accent;
-}
+package io.mcdocker.launcher.container;
 
-Button:hover {
-    -fx-opacity: 0.7;
+import io.mcdocker.launcher.save.Save;
+
+public class ContainerBuilder {
+
+    private String name;
+    private Save save;
+
+    public Container build() {
+        return new Container(name, save);
+    }
+
+    public ContainerBuilder setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public ContainerBuilder setSave(Save save) {
+        this.save = save;
+        return this;
+    }
+
 }
