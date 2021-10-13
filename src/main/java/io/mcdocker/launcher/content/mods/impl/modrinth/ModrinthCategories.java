@@ -16,23 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.content.modrinth;
+package io.mcdocker.launcher.content.mods.impl.modrinth;
 
-import java.util.List;
-
-public class ModrinthSerializer {
-
-    public String id;
-    public String name;
-    public String description;
-    public String published;
-    public String updated;
-    public String license;
-    public String downloads;
-    public String icon;
-    public String body;
-
-    public List<ModrinthCategories> categories;
-    public List<String> versions;
-
+public enum ModrinthCategories {
+    WORLDGEN,
+    TECHNOLOGY,
+    FOOD,
+    MAGIC,
+    STORAGE,
+    LIBRARY,
+    ADVENTURE,
+    UTILITY,
+    DECORATION,
+    MISC,
+    EQUIPMENT,
+    CURSED,
+    FABRIC,
+    FORGE;
 }

@@ -16,18 +16,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.content;
+package io.mcdocker.launcher.content.mods;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class ModVersion {
+public abstract class Mod<T extends ModManifest> {
 
-    private final String name;
+    protected final T manifest;
 
-    public ModVersion(String name) {
-        this.name = name;
+    public Mod(T manifest) {
+        this.manifest = manifest;
     }
 
-    public abstract CompletableFuture<String> getDownloadUrl();
+    public abstract CompletableFuture<Set<ModVersion>> getVersions();
+
+    public String getName() {
+        return manifest.getName();
+    }
+
+    public T getManifest() {
+        return manifest;
+    }
+
+    public static Mod<?> of(ModManifest manifest) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+        return (Mod<?>) Class.forName(manifest.getType()).getConstructor(manifest.getClass()).newInstance(manifest);
+    }
 
 }

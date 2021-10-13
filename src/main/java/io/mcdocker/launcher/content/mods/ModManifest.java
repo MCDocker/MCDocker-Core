@@ -16,7 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.content.curseforge;
+package io.mcdocker.launcher.content.mods;
 
-public class CurseForge {
+public class ModManifest {
+
+    private String name;
+    private final String type;
+
+    public ModManifest(String name, String type) {
+        this.name = name;
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
 }

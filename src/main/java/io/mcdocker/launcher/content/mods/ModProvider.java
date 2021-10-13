@@ -16,17 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.content;
+package io.mcdocker.launcher.content.mods;
 
-import io.mcdocker.launcher.content.modrinth.ModrinthFilter;
+import io.mcdocker.launcher.content.Filter;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public interface ModProvider<T extends ModrinthFilter> {
+public interface ModProvider<FILTER extends Filter, MOD extends Mod<?>> {
 
-    CompletableFuture<List<Mod>> getMods(T filter);
-    default CompletableFuture<List<Mod>> getMods() {
+    CompletableFuture<List<MOD>> getMods(FILTER filter);
+    default CompletableFuture<List<MOD>> getMods() {
         return getMods(null);
     }
 

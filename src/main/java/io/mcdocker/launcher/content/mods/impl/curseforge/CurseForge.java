@@ -16,21 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.content.modrinth;
+package io.mcdocker.launcher.content.mods.impl.curseforge;
 
-public enum ModrinthCategories {
-    WORLDGEN,
-    TECHNOLOGY,
-    FOOD,
-    MAGIC,
-    STORAGE,
-    LIBRARY,
-    ADVENTURE,
-    UTILITY,
-    DECORATION,
-    MISC,
-    EQUIPMENT,
-    CURSED,
-    FABRIC,
-    FORGE;
+public class CurseForge {
 }
