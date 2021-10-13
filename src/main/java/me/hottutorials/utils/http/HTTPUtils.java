@@ -17,9 +17,8 @@ public class HTTPUtils {
         try {
             String query = new URL(url).getQuery();
             String[] params = query.split("&");
-            Map<String, String> map = new HashMap<String, String>();
-            for (String param : params)
-            {
+            Map<String, String> map = new HashMap<>();
+            for (String param : params) {
                 String name = param.split("=")[0];
                 String value = param.split("=")[1];
                 map.put(name, value);
@@ -29,10 +28,6 @@ public class HTTPUtils {
             Logger.err("URL `" + url + "` is malformed. Message: " + e.getMessage());
             return null;
         }
-    }
-
-    public static void download(String url, String target) {
-        download(url, new File(target));
     }
 
     public static void download(String url, File target) {

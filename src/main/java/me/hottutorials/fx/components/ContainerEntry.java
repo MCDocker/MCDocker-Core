@@ -1,14 +1,9 @@
 package me.hottutorials.fx.components;
 
-import javafx.beans.NamedArg;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.CacheHint;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import me.hottutorials.content.Mod;
 
 import java.io.IOException;
 

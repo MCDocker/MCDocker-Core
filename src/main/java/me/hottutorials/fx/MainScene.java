@@ -6,19 +6,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-import me.hottutorials.auth.impl.MojangAuth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class MainScene extends Application {
 
     private static final List<Region> panelsList = new ArrayList<>();
-
-
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -39,12 +34,11 @@ public class MainScene extends Application {
         stage.show();
 
         StackPane panels = (StackPane) scene.lookup("#panelContainer");
-        for(Region panel : panelsList) {
+        for (Region panel : panelsList) {
             panel.setVisible(false);
             if(panel.getClass() == HomeScene.class) panel.setVisible(true);
             panels.getChildren().add(panel);
         }
-
     }
 
     public static List<Region> getPanelsList() {
@@ -57,7 +51,7 @@ public class MainScene extends Application {
     }
 
     private void register(Region panel) {
-        if(panelsList.contains(panel)) return;
+        if (panelsList.contains(panel)) return;
         panelsList.add(panel);
     }
 
