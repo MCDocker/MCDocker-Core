@@ -179,7 +179,7 @@ public class Version {
 
         for (JsonElement nativ : natives) {
             JsonObject n = nativ.getAsJsonObject();
-            boolean extract = n.has("extract") && n.has("natives");
+            boolean extract = n.has("extract") || n.has("natives");
 
             if (extract) {
                 JsonObject classifiers = n.getAsJsonObject("downloads").getAsJsonObject("classifiers");
