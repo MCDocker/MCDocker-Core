@@ -1,11 +1,10 @@
 package me.hottutorials.auth.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import me.hottutorials.auth.Account;
-import me.hottutorials.auth.Authentication;
 import me.hottutorials.auth.AuthenticationException;
+import me.hottutorials.auth.EmailPasswordAuthentication;
 import me.hottutorials.utils.OSUtils;
 import me.hottutorials.utils.http.Method;
 import me.hottutorials.utils.http.RequestBuilder;
@@ -16,20 +15,21 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.function.Consumer;
 
-public class MojangAuth implements Authentication {
-    private final String clientId;
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private static JsonObject credentials;
+public class MojangAuth implements EmailPasswordAuthentication {
+
+    private static final Gson gson = new Gson();
+
+    private final JsonObject payload = new JsonObject();
 
     public MojangAuth() {
-        File file = new File(OSUtils.getMinecraftPath() + "\\clientId.txt"); //So we use the same clientToken as the launcher so we don't invalidate other accessTokens
-        String clientId;
+        File file = new File(OSUtils.getMinecraftPath() + "clientId.txt"); // Use the same clientToken as the vanilla launcher so other accessTokens aren't invalidated.
+        String clientId = UUID.randomUUID().toString();
         try {
             if (!file.exists()) {
                 file.mkdir();
-                clientId = UUID.randomUUID().toString();
                 FileWriter fileWriter = new FileWriter(file);
                 fileWriter.write(clientId);
                 fileWriter.close();
@@ -38,53 +38,55 @@ public class MojangAuth implements Authentication {
                 clientId = reader.readLine();
                 reader.close();
             }
-        } catch (Exception ex) {
-            clientId = UUID.randomUUID().toString();
-        }
-        this.clientId = clientId;
-        credentials.addProperty("clientToken", this.clientId);
+        } catch (Exception ignored) {}
+
+        JsonObject agent = new JsonObject();
+        agent.addProperty("name", "Minecraft");
+        agent.addProperty("version", 1);
+
+        payload.add("agent", agent);
+        payload.addProperty("clientToken", clientId);
+    }
+
+    @Deprecated
+    @Override
+    public CompletableFuture<Account> authenticate(Consumer<String> status) {
+        return authenticate("<email>", "<password>", status); // TODO: User input.
     }
 
     @Override
-    public CompletableFuture<Account> authenticate(Consumer<String> status) {
-        CompletableFuture<Account> future = new CompletableFuture<>();
+    public CompletableFuture<Account> authenticate(String email, String password, Consumer<String> status) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                JsonObject body = payload.deepCopy();
+                body.addProperty("username", email);
+                body.addProperty("password", password);
 
-        String email = "<email>";
-        String password = "<password>";
+                status.accept("Authenticating");
+                String res = RequestBuilder.getBuilder()
+                        .setURL("https://authserver.mojang.com/authenticate")
+                        .setBody(gson.toJson(body))
+                        .setMethod(Method.POST)
+                        .addHeader("Content-Type", "application/json").addHeader("Accept", "application/json")
+                        .addHeader("User-Agent", "MCDocker")
+                        .send(false);
+                if (res == null) throw new MojangAuthenticationException("Invalid Login");
+                JsonObject reply = gson.fromJson(res, JsonObject.class);
+                if (!reply.has("accessToken")) throw new MojangAuthenticationException("You do not own Minecraft. Please buy it at minecraft.net");
+                String accessToken = reply.get("accessToken").getAsString();
 
-        JsonObject creds = credentials.deepCopy();
-        creds.addProperty("username", email);
-        creds.addProperty("password", password);
+                status.accept("Verifying");
+                Account account = getAccount(accessToken);
+                if (account == null) throw new MojangAuthenticationException("Minecraft Account could not be found.");
 
-        String res = RequestBuilder.getBuilder()
-                .setURL("https://authserver.mojang.com/authenticate")
-                .setBody(gson.toJson(creds))
-                .setMethod(Method.POST)
-                .addHeader("Content-Type", "application/json").addHeader("Accept", "application/json")
-                .addHeader("User-Agent", "MCDocker")
-                .send(false);
-        if(res == null) {
-            future.completeExceptionally(new MojangAuthenticationException("Invalid Login"));
-            return future;
-        }
-        JsonObject reply = gson.fromJson(res, JsonObject.class);
-        if (!reply.has("accessToken")) {
-            future.completeExceptionally(new MojangAuthenticationException("You do not own Minecraft. Please buy it at minecraft.net"));
-            return future;
-        }
-        String accessToken = reply.get("accessToken").getAsString();
-        Account account = getAccount(accessToken);
-        if (account == null) {
-            future.completeExceptionally(new MojangAuthenticationException("Minecraft Account could not be found."));
-            return future;
-        }
+                status.accept("Welcome, " + account.getUsername() + ".");
 
-        status.accept("Welcome, " + account.getUsername() + ".");
-
-        future.complete(account);
-        return future;
+                return account;
+            } catch (Exception e) {
+                throw new CompletionException(e);
+            }
+        });
     }
-
 
     private Account getAccount(String accessToken) {
         String res = RequestBuilder.getBuilder()
@@ -92,19 +94,10 @@ public class MojangAuth implements Authentication {
                 .setMethod(Method.GET)
                 .addHeader("Authorization", "Bearer " + accessToken)
                 .send(true);
-
         JsonObject profile = gson.fromJson(res, JsonObject.class);
-
-        if(profile.has("error")) return null;
+        if (profile.has("error")) return null;
 
         return new Account(profile.get("name").getAsString(), profile.get("id").getAsString(), accessToken, profile.get("skins").getAsJsonArray());
-    }
-    static {
-        credentials = new JsonObject();
-        JsonObject agent = new JsonObject();
-        agent.addProperty("name", "Minecraft");
-        agent.addProperty("version", 1);
-        credentials.add("agent", agent);
     }
 
     public static class MojangAuthenticationException extends AuthenticationException {
