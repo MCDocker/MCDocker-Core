@@ -19,6 +19,7 @@
 @import url("./Sidebar.css");
 @import url("./Buttons.css");
 @import url("./Other.css");
+@import url("../fonts/roboto/roboto.css");
 
 .dark-mode * {
     background: #474747;

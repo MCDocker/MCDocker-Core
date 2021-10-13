@@ -23,11 +23,13 @@ import io.mcdocker.launcher.fx.MainScene;
 import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.OSUtils;
 
+import java.io.IOException;
+
 public class MCDocker {
 
     private static String[] arguments = new String[]{};
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         OSUtils.getUserDataFile().mkdir();
 
         Logger.log("MCDocker starting");
