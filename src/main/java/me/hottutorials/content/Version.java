@@ -13,7 +13,10 @@ import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +31,7 @@ public class Version {
     private static final File versionsFolder = new File(OSUtils.getUserData() + "versions");
     private final static File librariesFolder = new File(OSUtils.getUserData() + "libraries");
     private final static File nativesFolder = new File(OSUtils.getUserData() + "natives");
+    private final static File assetsFolder = new File(OSUtils.getUserData() + "assets");
 
     private final JsonObject manifest;
 
@@ -55,18 +59,22 @@ public class Version {
     public CompletableFuture<File> downloadJava() {
         if (!javaFolder.exists()) javaFolder.mkdirs();
         File javaVersionFolder = new File(javaFolder, getJavaVersion() + "");
-        if (javaVersionFolder.exists()) return CompletableFuture.completedFuture(new File(javaVersionFolder.listFiles()[0], "bin"));
+        if (javaVersionFolder.exists())
+            return CompletableFuture.completedFuture(new File(javaVersionFolder.listFiles()[0], "bin"));
 
         return CompletableFuture.supplyAsync(() -> {
             String tempOs = "linux";
             switch (OSUtils.getOperatingSystem()) {
-                case MACOS: tempOs = "mac";
-                case WINDOWS: tempOs = "windows";
+                case MACOS:
+                    tempOs = "mac";
+                case WINDOWS:
+                    tempOs = "windows";
             }
             final String os = tempOs;
             String tempArch = "x64";
             switch (OSUtils.getArchitecture()) { // TODO: Add more architectures.
-                case "amd64": tempArch = "x64";
+                case "amd64":
+                    tempArch = "x64";
             }
             final String arch = tempArch;
             JsonArray response = gson.fromJson(RequestBuilder.getBuilder()
@@ -106,7 +114,7 @@ public class Version {
             versionTypeFolder.mkdir();
 
             File client = new File(versionTypeFolder + "/" + getName() + ".jar");
-            if(client.exists()) return client;
+            if (client.exists()) return client;
 
             String url = manifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString();
 
@@ -125,7 +133,7 @@ public class Version {
 
             for (JsonElement library : manifest.getAsJsonArray("libraries")) {
                 JsonObject lib = library.getAsJsonObject();
-                if(lib.has("natives") || lib.has("extract")) {
+                if (lib.has("natives") || lib.has("extract")) {
                     natives.add(lib);
                     continue;
                 }
@@ -134,7 +142,7 @@ public class Version {
                 String path = artifact.get("path").getAsString();
                 String url = artifact.get("url").getAsString();
 
-                if(!new File(librariesFolder + "/" + path).exists()) {
+                if (!new File(librariesFolder + "/" + path).exists()) {
                     String foldersPath = path.substring(0, path.length() - path.split("/")[path.split("/").length - 1].length());
 
                     FSUtils.createDirRecursively(librariesFolder.getAbsolutePath(), foldersPath);
@@ -154,7 +162,7 @@ public class Version {
         if (currentNativeFolder.exists()) return;
         currentNativeFolder.mkdir();
 
-        for(JsonElement nativ : natives) {
+        for (JsonElement nativ : natives) {
             JsonObject n = nativ.getAsJsonObject();
             boolean extract = n.has("extract") && n.has("natives");
 
@@ -165,8 +173,10 @@ public class Version {
 
                 switch (OSUtils.getOperatingSystem()) {
                     case WINDOWS:
-                        if(classifiers.has("natives-windows")) nativePlatform = classifiers.getAsJsonObject("natives-windows");
-                        else nativePlatform = classifiers.getAsJsonObject("natives-windows-" + (System.getenv("ProgramFiles(x86)") != null ? "64" : "32"));
+                        if (classifiers.has("natives-windows"))
+                            nativePlatform = classifiers.getAsJsonObject("natives-windows");
+                        else
+                            nativePlatform = classifiers.getAsJsonObject("natives-windows-" + (System.getenv("ProgramFiles(x86)") != null ? "64" : "32"));
                         break;
                     case LINUX:
                         nativePlatform = classifiers.getAsJsonObject("natives-linux");
@@ -200,6 +210,51 @@ public class Version {
                 }
             }
         }
+    }
+
+    public CompletableFuture<String> downloadAssets() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                if (!assetsFolder.exists()) assetsFolder.mkdirs();
+                File objectsFolder = new File(assetsFolder, "objects");
+                if (!objectsFolder.exists()) objectsFolder.mkdirs();
+                File indexesFolder = new File(assetsFolder, "indexes");
+                if (!indexesFolder.exists()) indexesFolder.mkdirs();
+                String indexId = manifest.get("assetIndex").getAsJsonObject().get("id").getAsString();
+                File index = new File(indexesFolder, indexId + ".json");
+                if (!index.exists()) HTTPUtils.download(manifest.get("assetIndex").getAsJsonObject().get("url").getAsString(), index);
+                JsonObject objects = gson.fromJson(new FileReader(index), JsonObject.class).get("objects").getAsJsonObject();
+
+                List<CompletableFuture<?>> futures = new ArrayList<>();
+                objects.keySet().forEach(asset -> futures.add(CompletableFuture.runAsync(() -> {
+                    try {
+                        String hash = objects.get(asset).getAsJsonObject().get("hash").getAsString();
+                        String shortHash = hash.substring(0, 2);
+                        File hashFolder = new File(objectsFolder, shortHash);
+                        if (!hashFolder.exists()) hashFolder.mkdirs();
+                        File object = new File(hashFolder, hash);
+                        if (!object.exists()) {
+                            HTTPUtils.download("https://resources.download.minecraft.net/" + shortHash + "/" + hash, object);
+                            if (indexId.equals("legacy") || indexId.equals("pre-1.6")) {
+                                File virtualFolder = new File(assetsFolder, "virtual/" + indexId);
+                                if (!virtualFolder.exists()) virtualFolder.mkdirs();
+                                File mappedFile = new File(virtualFolder, asset);
+                                if (!mappedFile.getParentFile().exists()) mappedFile.getParentFile().mkdirs();
+                                if (!mappedFile.exists()) Files.copy(object.toPath(), mappedFile.toPath());
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                })));
+
+                CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[]{})).join();
+                return indexId;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
     }
 
     // getVersions().get().get(0).get().get().get();
