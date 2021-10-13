@@ -11,3 +11,4 @@ stats/
 level.dat
 options.txt
 usercache.json
+*.log
