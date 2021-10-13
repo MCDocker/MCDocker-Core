@@ -92,7 +92,7 @@ public class Version {
             String fileName = pack.get("name").getAsString();
             javaVersionFolder.mkdirs();
             File archiveFile = new File(javaVersionFolder, fileName);
-            HTTPUtils.download(pack.get("link").getAsString(), archiveFile.getPath());
+            HTTPUtils.download(pack.get("link").getAsString(), archiveFile);
 
             Archiver archiver = fileName.endsWith(".zip") ? ArchiverFactory.createArchiver("zip") : ArchiverFactory.createArchiver("tar", "gz");
             try {
@@ -117,7 +117,7 @@ public class Version {
 
             String url = manifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString();
 
-            HTTPUtils.download(url, client.getPath());
+            HTTPUtils.download(url, client);
 
             return client;
         });
@@ -144,7 +144,7 @@ public class Version {
                 if (!librariesFolder.exists()) librariesFolder.mkdirs();
                 File libraryFile = new File(librariesFolder, path);
                 if (!libraryFile.getParentFile().exists()) libraryFile.getParentFile().mkdirs();
-                if(!libraryFile.exists()) HTTPUtils.download(url, libraryFile.getPath()); // TODO: Change once assets is pulled.
+                if(!libraryFile.exists()) HTTPUtils.download(url, libraryFile);
 
                 librariesList.add(libraryFile.getPath());
             }
@@ -193,14 +193,13 @@ public class Version {
 
                 String outputFileName = path.split("/")[path.split("/").length - 1];
 
-                File nativeFolder = new File(currentNativeFolder + "/");
-                File nativeFile = new File(nativeFolder, outputFileName);
+                File nativeFile = new File(currentNativeFolder, outputFileName);
                 if (nativeFile.exists()) continue;
 
-                HTTPUtils.download(url, currentNativeFolder + "/" + outputFileName);
+                HTTPUtils.download(url, nativeFile);
                 Archiver archiver = ArchiverFactory.createArchiver("jar");
                 try {
-                    archiver.extract(nativeFile, nativeFolder);
+                    archiver.extract(nativeFile, currentNativeFolder);
                     nativeFile.delete();
                 } catch (IOException e) {
                     e.printStackTrace();
