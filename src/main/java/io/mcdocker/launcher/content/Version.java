@@ -247,15 +247,13 @@ public class Version {
                         File hashFolder = new File(objectsFolder, shortHash);
                         if (!hashFolder.exists()) hashFolder.mkdirs();
                         File object = new File(hashFolder, hash);
-                        if (!object.exists()) {
-                            HTTPUtils.download("https://resources.download.minecraft.net/" + shortHash + "/" + hash, object);
-                            if (indexId.equals("legacy") || indexId.equals("pre-1.6")) {
-                                File virtualFolder = new File(assetsFolder, "virtual/" + indexId);
-                                if (!virtualFolder.exists()) virtualFolder.mkdirs();
-                                File mappedFile = new File(virtualFolder, asset);
-                                if (!mappedFile.getParentFile().exists()) mappedFile.getParentFile().mkdirs();
-                                if (!mappedFile.exists()) Files.copy(object.toPath(), mappedFile.toPath());
-                            }
+                        if (!object.exists()) HTTPUtils.download("https://resources.download.minecraft.net/" + shortHash + "/" + hash, object);
+                        if (indexId.equals("legacy") || indexId.equals("pre-1.6")) {
+                            File virtualFolder = new File(assetsFolder, "virtual/" + indexId);
+                            if (!virtualFolder.exists()) virtualFolder.mkdirs();
+                            File mappedFile = new File(virtualFolder, asset);
+                            if (!mappedFile.getParentFile().exists()) mappedFile.getParentFile().mkdirs();
+                            if (!mappedFile.exists()) Files.copy(object.toPath(), mappedFile.toPath());
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
