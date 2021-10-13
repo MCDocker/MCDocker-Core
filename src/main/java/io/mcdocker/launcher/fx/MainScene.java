@@ -19,14 +19,12 @@
 package io.mcdocker.launcher.fx;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -50,6 +48,7 @@ public class MainScene extends Application {
         stage.setMinWidth(900.0);
         stage.setMinHeight(600.0);
         stage.setTitle("MCDocker");
+        stage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("img/iconInvertedNoBackground.png"), 128, 128, true, true));
         stage.setScene(scene);
 
         stage.show();
