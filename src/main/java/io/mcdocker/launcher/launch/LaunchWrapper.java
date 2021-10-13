@@ -19,6 +19,7 @@
 package io.mcdocker.launcher.launch;
 
 import io.mcdocker.launcher.auth.Account;
+import io.mcdocker.launcher.container.Container;
 import io.mcdocker.launcher.content.ClientType;
 import io.mcdocker.launcher.content.Version;
 import io.mcdocker.launcher.utils.Logger;
@@ -39,10 +40,12 @@ public class LaunchWrapper {
     private final static File nativesFolder = new File(OSUtils.getUserData() + "natives");
     private final static File assetsFolder = new File(OSUtils.getUserData() + "assets");
 
+    private final Container container;
     private final ClientType type;
     private final Version version;
 
-    public LaunchWrapper(Version version, ClientType type) throws IOException {
+    public LaunchWrapper(Container container, Version version, ClientType type) throws IOException {
+        this.container = container;
         this.type = type;
         this.version = version;
     }
@@ -111,7 +114,7 @@ public class LaunchWrapper {
 
 
                 System.out.println(argsBuilder);
-                return Runtime.getRuntime().exec(javaPath.get() + " " + argsBuilder);
+                return Runtime.getRuntime().exec(javaPath.get() + " " + argsBuilder, new String[0], container.getFolder());
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;

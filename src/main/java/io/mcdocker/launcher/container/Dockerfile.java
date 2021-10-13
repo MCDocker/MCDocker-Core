@@ -18,25 +18,38 @@
 
 package io.mcdocker.launcher.container;
 
-import io.mcdocker.launcher.save.Save;
+import java.util.UUID;
 
-public class ContainerBuilder {
+public class Dockerfile {
 
-    private String name;
-    private Save save;
+    private UUID id = UUID.randomUUID();
 
-    public Container build() {
-        return new Container(name, save);
+    private String name = "Untitled";
+    private String version = "1.8.9";
+
+    @Deprecated
+    public void setId(UUID id) {
+        this.id = id;
     }
 
-    public ContainerBuilder setName(String name) {
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
 
-    public ContainerBuilder setSave(Save save) {
-        this.save = save;
-        return this;
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
 }
