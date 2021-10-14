@@ -23,8 +23,10 @@ import io.mcdocker.launcher.auth.Authentication;
 import io.mcdocker.launcher.auth.impl.OfflineAuth;
 import io.mcdocker.launcher.container.Container;
 import io.mcdocker.launcher.container.Dockerfile;
-import io.mcdocker.launcher.content.ClientType;
+import io.mcdocker.launcher.content.clients.Client;
+import io.mcdocker.launcher.content.clients.ClientManifest;
 import io.mcdocker.launcher.content.clients.impl.vanilla.Vanilla;
+import io.mcdocker.launcher.content.clients.impl.vanilla.VanillaManifest;
 import io.mcdocker.launcher.content.mods.Mod;
 import io.mcdocker.launcher.content.mods.impl.modrinth.Modrinth;
 import io.mcdocker.launcher.launch.LaunchWrapper;
@@ -36,6 +38,7 @@ import javafx.scene.layout.AnchorPane;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -61,18 +64,23 @@ public class PlayButton extends AnchorPane {
 
             Container container = containers.get(0);
             container.getDockerfile().setMods(new Modrinth().getMods().join().stream().map(Mod::getManifest).collect(Collectors.toList()));
+            VanillaManifest client = container.getDockerfile().getClient(VanillaManifest.class);
+            if (client == null) {
+                client = new Vanilla().getClient("1.12.2").join().get().getManifest();
+                container.getDockerfile().setClient(client);
+            }
             container.save();
 
             button.load();
 
             Button btn = (Button) lookup("#playButton");
-            String version = container.getDockerfile().getVersion();
-            String playText = "PLAY " + version;
+            String playText = "PLAY " + client.getName();
             btn.setText(playText);
-            btn.setOnAction(actionEvent -> new Vanilla().getClient(version).thenAcceptAsync(v -> {
+            ClientManifest finalClient = client;
+            btn.setOnAction(actionEvent -> {
                 try {
-                    if (v.isEmpty()) return;
-                    LaunchWrapper launchWrapper = new LaunchWrapper(container, v.get(), ClientType.VANILLA);
+                    Client<?> c = Client.of(finalClient);
+                    LaunchWrapper launchWrapper = new LaunchWrapper(container, c);
                     Process process = launchWrapper.launch(accountFuture.get()).get();
                     editFx(() -> {
                         btn.setDisable(true);
@@ -86,10 +94,10 @@ public class PlayButton extends AnchorPane {
                         btn.setDisable(false);
                         btn.setText(playText);
                     });
-                } catch (IOException | InterruptedException | ExecutionException e) {
+                } catch (IOException | InterruptedException | ExecutionException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-            }));
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }

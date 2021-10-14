@@ -41,7 +41,7 @@ import java.util.concurrent.CompletableFuture;
 public class VanillaClient extends Client<VanillaManifest> {
 
     private final JsonObject data;
-    private final File versionsFolder = new File(OSUtils.getUserDataFile(), "versions/vanilla");
+    private final File versionsFolder = new File(OSUtils.getUserDataFile(), "versions/" + getTypeName());
 
     public VanillaClient(String dataUrl, JsonObject data) {
         super(new VanillaManifest(
@@ -59,6 +59,11 @@ public class VanillaClient extends Client<VanillaManifest> {
                 .setURL(manifest.getDataUrl())
                 .setMethod(Method.GET)
                 .send(), JsonObject.class);
+    }
+
+    @Override
+    public String getTypeName() {
+        return "vanilla";
     }
 
     @Override

@@ -18,6 +18,9 @@
 
 package io.mcdocker.launcher.container;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import io.mcdocker.launcher.content.clients.ClientManifest;
 import io.mcdocker.launcher.content.mods.ModManifest;
 
 import java.util.ArrayList;
@@ -26,10 +29,12 @@ import java.util.UUID;
 
 public class Dockerfile {
 
+    private static final Gson gson = new Gson();
+
     private UUID id = UUID.randomUUID();
 
     private String name = "Untitled";
-    private String version = "1.8.9";
+    private JsonObject client;
     private List<ModManifest> mods = new ArrayList<>();
 
     @Deprecated
@@ -49,12 +54,20 @@ public class Dockerfile {
         this.name = name;
     }
 
-    public String getVersion() {
-        return version;
+    public JsonObject getClient() {
+        return client;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public <T extends ClientManifest> T getClient(Class<T> ofType) {
+        return gson.fromJson(client, ofType);
+    }
+
+    public void setClient(JsonObject client) {
+        this.client = client;
+    }
+
+    public <T extends ClientManifest> void setClient(T client) {
+        setClient((JsonObject) gson.toJsonTree(client));
     }
 
     public List<ModManifest> getMods() {

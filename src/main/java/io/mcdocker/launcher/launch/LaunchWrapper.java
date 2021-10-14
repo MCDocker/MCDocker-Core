@@ -20,14 +20,12 @@ package io.mcdocker.launcher.launch;
 
 import io.mcdocker.launcher.auth.Account;
 import io.mcdocker.launcher.container.Container;
-import io.mcdocker.launcher.content.ClientType;
 import io.mcdocker.launcher.content.clients.Client;
 import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.OSUtils;
 import io.mcdocker.launcher.utils.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,12 +40,10 @@ public class LaunchWrapper {
 
     private final Container container;
     private final Client<?> client;
-    private final ClientType type;
 
-    public LaunchWrapper(Container container, Client<?> client, ClientType type) throws IOException {
+    public LaunchWrapper(Container container, Client<?> client) {
         this.container = container;
         this.client = client;
-        this.type = type;
     }
 
     public CompletableFuture<Process> launch(Account account, String... arguments) {
@@ -86,13 +82,13 @@ public class LaunchWrapper {
                 args.add("-Dminecraft.launcher.brand=mc-docker");
 
                 args.add("-Djava.library.path=" + nativesFolder + "/" + client.getManifest().getName() + "/");
-                args.add("-Dminecraft.client.jar=" + versionsFolder + "/" + type.name().toLowerCase() + "/" + client.getManifest().getName() + ".jar");
+                args.add("-Dminecraft.client.jar=" + versionsFolder + "/" + client.getTypeName() + "/" + client.getManifest().getName() + ".jar");
 
                 StringBuilder librariesBuilder = new StringBuilder();
                 librariesList.forEach(s -> librariesBuilder.append(s.replace("\\", "/")).append((OSUtils.isWindows() ? ";" : ":")));
                 if (librariesBuilder.length() == 0) throw new Exception("Libraries length is 0");
                 librariesBuilder.deleteCharAt(librariesBuilder.toString().length() - 1);
-                args.add("-cp " + librariesBuilder + (OSUtils.isWindows() ? ";" : ":") + versionsFolder.getPath().replace("\\", "/") + "/" + type.name().toLowerCase() + "/" + client.getManifest().getName() + ".jar");
+                args.add("-cp " + librariesBuilder + (OSUtils.isWindows() ? ";" : ":") + versionsFolder.getPath().replace("\\", "/") + "/" + client.getTypeName() + "/" + client.getManifest().getName() + ".jar");
 
                 // TODO: Parse args from manifest.
                 args.add("-Xmx3G");

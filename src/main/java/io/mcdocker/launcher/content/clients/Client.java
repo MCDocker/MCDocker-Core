@@ -30,6 +30,7 @@ import org.rauschig.jarchivelib.ArchiverFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -52,6 +53,8 @@ public abstract class Client<T extends ClientManifest> {
     public T getManifest() {
         return manifest;
     }
+
+    public abstract String getTypeName();
 
     public CompletableFuture<File> downloadJava() {
         if (!javaFolder.exists()) javaFolder.mkdirs();
@@ -108,8 +111,14 @@ public abstract class Client<T extends ClientManifest> {
     protected abstract void downloadNatives(JsonArray natives);
     public abstract CompletableFuture<String> downloadAssets();
 
-    public static Client of(ClientManifest manifest) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        return (Client) Class.forName(manifest.getType()).getConstructor(manifest.getClass()).newInstance(manifest);
+    public static Client<?> of(ClientManifest manifest) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+        for (Constructor<?> constructor : Class.forName(manifest.getType()).getDeclaredConstructors()) {
+            Class<?> parameterType = constructor.getParameters()[0].getType();
+            if (manifest.getClass().isAssignableFrom(parameterType)) {
+                return (Client<?>) constructor.newInstance(parameterType.cast(manifest));
+            }
+        }
+        return null;
     }
 
 }
