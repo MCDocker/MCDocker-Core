@@ -16,18 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.content;
+package io.mcdocker.launcher.content.clients.impl.vanilla;
 
-import io.mcdocker.launcher.content.modrinth.ModrinthFilter;
+import io.mcdocker.launcher.content.clients.ClientManifest;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+public class VanillaManifest extends ClientManifest {
 
-public interface ModProvider<T extends ModrinthFilter> {
+    private final String dataUrl;
 
-    CompletableFuture<List<Mod>> getMods(T filter);
-    default CompletableFuture<List<Mod>> getMods() {
-        return getMods(null);
+    public VanillaManifest(String dataUrl, String name, int javaVersion, String mainClass, String startupArguments, String type) {
+        super(name, javaVersion, mainClass, startupArguments, type);
+        this.dataUrl = dataUrl;
+    }
+
+    public VanillaManifest(String dataUrl, String name, int javaVersion, String mainClass, String startupArguments) {
+        this(dataUrl, name, javaVersion, mainClass, startupArguments, VanillaClient.class.getName());
+    }
+
+    public String getDataUrl() {
+        return dataUrl;
     }
 
 }

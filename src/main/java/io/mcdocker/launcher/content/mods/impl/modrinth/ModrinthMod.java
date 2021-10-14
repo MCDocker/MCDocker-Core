@@ -16,7 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.content.curseforge;
+package io.mcdocker.launcher.content.mods.impl.modrinth;
 
-public class CurseForge {
+import com.google.gson.JsonObject;
+import io.mcdocker.launcher.content.mods.Mod;
+import io.mcdocker.launcher.content.mods.ModManifest;
+
+public class ModrinthMod extends Mod<ModManifest> {
+
+    public ModrinthMod(String name, JsonObject data) {
+        super(new ModManifest(
+                name,
+                data.get("mod_id").getAsString().replace("local-", ""),
+                data.get("id").getAsString(),
+                ModrinthMod.class.getName()
+        ));
+    }
+
+    public ModrinthMod(ModManifest manifest) {
+        super(manifest);
+    }
+
 }

@@ -16,27 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.container;
+package io.mcdocker.launcher.content.clients;
 
-import io.mcdocker.launcher.save.Save;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
-public class ContainerBuilder {
+public interface ClientProvider<CLIENT extends Client<?>> {
 
-    private String name;
-    private Save save;
-
-    public Container build() {
-        return new Container(name, save);
-    }
-
-    public ContainerBuilder setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public ContainerBuilder setSave(Save save) {
-        this.save = save;
-        return this;
-    }
+    CompletableFuture<List<ClientDetails<CLIENT>>> getClients();
+    CompletableFuture<Optional<CLIENT>> getClient(String name);
 
 }

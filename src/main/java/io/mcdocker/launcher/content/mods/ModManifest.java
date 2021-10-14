@@ -16,33 +16,48 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.save.formats;
+package io.mcdocker.launcher.content.mods;
 
-import io.mcdocker.launcher.content.ClientType;
+public class ModManifest {
 
-import java.util.ArrayList;
-import java.util.List;
+    private String name;
+    private String id;
+    private String version;
+    private final String type;
 
-public class BuildFormat {
-
-    String version;
-    List<String> mods;
-    String type;
-
-    public List<String> getMods() { return mods; }
-    public String getType() { return type; }
-    public String getVersion() { return version; }
-
-    public BuildFormat(ClientType type, String version, List<ModFormat> mods) {
-
-        List<String> modStrings = new ArrayList<>();
-
-        mods.forEach(modFormat -> modStrings.add(modFormat.getCombinedString()));
-
+    public ModManifest(String name, String id, String version, String type) {
+        this.name = name;
+        this.id = id;
         this.version = version;
-        this.mods = modStrings;
-        this.type = type.name().toLowerCase();
+        this.type = type;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getType() {
+        return type;
+    }
 
 }

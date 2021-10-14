@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.content.modrinth;
+package io.mcdocker.launcher.content.mods.impl.modrinth;
 
 import io.mcdocker.launcher.content.Filter;
 

@@ -16,12 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.content;
+package io.mcdocker.launcher.content.clients.impl.vanilla;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.mcdocker.launcher.content.clients.Client;
 import io.mcdocker.launcher.utils.OSUtils;
 import io.mcdocker.launcher.utils.http.HTTPUtils;
 import io.mcdocker.launcher.utils.http.Method;
@@ -36,104 +36,82 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.StreamSupport;
 
-public class Version {
+public class VanillaClient extends Client<VanillaManifest> {
 
-    private static final Gson gson = new Gson();
-    private static final File javaFolder = new File(OSUtils.getUserData() + "java");
-    private static final File versionsFolder = new File(OSUtils.getUserData() + "versions");
-    private final static File librariesFolder = new File(OSUtils.getUserData() + "libraries");
-    private final static File nativesFolder = new File(OSUtils.getUserData() + "natives");
-    private final static File assetsFolder = new File(OSUtils.getUserData() + "assets");
+    private final JsonObject data;
+    private final File versionsFolder = new File(OSUtils.getUserDataFile(), "versions/" + getTypeName());
 
-    private final JsonObject manifest;
-
-    public Version(JsonObject manifest) {
-        this.manifest = manifest;
+    public VanillaClient(String dataUrl, JsonObject data) {
+        super(new VanillaManifest(
+                dataUrl,
+                data.get("id").getAsString(),
+                data.has("javaVersion") ? data.get("javaVersion").getAsJsonObject().get("majorVersion").getAsInt() : 8,
+                data.get("mainClass").getAsString(),
+                appendArguments(parseArguments(data))
+        ));
+        this.data = data;
     }
 
-    public String getName() {
-        return manifest.get("id").getAsString();
+    public VanillaClient(VanillaManifest manifest) {
+        super(manifest);
+        this.data = gson.fromJson(RequestBuilder.getBuilder()
+                .setURL(manifest.getDataUrl())
+                .setMethod(Method.GET)
+                .send(), JsonObject.class);
     }
 
-    public int getJavaVersion() {
-        return manifest.has("javaVersion") ? manifest.get("javaVersion").getAsJsonObject().get("majorVersion").getAsInt() : 8;
+    private static String parseArguments(JsonObject data) {
+        if (data.has("arguments")) { // MODERN
+            JsonArray argumentsArray = data.get("arguments").getAsJsonObject().get("game").getAsJsonArray();
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < argumentsArray.size(); i++) {
+                if (argumentsArray.get(i).isJsonObject()) continue;
+                builder.append(argumentsArray.get(i).getAsString());
+                if (i != argumentsArray.size() - 1) builder.append(" ");
+            }
+            return builder.toString();
+        } else if (data.has("minecraftArguments")) { // LEGACY
+            return data.get("minecraftArguments").getAsString();
+        } return "--username ${auth_player_name} " + // FALLBACK LEGACY
+                "--version ${version_name} " +
+                "--gameDir ${game_directory} " +
+                "--assetsDir ${assets_root} " +
+                "--assetIndex ${assets_index_name} " +
+                "--uuid ${auth_uuid} " +
+                "--accessToken ${auth_access_token} " +
+                "--userProperties ${user_properties} " +
+                "--userType ${user_type}";
     }
 
-    public JsonObject getManifest() {
-        return manifest;
+    public static String appendArguments(String arguments) {
+        return "-XX:-UseAdaptiveSizePolicy " +
+                "-XX:-OmitStackTraceInFastThrow " +
+                "-Dminecraft.launcher.brand=mc-docker " +
+                "-Dminecraft.launcher.version=1 " +
+                "-Djava.library.path=${natives} " +
+                "-Xms${min_memory}M " +
+                "-Xmx${max_memory}M " +
+                "-cp ${libraries} " +
+                "${main_class} "
+                + arguments;
     }
 
     @Override
-    public String toString() {
-        return getName();
+    public String getTypeName() {
+        return "vanilla";
     }
 
-    public CompletableFuture<File> downloadJava() {
-        if (!javaFolder.exists()) javaFolder.mkdirs();
-        File javaVersionFolder = new File(javaFolder, getJavaVersion() + "");
-        if (javaVersionFolder.exists())
-            return CompletableFuture.completedFuture(new File(javaVersionFolder.listFiles()[0], "bin"));
-
-        return CompletableFuture.supplyAsync(() -> {
-            String tempOs = "linux";
-            switch (OSUtils.getOperatingSystem()) {
-                case MACOS:
-                    tempOs = "mac";
-                case WINDOWS:
-                    tempOs = "windows";
-            }
-            final String os = tempOs;
-            String tempArch = "x64";
-            switch (OSUtils.getArchitecture()) { // TODO: Add more architectures.
-                case "amd64":
-                    tempArch = "x64";
-            }
-            final String arch = tempArch;
-            JsonArray response = gson.fromJson(RequestBuilder.getBuilder()
-                    .setURL("https://api.adoptium.net/v3/assets/latest/" + getJavaVersion() + "/hotspot")
-                    .setMethod(Method.GET).send(true), JsonArray.class);
-            JsonObject binary = StreamSupport.stream(response.spliterator(), false).map(bin -> bin.getAsJsonObject().get("binary").getAsJsonObject())
-                    .filter(bin -> (bin.get("image_type").getAsString().equals("jre") || bin.get("image_type").getAsString().equals("jdk")) && bin.get("os").getAsString().equalsIgnoreCase(os) && bin.get("architecture").getAsString().equalsIgnoreCase(arch))
-                    .min((bin, bin2) -> {
-                        if (bin.get("image_type").getAsString().equals("jre")) {
-                            if (bin2.get("image_type").getAsString().equals("jre")) return 0;
-                            else return -1;
-                        } else return 1;
-                    }).orElse(null);
-            if (binary == null) return null;
-            JsonObject pack = binary.get("package").getAsJsonObject();
-            String fileName = pack.get("name").getAsString();
-            javaVersionFolder.mkdirs();
-            File archiveFile = new File(javaVersionFolder, fileName);
-            HTTPUtils.download(pack.get("link").getAsString(), archiveFile);
-
-            Archiver archiver = fileName.endsWith(".zip") ? ArchiverFactory.createArchiver("zip") : ArchiverFactory.createArchiver("tar", "gz");
-            try {
-                archiver.extract(archiveFile, javaVersionFolder);
-                archiveFile.delete();
-                return new File(javaVersionFolder.listFiles()[0], "bin");
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-        });
-    }
-
-    public CompletableFuture<File> downloadClient(ClientType type) {
+    @Override
+    public CompletableFuture<File> downloadClient() {
         return CompletableFuture.supplyAsync(() -> {
             versionsFolder.mkdirs();
-            File versionTypeFolder = new File(versionsFolder + "/" + type.name().toLowerCase());
-            versionTypeFolder.mkdir();
 
-            File client = new File(versionTypeFolder + "/" + getName() + ".jar");
+            File client = new File(versionsFolder, manifest.getName() + ".jar");
             if (client.exists()) return client;
 
-            String url = manifest.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString();
+            String url = data.getAsJsonObject("downloads").getAsJsonObject("client").get("url").getAsString();
 
             HTTPUtils.download(url, client);
 
@@ -141,6 +119,7 @@ public class Version {
         });
     }
 
+    @Override
     public CompletableFuture<List<String>> downloadLibraries() {
         return CompletableFuture.supplyAsync(() -> {
             librariesFolder.mkdir();
@@ -148,7 +127,7 @@ public class Version {
             JsonArray natives = new JsonArray();
             List<String> librariesList = new ArrayList<>();
 
-            for (JsonElement library : manifest.getAsJsonArray("libraries")) {
+            for (JsonElement library : data.getAsJsonArray("libraries")) {
                 JsonObject lib = library.getAsJsonObject();
                 if (lib.has("natives") || lib.has("extract")) {
                     natives.add(lib);
@@ -171,9 +150,10 @@ public class Version {
         });
     }
 
-    private void downloadNatives(JsonArray natives) {
+    @Override
+    protected void downloadNatives(JsonArray natives) {
         nativesFolder.mkdir();
-        File currentNativeFolder = new File(nativesFolder + "/" + getName());
+        File currentNativeFolder = new File(nativesFolder, manifest.getName());
         if (currentNativeFolder.exists()) return;
         currentNativeFolder.mkdir();
 
@@ -226,6 +206,7 @@ public class Version {
         }
     }
 
+    @Override
     public CompletableFuture<String> downloadAssets() {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -234,9 +215,9 @@ public class Version {
                 if (!objectsFolder.exists()) objectsFolder.mkdirs();
                 File indexesFolder = new File(assetsFolder, "indexes");
                 if (!indexesFolder.exists()) indexesFolder.mkdirs();
-                String indexId = manifest.get("assetIndex").getAsJsonObject().get("id").getAsString();
+                String indexId = data.get("assetIndex").getAsJsonObject().get("id").getAsString();
                 File index = new File(indexesFolder, indexId + ".json");
-                if (!index.exists()) HTTPUtils.download(manifest.get("assetIndex").getAsJsonObject().get("url").getAsString(), index);
+                if (!index.exists()) HTTPUtils.download(data.get("assetIndex").getAsJsonObject().get("url").getAsString(), index);
                 JsonObject objects = gson.fromJson(new FileReader(index), JsonObject.class).get("objects").getAsJsonObject();
 
                 List<CompletableFuture<?>> futures = new ArrayList<>();
@@ -265,44 +246,6 @@ public class Version {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 return null;
-            }
-        });
-    }
-
-    // getVersions().get().get(0).get().get().get();
-
-    public static CompletableFuture<List<MinVersion>> getVersions() {
-        return CompletableFuture.supplyAsync(() -> {
-            List<MinVersion> versions = new ArrayList<>();
-            JsonArray versionArray = gson.fromJson(RequestBuilder.getBuilder()
-                    .setURL("https://launchermeta.mojang.com/mc/game/version_manifest.json")
-                    .setMethod(Method.GET)
-                    .send(), JsonObject.class).get("versions").getAsJsonArray();
-            StreamSupport.stream(versionArray.spliterator(), false)
-                    .map(JsonElement::getAsJsonObject)
-                    .forEach(v -> versions.add(new MinVersion(v.get("id").getAsString(), () -> CompletableFuture.supplyAsync(() -> {
-                        JsonObject version = gson.fromJson(RequestBuilder.getBuilder()
-                                .setURL(v.get("url").getAsString())
-                                .setMethod(Method.GET)
-                                .send(), JsonObject.class);
-                        return new Version(version);
-                    }))));
-            return versions;
-        });
-    }
-
-    public static CompletableFuture<Optional<Version>> getVersion(String name) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                return getVersions().get().stream().filter(version -> version.getName().equalsIgnoreCase(name)).findFirst().map(version -> {
-                    try {
-                        return version.get().get().get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        return null;
-                    }
-                });
-            } catch (InterruptedException | ExecutionException e) {
-                return Optional.empty();
             }
         });
     }

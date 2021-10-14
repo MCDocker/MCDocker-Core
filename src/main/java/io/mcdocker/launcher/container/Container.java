@@ -18,55 +18,86 @@
 
 package io.mcdocker.launcher.container;
 
-import io.mcdocker.launcher.save.Save;
+import com.google.gson.Gson;
 import io.mcdocker.launcher.utils.OSUtils;
-import me.grison.jtoml.impl.Toml;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Container {
 
-    private String name;
-    private final Save save;
+    private static final Gson gson = new Gson();
+    private static final File containersFolder = new File(OSUtils.getUserDataFile(), "containers");
+    private static final String dockerfileName = "mcdocker.json";
 
-    private final Toml toml = new Toml();
+    private final File folder;
+    private final Dockerfile dockerfile;
+    private final File dockerFile;
 
-    public Container(String name, Save save) {
-        this.name = name;
-        this.save = save;
+    public Container(Dockerfile dockerfile) throws IOException {
+        this.dockerfile = dockerfile;
+        this.folder = new File(containersFolder, dockerfile.getId().toString());
+        this.dockerFile = new File(folder, dockerfileName);
+        if (!folder.exists()) {
+            folder.mkdirs();
+            save();
+        }
     }
 
-    private void createFolders() {
-        final File containersPath = new File(OSUtils.getUserData() + "containers");
-        if(!containersPath.exists()) containersPath.mkdir();
-
-        final File containerFolder = new File(containersPath + "/" + name);
-        if(!containerFolder.exists()) containerFolder.mkdir();
+    public Dockerfile getDockerfile() {
+        return dockerfile;
     }
 
     public File getDockerFile() {
-        return new File(OSUtils.getUserData() + "containers" + "/" + name + "/.mcdocker");
+        return dockerFile;
     }
 
-    public void createContainer() throws IOException {
-        createFolders();
+    public File getFolder() {
+        return folder;
+    }
 
-        if(!getDockerFile().exists()) getDockerFile().createNewFile();
-
-        FileWriter writer = new FileWriter(getDockerFile());
-        writer.write(Toml.serialize("meta", save));
+    public void save() throws IOException {
+        FileWriter writer = new FileWriter(dockerFile);
+        gson.toJson(dockerfile, writer);
         writer.flush();
         writer.close();
     }
 
-    public Save getDockerContent() {
-        System.out.println(toml.parseFile(getDockerFile()).get("meta"));
-        Save format = toml.parseFile(getDockerFile()).getAs("meta.type", Save.class);
-        return format;
+    public static @Nullable Container fromFolder(File folder) throws IOException {
+        File dockerFile = new File(folder, dockerfileName);
+        if (dockerFile.exists()) return fromFile(dockerFile);
+        else return null;
     }
 
+    public static @NotNull Container fromFile(File dockerFile) throws IOException {
+        return fromDockerfile(gson.fromJson(new FileReader(dockerFile), Dockerfile.class));
+    }
 
+    public static @NotNull Container fromDockerfile(Dockerfile dockerfile) throws IOException {
+        return new Container(dockerfile);
+    }
+
+    public static @NotNull List<Container> getContainers() {
+        List<Container> containers = new ArrayList<>();
+        if (containersFolder.exists()) {
+            for (File folder : containersFolder.listFiles()) {
+                if (!folder.isFile()) {
+                    try {
+                        Container container = fromFolder(folder);
+                        if (container != null) containers.add(container);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else containersFolder.mkdirs();
+        return containers;
+    }
 
 }

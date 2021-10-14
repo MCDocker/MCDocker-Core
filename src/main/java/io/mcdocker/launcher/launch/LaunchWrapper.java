@@ -19,16 +19,14 @@
 package io.mcdocker.launcher.launch;
 
 import io.mcdocker.launcher.auth.Account;
-import io.mcdocker.launcher.content.ClientType;
-import io.mcdocker.launcher.content.Version;
+import io.mcdocker.launcher.container.Container;
+import io.mcdocker.launcher.content.clients.Client;
 import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.OSUtils;
 import io.mcdocker.launcher.utils.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
@@ -39,15 +37,15 @@ public class LaunchWrapper {
     private final static File nativesFolder = new File(OSUtils.getUserData() + "natives");
     private final static File assetsFolder = new File(OSUtils.getUserData() + "assets");
 
-    private final ClientType type;
-    private final Version version;
+    private final Container container;
+    private final Client<?> client;
 
-    public LaunchWrapper(Version version, ClientType type) throws IOException {
-        this.type = type;
-        this.version = version;
+    public LaunchWrapper(Container container, Client<?> client) {
+        this.container = container;
+        this.client = client;
     }
 
-    public CompletableFuture<Process> launch(Account account, String... arguments) {
+    public CompletableFuture<Process> launch(Account account) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 AtomicReference<String> javaPath = new AtomicReference<>("java");
@@ -57,16 +55,16 @@ public class LaunchWrapper {
                 long start = System.currentTimeMillis();
 
                 CompletableFuture.allOf(
-                        version.downloadJava().thenAccept(binFile -> {
+                        client.downloadJava().thenAccept(binFile -> {
                             if (binFile != null) javaPath.set(binFile.getPath() + File.separator + "java");
                             Logger.log("[x] Downloaded Java");
                         }),
-                        version.downloadClient(type).thenRun(() -> Logger.log("[x] Downloaded Client")),
-                        version.downloadLibraries().thenAccept(libraries -> {
+                        client.downloadClient().thenRun(() -> Logger.log("[x] Downloaded Client")),
+                        client.downloadLibraries().thenAccept(libraries -> {
                             librariesList.addAll(libraries);
                             Logger.log("[x] Downloaded Libraries");
                         }),
-                        version.downloadAssets().thenAccept(i -> {
+                        client.downloadAssets().thenAccept(i -> {
                             if (i != null) index.set(i);
                             Logger.log("[x] Downloaded Assets");
                         })
@@ -75,43 +73,32 @@ public class LaunchWrapper {
                 long end = System.currentTimeMillis();
                 Logger.log(StringUtils.format("Finished downloading in ${0}ms.", end - start));
 
-                List<String> args = new ArrayList<>();
-                args.add("-XX:-UseAdaptiveSizePolicy");
-                args.add("-XX:-OmitStackTraceInFastThrow");
-                args.add("-Dfml.ignorePatchDiscrepancies=true");
-                args.add("-Dfml.ignoreInvalidMinecraftCertificates=true");
-                args.add("-Dminecraft.launcher.brand=mc-docker");
-
-                args.add("-Djava.library.path=" + nativesFolder + "/" + version + "/");
-                args.add("-Dminecraft.client.jar=" + versionsFolder + "/" + type.name().toLowerCase() + "/" + version + ".jar");
-
                 StringBuilder librariesBuilder = new StringBuilder();
                 librariesList.forEach(s -> librariesBuilder.append(s.replace("\\", "/")).append((OSUtils.isWindows() ? ";" : ":")));
                 if (librariesBuilder.length() == 0) throw new Exception("Libraries length is 0");
                 librariesBuilder.deleteCharAt(librariesBuilder.toString().length() - 1);
-                args.add("-cp " + librariesBuilder + (OSUtils.isWindows() ? ";" : ":") + versionsFolder.getPath().replace("\\", "/") + "/" + type.name().toLowerCase() + "/" + version + ".jar");
+                String libraries = librariesBuilder + (OSUtils.isWindows() ? ";" : ":") + versionsFolder.getPath().replace("\\", "/") + "/" + client.getTypeName() + "/" + client.getManifest().getName() + ".jar";
 
-                // TODO: Parse args from manifest.
-                args.add("-Xmx3G");
+                String arguments = client.getManifest().getStartupArguments()
+                        .replace("${auth_player_name}", account.getUsername())
+                        .replace("${version_name}", client.getManifest().getName())
+                        .replace("${game_directory}", container.getFolder().getPath())
+                        .replace("${assets_root}", assetsFolder.getPath())
+                        .replace("${game_assets}", assetsFolder.getPath() + "\\virtual\\" + index.get()) // TODO: Figure out how to handle assets for versions below 1.6
+                        .replace("${assets_index_name}", index.get())
+                        .replace("${auth_uuid}", account.getUniqueId())
+                        .replace("${auth_access_token}", account.getAccessToken())
+                        .replace("${auth_session}", "0") // TODO: Figure out how to get this session ID.
+                        .replace("${user_properties}", "{}") // TODO: Figure out these properties.
+                        .replace("${user_type}", "1") // TODO: Figure out user types.
+                        .replace("${natives}", nativesFolder + "/" + client.getManifest().getName() + "/")
+                        .replace("${libraries}", libraries)
+                        .replace("${min_memory}", "2048")
+                        .replace("${max_memory}", "8128")
+                        .replace("${main_class}", client.getManifest().getMainClass())
+                        .replace("${version_type}", "MCDocker");
 
-                // Main class argument
-                args.add(version.getManifest().get("mainClass").getAsString());
-
-                args.add("--username " + account.getUsername());
-                args.add("--uuid " + account.getUniqueId());
-                args.add("--version " + version.getName());
-                args.add("--accessToken " + account.getAccessToken());
-                args.add("--userProperties {}");
-                args.add("--assetsDir " + assetsFolder.getPath() + (index.get().equals("legacy") || index.get().equals("pre-1.6") ? "\\virtual\\" + index.get() : ""));
-                args.add("--assetIndex " + index.get());
-
-                StringBuilder argsBuilder = new StringBuilder();
-                args.forEach(arg -> argsBuilder.append(arg).append(" "));
-                args.addAll(Arrays.asList(arguments));
-
-
-                System.out.println(argsBuilder);
-                return Runtime.getRuntime().exec(javaPath.get() + " " + argsBuilder);
+                return Runtime.getRuntime().exec(javaPath.get() + " " + arguments, new String[0], container.getFolder());
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;

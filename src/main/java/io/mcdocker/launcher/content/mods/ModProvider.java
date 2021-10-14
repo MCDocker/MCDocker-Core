@@ -16,21 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.content.modrinth;
+package io.mcdocker.launcher.content.mods;
 
-public enum ModrinthCategories {
-    WORLDGEN,
-    TECHNOLOGY,
-    FOOD,
-    MAGIC,
-    STORAGE,
-    LIBRARY,
-    ADVENTURE,
-    UTILITY,
-    DECORATION,
-    MISC,
-    EQUIPMENT,
-    CURSED,
-    FABRIC,
-    FORGE;
+import io.mcdocker.launcher.content.Filter;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+public interface ModProvider<FILTER extends Filter, MOD extends Mod<ModManifest>> {
+
+    CompletableFuture<List<ModDetails<MOD>>> getMods(FILTER filter);
+    default CompletableFuture<List<ModDetails<MOD>>> getMods() {
+        return getMods(null);
+    }
+    CompletableFuture<ModDetails<MOD>> getMod(String id);
+
 }

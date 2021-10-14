@@ -16,18 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.content;
+package io.mcdocker.launcher.content.mods;
 
 import java.util.concurrent.CompletableFuture;
 
-public abstract class ModVersion {
+public abstract class ModDetails<T extends Mod<ModManifest>> {
 
     private final String name;
+    private final String id;
 
-    public ModVersion(String name) {
+    public ModDetails(String name, String id) {
         this.name = name;
+        this.id = id;
     }
 
-    public abstract CompletableFuture<String> getDownloadUrl();
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public abstract CompletableFuture<T> getVersion(String version);
 
 }
