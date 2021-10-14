@@ -21,10 +21,12 @@ package io.mcdocker.launcher.content.mods;
 public class ModManifest {
 
     private String name;
+    private String version;
     private final String type;
 
-    public ModManifest(String name, String type) {
+    public ModManifest(String name, String version, String type) {
         this.name = name;
+        this.version = version;
         this.type = type;
     }
 
@@ -34,6 +36,14 @@ public class ModManifest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getType() {

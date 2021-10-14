@@ -40,6 +40,7 @@ public class ModrinthMod extends Mod<ModrinthManifest> {
     public ModrinthMod(JsonObject data) {
         super(new ModrinthManifest(
                 data.get("mod_id").getAsString(),
+                null,
                 data.get("title").getAsString(),
                 data.get("description").getAsString(),
                 ClientType.CUSTOM, // TODO: Make this not custom.

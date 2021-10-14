@@ -30,8 +30,8 @@ public class ModrinthManifest extends ModManifest {
     private String author;
     private String iconUrl;
 
-    public ModrinthManifest(String id, String name, String description, ClientType clientType, String url, String author, String iconUrl, String type) {
-        super(name, type);
+    public ModrinthManifest(String id, String version, String name, String description, ClientType clientType, String url, String author, String iconUrl, String type) {
+        super(name, version, type);
         this.id = id;
         this.description = description;
         this.clientType = clientType;
@@ -40,8 +40,8 @@ public class ModrinthManifest extends ModManifest {
         this.iconUrl = iconUrl;
     }
 
-    public ModrinthManifest(String id, String name, String description, ClientType clientType, String url, String author, String iconUrl) {
-        this(id, name, description, clientType, url, author, iconUrl, ModrinthMod.class.getName());
+    public ModrinthManifest(String id, String version, String name, String description, ClientType clientType, String url, String author, String iconUrl) {
+        this(id, version, name, description, clientType, url, author, iconUrl, ModrinthMod.class.getName());
     }
 
     public String getUrl() {
