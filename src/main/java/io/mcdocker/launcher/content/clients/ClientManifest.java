@@ -23,12 +23,14 @@ public class ClientManifest {
     private String name;
     private int javaVersion;
     private String mainClass;
+    private String startupArguments;
     private final String type;
 
-    public ClientManifest(String name, int javaVersion, String mainClass, String type) {
+    public ClientManifest(String name, int javaVersion, String mainClass, String startupArguments, String type) {
         this.name = name;
         this.javaVersion = javaVersion;
         this.mainClass = mainClass;
+        this.startupArguments = startupArguments;
         this.type = type;
     }
 
@@ -58,6 +60,14 @@ public class ClientManifest {
 
     public void setMainClass(String mainClass) {
         this.mainClass = mainClass;
+    }
+
+    public String getStartupArguments() {
+        return startupArguments;
+    }
+
+    public void setStartupArguments(String startupArguments) {
+        this.startupArguments = startupArguments;
     }
 
 }

@@ -27,7 +27,6 @@ import io.mcdocker.launcher.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
@@ -46,7 +45,7 @@ public class LaunchWrapper {
         this.client = client;
     }
 
-    public CompletableFuture<Process> launch(Account account, String... arguments) {
+    public CompletableFuture<Process> launch(Account account) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 AtomicReference<String> javaPath = new AtomicReference<>("java");
@@ -74,43 +73,30 @@ public class LaunchWrapper {
                 long end = System.currentTimeMillis();
                 Logger.log(StringUtils.format("Finished downloading in ${0}ms.", end - start));
 
-                List<String> args = new ArrayList<>();
-                args.add("-XX:-UseAdaptiveSizePolicy");
-                args.add("-XX:-OmitStackTraceInFastThrow");
-                args.add("-Dfml.ignorePatchDiscrepancies=true");
-                args.add("-Dfml.ignoreInvalidMinecraftCertificates=true");
-                args.add("-Dminecraft.launcher.brand=mc-docker");
-
-                args.add("-Djava.library.path=" + nativesFolder + "/" + client.getManifest().getName() + "/");
-                args.add("-Dminecraft.client.jar=" + versionsFolder + "/" + client.getTypeName() + "/" + client.getManifest().getName() + ".jar");
-
                 StringBuilder librariesBuilder = new StringBuilder();
                 librariesList.forEach(s -> librariesBuilder.append(s.replace("\\", "/")).append((OSUtils.isWindows() ? ";" : ":")));
                 if (librariesBuilder.length() == 0) throw new Exception("Libraries length is 0");
                 librariesBuilder.deleteCharAt(librariesBuilder.toString().length() - 1);
-                args.add("-cp " + librariesBuilder + (OSUtils.isWindows() ? ";" : ":") + versionsFolder.getPath().replace("\\", "/") + "/" + client.getTypeName() + "/" + client.getManifest().getName() + ".jar");
+                String libraries = librariesBuilder + (OSUtils.isWindows() ? ";" : ":") + versionsFolder.getPath().replace("\\", "/") + "/" + client.getTypeName() + "/" + client.getManifest().getName() + ".jar";
 
-                // TODO: Parse args from manifest.
-                args.add("-Xmx3G");
+                String arguments = client.getManifest().getStartupArguments()
+                        .replace("${auth_player_name}", account.getUsername())
+                        .replace("${version_name}", client.getManifest().getName())
+                        .replace("${game_directory}", container.getFolder().getPath())
+                        .replace("${assets_root}", assetsFolder.getPath() + (index.get().equals("legacy") || index.get().equals("pre-1.6") ? "\\virtual\\" + index.get() : ""))
+                        .replace("${assets_index_name}", index.get())
+                        .replace("${auth_uuid}", account.getUniqueId())
+                        .replace("${auth_access_token}", account.getAccessToken())
+                        .replace("${user_properties}", "{}")
+                        .replace("${user_type}", "1")
+                        .replace("${natives}", nativesFolder + "/" + client.getManifest().getName() + "/")
+                        .replace("${libraries}", libraries)
+                        .replace("${min_memory}", "2048")
+                        .replace("${max_memory}", "8128")
+                        .replace("${main_class}", client.getManifest().getMainClass())
+                        .replace("${version_type}", "MCDocker");
 
-                // Main class argument
-                args.add(client.getManifest().getMainClass());
-
-                args.add("--username " + account.getUsername());
-                args.add("--uuid " + account.getUniqueId());
-                args.add("--version " + client.getManifest().getName());
-                args.add("--accessToken " + account.getAccessToken());
-                args.add("--userProperties {}");
-                args.add("--assetsDir " + assetsFolder.getPath() + (index.get().equals("legacy") || index.get().equals("pre-1.6") ? "\\virtual\\" + index.get() : ""));
-                args.add("--assetIndex " + index.get());
-
-                StringBuilder argsBuilder = new StringBuilder();
-                args.forEach(arg -> argsBuilder.append(arg).append(" "));
-                args.addAll(Arrays.asList(arguments));
-
-
-                System.out.println(argsBuilder);
-                return Runtime.getRuntime().exec(javaPath.get() + " " + argsBuilder, new String[0], container.getFolder());
+                return Runtime.getRuntime().exec(javaPath.get() + " " + arguments, new String[0], container.getFolder());
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;

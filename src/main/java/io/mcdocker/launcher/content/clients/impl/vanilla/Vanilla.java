@@ -68,10 +68,12 @@ public class Vanilla implements ClientProvider<VanillaClient> {
                     try {
                         return client.get().get().get();
                     } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
                         return null;
                     }
                 });
             } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
                 return Optional.empty();
             }
         });

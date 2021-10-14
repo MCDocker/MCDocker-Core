@@ -48,7 +48,8 @@ public class VanillaClient extends Client<VanillaManifest> {
                 dataUrl,
                 data.get("id").getAsString(),
                 data.has("javaVersion") ? data.get("javaVersion").getAsJsonObject().get("majorVersion").getAsInt() : 8,
-                data.get("mainClass").getAsString()
+                data.get("mainClass").getAsString(),
+                appendArguments(parseArguments(data))
         ));
         this.data = data;
     }
@@ -59,6 +60,42 @@ public class VanillaClient extends Client<VanillaManifest> {
                 .setURL(manifest.getDataUrl())
                 .setMethod(Method.GET)
                 .send(), JsonObject.class);
+    }
+
+    private static String parseArguments(JsonObject data) {
+        if (data.has("arguments")) { // MODERN
+            JsonArray argumentsArray = data.get("arguments").getAsJsonObject().get("game").getAsJsonArray();
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < argumentsArray.size(); i++) {
+                if (argumentsArray.get(i).isJsonObject()) continue;
+                builder.append(argumentsArray.get(i).getAsString());
+                if (i != argumentsArray.size() - 1) builder.append(" ");
+            }
+            return builder.toString();
+        } else if (data.has("minecraftArguments")) { // LEGACY
+            return data.get("minecraftArguments").getAsString();
+        } return "--username ${auth_player_name} " + // FALLBACK LEGACY
+                "--version ${version_name} " +
+                "--gameDir ${game_directory} " +
+                "--assetsDir ${assets_root} " +
+                "--assetIndex ${assets_index_name} " +
+                "--uuid ${auth_uuid} " +
+                "--accessToken ${auth_access_token} " +
+                "--userProperties ${user_properties} " +
+                "--userType ${user_type}";
+    }
+
+    public static String appendArguments(String arguments) {
+        return "-XX:-UseAdaptiveSizePolicy " +
+                "-XX:-OmitStackTraceInFastThrow " +
+                "-Dminecraft.launcher.brand=mc-docker " +
+                "-Dminecraft.launcher.version=1 " +
+                "-Djava.library.path=${natives} " +
+                "-Xms${min_memory}M " +
+                "-Xmx${max_memory}M " +
+                "-cp ${libraries} " +
+                "${main_class} "
+                + arguments;
     }
 
     @Override

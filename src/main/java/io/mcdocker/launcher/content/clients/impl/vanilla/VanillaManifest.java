@@ -24,13 +24,13 @@ public class VanillaManifest extends ClientManifest {
 
     private final String dataUrl;
 
-    public VanillaManifest(String dataUrl, String name, int javaVersion, String mainClass, String type) {
-        super(name, javaVersion, mainClass, type);
+    public VanillaManifest(String dataUrl, String name, int javaVersion, String mainClass, String startupArguments, String type) {
+        super(name, javaVersion, mainClass, startupArguments, type);
         this.dataUrl = dataUrl;
     }
 
-    public VanillaManifest(String dataUrl, String name, int javaVersion, String mainClass) {
-        this(dataUrl, name, javaVersion, mainClass, VanillaClient.class.getName());
+    public VanillaManifest(String dataUrl, String name, int javaVersion, String mainClass, String startupArguments) {
+        this(dataUrl, name, javaVersion, mainClass, startupArguments, VanillaClient.class.getName());
     }
 
     public String getDataUrl() {
