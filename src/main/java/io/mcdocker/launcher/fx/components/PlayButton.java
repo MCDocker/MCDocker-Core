@@ -27,6 +27,7 @@ import io.mcdocker.launcher.content.clients.Client;
 import io.mcdocker.launcher.content.clients.ClientManifest;
 import io.mcdocker.launcher.content.clients.impl.vanilla.Vanilla;
 import io.mcdocker.launcher.content.clients.impl.vanilla.VanillaManifest;
+import io.mcdocker.launcher.content.mods.impl.curseforge.CurseForge;
 import io.mcdocker.launcher.content.mods.impl.modrinth.Modrinth;
 import io.mcdocker.launcher.launch.LaunchWrapper;
 import io.mcdocker.launcher.utils.Logger;
@@ -38,7 +39,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -52,8 +52,6 @@ public class PlayButton extends AnchorPane {
         button.setController(this);
         button.setRoot(this);
 
-        new Vanilla().getClients().join().forEach(client -> System.out.println(client.getName()));
-
         try {
             Authentication auth = /*new MicrosoftAuth();*/ new OfflineAuth();
             CompletableFuture<Account> accountFuture = auth.authenticate(Logger::debug);
@@ -62,7 +60,10 @@ public class PlayButton extends AnchorPane {
             if (containers.size() == 0) containers.add(new Container(new Dockerfile()));
 
             Container container = containers.get(0);
-            container.getDockerfile().setMods(Collections.singletonList(new Modrinth().getMod("AANobbMI").join().getVersion("YAGZ1cCS").join().getManifest()));
+            container.getDockerfile().setMods(List.of(
+                    new Modrinth().getMod("AANobbMI").join().getVersion("YAGZ1cCS").join().getManifest(),
+                    new CurseForge().getMod("238222").join().getVersion("2370313").join().getManifest()
+            ));
             VanillaManifest client = container.getDockerfile().getClient(VanillaManifest.class);
             if (client == null) {
                 client = new Vanilla().getClient("1.8.9").join().get().getManifest();
