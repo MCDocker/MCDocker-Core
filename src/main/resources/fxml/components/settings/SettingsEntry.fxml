@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<fx:root prefHeight="70.0" prefWidth="Infinity" type="AnchorPane" xmlns="http://javafx.com/javafx/11.0.2" style="-fx-background-color: background-darker;" xmlns:fx="http://javafx.com/fxml/1">
+
+    <VBox AnchorPane.leftAnchor="0.00">
+        <padding>
+            <Insets topRightBottomLeft="5" />
+        </padding>
+        <Label fx:id="settingName" styleClass="settingName" />
+        <Label fx:id="settingDescription" styleClass="settingDescription" />
+    </VBox>
+
+</fx:root>

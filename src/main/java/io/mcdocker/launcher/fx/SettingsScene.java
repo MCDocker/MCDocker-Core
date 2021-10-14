@@ -18,12 +18,24 @@
 
 package io.mcdocker.launcher.fx;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import io.mcdocker.launcher.config.Config;
+import io.mcdocker.launcher.config.ConfigSerializer;
+import io.mcdocker.launcher.fx.components.ContainerEntry;
+import io.mcdocker.launcher.fx.components.settings.SettingsEntry;
+import io.mcdocker.launcher.fx.components.settings.SettingsGroup;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class SettingsScene extends VBox {
+public class SettingsScene extends ScrollPane {
 
     public SettingsScene() {
         FXMLLoader scene = new FXMLLoader(getClass().getClassLoader().getResource("fxml/SettingsScene.fxml"));
@@ -32,6 +44,19 @@ public class SettingsScene extends VBox {
 
         try {
             scene.load();
+
+            VBox settingsList = (VBox) scene.getNamespace().get("settingsContainer");
+            for(Map.Entry<String, JsonElement> obj : Config.getConfig().getConfigJson().entrySet()) {
+                String category = obj.getKey();
+
+                List<SettingsEntry> entries = new ArrayList<>();
+                for(Map.Entry<String, JsonElement> setting : obj.getValue().getAsJsonObject().entrySet()) {
+                    entries.add(new SettingsEntry(setting.getKey(), "desc", setting.getValue())); // TODO: Implment descriptions
+                }
+
+                settingsList.getChildren().add(new SettingsGroup(category, entries));
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

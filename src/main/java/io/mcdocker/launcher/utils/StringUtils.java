@@ -29,4 +29,9 @@ public class StringUtils {
         return returnString;
     }
 
+    public static String uppercaseFirstLetterOfString(String str) {
+        String capitalized = str.substring(0, 1).toUpperCase();
+        return capitalized + str.substring(1);
+    }
+
 }

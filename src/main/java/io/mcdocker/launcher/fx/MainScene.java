@@ -69,6 +69,7 @@ public class MainScene extends Application {
     private void registerPanels() {
         register(new HomeScene());
         register(new ContainersScene());
+        register(new SettingsScene());
     }
 
     private void register(Region panel) {

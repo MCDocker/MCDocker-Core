@@ -2,12 +2,14 @@ package io.mcdocker.launcher.config;
 
 public class ConfigSerializer {
 
-    public String test = "testaa";
+    public GeneralCategory general = new GeneralCategory();
+    public LaunchCategory launch = new LaunchCategory();
 
-    @Override
-    public String toString() {
-        return "ConfigSerializer{" +
-                "test='" + test + '\'' +
-                '}';
+    private class GeneralCategory {
+        public String test = "ok";
+    }
+
+    private class LaunchCategory {
+        public boolean hm = false;
     }
 }
