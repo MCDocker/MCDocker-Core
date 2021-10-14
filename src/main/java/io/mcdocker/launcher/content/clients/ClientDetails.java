@@ -16,27 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.mcdocker.launcher.content;
+package io.mcdocker.launcher.content.clients;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-public class MinVersion {
+public class ClientDetails<CLIENT extends Client<?>> {
 
     private final String name;
-    private final Supplier<CompletableFuture<Version>> version;
+    private final Supplier<CompletableFuture<CLIENT>> supplier;
 
-    public MinVersion(String name, Supplier<CompletableFuture<Version>> version) {
+    public ClientDetails(String name, Supplier<CompletableFuture<CLIENT>> supplier) {
         this.name = name;
-        this.version = version;
+        this.supplier = supplier;
     }
 
     public String getName() {
         return name;
     }
 
-    public Supplier<CompletableFuture<Version>> get() {
-        return version;
+    public Supplier<CompletableFuture<CLIENT>> get() {
+        return supplier;
     }
 
 }

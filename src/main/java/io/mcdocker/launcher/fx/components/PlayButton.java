@@ -24,7 +24,7 @@ import io.mcdocker.launcher.auth.impl.OfflineAuth;
 import io.mcdocker.launcher.container.Container;
 import io.mcdocker.launcher.container.Dockerfile;
 import io.mcdocker.launcher.content.ClientType;
-import io.mcdocker.launcher.content.Version;
+import io.mcdocker.launcher.content.clients.impl.vanilla.Vanilla;
 import io.mcdocker.launcher.content.mods.Mod;
 import io.mcdocker.launcher.content.mods.impl.modrinth.Modrinth;
 import io.mcdocker.launcher.launch.LaunchWrapper;
@@ -50,6 +50,8 @@ public class PlayButton extends AnchorPane {
         button.setController(this);
         button.setRoot(this);
 
+        new Vanilla().getClients().join().forEach(client -> System.out.println(client.getName()));
+
         try {
             Authentication auth = /*new MicrosoftAuth();*/ new OfflineAuth();
             CompletableFuture<Account> accountFuture = auth.authenticate(Logger::debug);
@@ -67,7 +69,7 @@ public class PlayButton extends AnchorPane {
             String version = container.getDockerfile().getVersion();
             String playText = "PLAY " + version;
             btn.setText(playText);
-            btn.setOnAction(actionEvent -> Version.getVersion(version).thenAcceptAsync(v -> {
+            btn.setOnAction(actionEvent -> new Vanilla().getClient(version).thenAcceptAsync(v -> {
                 try {
                     if (v.isEmpty()) return;
                     LaunchWrapper launchWrapper = new LaunchWrapper(container, v.get(), ClientType.VANILLA);
