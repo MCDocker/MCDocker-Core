@@ -83,12 +83,14 @@ public class LaunchWrapper {
                         .replace("${auth_player_name}", account.getUsername())
                         .replace("${version_name}", client.getManifest().getName())
                         .replace("${game_directory}", container.getFolder().getPath())
-                        .replace("${assets_root}", assetsFolder.getPath() + (index.get().equals("legacy") || index.get().equals("pre-1.6") ? "\\virtual\\" + index.get() : ""))
+                        .replace("${assets_root}", assetsFolder.getPath())
+                        .replace("${game_assets}", assetsFolder.getPath() + "\\virtual\\" + index.get()) // TODO: Figure out how to handle assets for versions below 1.6
                         .replace("${assets_index_name}", index.get())
                         .replace("${auth_uuid}", account.getUniqueId())
                         .replace("${auth_access_token}", account.getAccessToken())
-                        .replace("${user_properties}", "{}")
-                        .replace("${user_type}", "1")
+                        .replace("${auth_session}", "0") // TODO: Figure out how to get this session ID.
+                        .replace("${user_properties}", "{}") // TODO: Figure out these properties.
+                        .replace("${user_type}", "1") // TODO: Figure out user types.
                         .replace("${natives}", nativesFolder + "/" + client.getManifest().getName() + "/")
                         .replace("${libraries}", libraries)
                         .replace("${min_memory}", "2048")
