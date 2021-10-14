@@ -25,6 +25,8 @@ import io.mcdocker.launcher.container.Container;
 import io.mcdocker.launcher.container.Dockerfile;
 import io.mcdocker.launcher.content.ClientType;
 import io.mcdocker.launcher.content.Version;
+import io.mcdocker.launcher.content.mods.Mod;
+import io.mcdocker.launcher.content.mods.impl.modrinth.Modrinth;
 import io.mcdocker.launcher.launch.LaunchWrapper;
 import io.mcdocker.launcher.utils.Logger;
 import javafx.fxml.FXMLLoader;
@@ -37,6 +39,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import static io.mcdocker.launcher.utils.FXUtils.editFx;
 
@@ -55,6 +58,8 @@ public class PlayButton extends AnchorPane {
             if (containers.size() == 0) containers.add(new Container(new Dockerfile()));
 
             Container container = containers.get(0);
+            container.getDockerfile().setMods(new Modrinth().getMods().join().stream().map(Mod::getManifest).collect(Collectors.toList()));
+            container.save();
 
             button.load();
 

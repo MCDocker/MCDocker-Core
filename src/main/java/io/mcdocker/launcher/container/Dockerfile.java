@@ -18,6 +18,10 @@
 
 package io.mcdocker.launcher.container;
 
+import io.mcdocker.launcher.content.mods.ModManifest;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Dockerfile {
@@ -26,6 +30,7 @@ public class Dockerfile {
 
     private String name = "Untitled";
     private String version = "1.8.9";
+    private List<ModManifest> mods = new ArrayList<>();
 
     @Deprecated
     public void setId(UUID id) {
@@ -50,6 +55,14 @@ public class Dockerfile {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public List<ModManifest> getMods() {
+        return mods;
+    }
+
+    public void setMods(List<ModManifest> mods) {
+        this.mods = mods;
     }
 
 }
