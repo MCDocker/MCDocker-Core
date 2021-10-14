@@ -23,11 +23,12 @@ import io.mcdocker.launcher.content.Filter;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public interface ModProvider<FILTER extends Filter, MOD extends Mod<?>> {
+public interface ModProvider<FILTER extends Filter, MOD extends Mod<ModManifest>> {
 
-    CompletableFuture<List<MOD>> getMods(FILTER filter);
-    default CompletableFuture<List<MOD>> getMods() {
+    CompletableFuture<List<ModDetails<MOD>>> getMods(FILTER filter);
+    default CompletableFuture<List<ModDetails<MOD>>> getMods() {
         return getMods(null);
     }
+    CompletableFuture<ModDetails<MOD>> getMod(String id);
 
 }

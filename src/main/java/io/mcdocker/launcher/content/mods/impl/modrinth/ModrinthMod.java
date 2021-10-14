@@ -18,72 +18,23 @@
 
 package io.mcdocker.launcher.content.mods.impl.modrinth;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.mcdocker.launcher.content.ClientType;
 import io.mcdocker.launcher.content.mods.Mod;
-import io.mcdocker.launcher.content.mods.ModVersion;
-import io.mcdocker.launcher.utils.http.Method;
-import io.mcdocker.launcher.utils.http.RequestBuilder;
+import io.mcdocker.launcher.content.mods.ModManifest;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+public class ModrinthMod extends Mod<ModManifest> {
 
-public class ModrinthMod extends Mod<ModrinthManifest> {
-
-    private static final Gson gson = new Gson();
-    private static final String URL = "https://api.modrinth.com";
-
-    public ModrinthMod(JsonObject data) {
-        super(new ModrinthManifest(
-                data.get("mod_id").getAsString(),
-                null,
-                data.get("title").getAsString(),
-                data.get("description").getAsString(),
-                ClientType.CUSTOM, // TODO: Make this not custom.
-                data.get("page_url").getAsString(),
-                data.get("author").getAsString(),
-                data.get("icon_url").getAsString()
+    public ModrinthMod(String name, JsonObject data) {
+        super(new ModManifest(
+                name,
+                data.get("mod_id").getAsString().replace("local-", ""),
+                data.get("id").getAsString(),
+                ModrinthMod.class.getName()
         ));
     }
 
-    public ModrinthMod(ModrinthManifest manifest) {
+    public ModrinthMod(ModManifest manifest) {
         super(manifest);
-    }
-
-    @Override
-    public CompletableFuture<Set<ModVersion>> getVersions() {
-        return CompletableFuture.supplyAsync(() -> {
-            JsonObject response = gson.fromJson(RequestBuilder.getBuilder()
-                    .setURL(URL + "/api/v1/mod/" + manifest.getId().replace("local-", "")) // Why do I have to do this??
-                    .setMethod(Method.GET)
-                    .send(true), JsonObject.class);
-            Set<ModVersion> versions = new HashSet<>();
-            for (JsonElement v : response.get("versions").getAsJsonArray()) {
-                String version = v.getAsString();
-                versions.add(new ModVersion(version) {
-                    @Override
-                    public CompletableFuture<String> getDownloadUrl() {
-                        return CompletableFuture.supplyAsync(() -> {
-                            JsonObject response = gson.fromJson(RequestBuilder.getBuilder()
-                                    .setURL(URL + "/api/v1/version/" + version)
-                                    .setMethod(Method.GET)
-                                    .send(true), JsonObject.class);
-                            JsonArray files = response.get("files").getAsJsonArray();
-                            for (JsonElement f : files) {
-                                JsonObject file = f.getAsJsonObject();
-                                if (file.get("primary").getAsBoolean()) return file.get("url").getAsString();
-                            }
-                            return files.get(0).getAsJsonObject().get("url").getAsString();
-                        });
-                    }
-                });
-            }
-            return versions;
-        });
     }
 
 }

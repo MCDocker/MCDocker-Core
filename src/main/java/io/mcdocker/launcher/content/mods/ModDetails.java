@@ -18,46 +18,26 @@
 
 package io.mcdocker.launcher.content.mods;
 
-public class ModManifest {
+import java.util.concurrent.CompletableFuture;
 
-    private String name;
-    private String id;
-    private String version;
-    private final String type;
+public abstract class ModDetails<T extends Mod<ModManifest>> {
 
-    public ModManifest(String name, String id, String version, String type) {
+    private final String name;
+    private final String id;
+
+    public ModDetails(String name, String id) {
         this.name = name;
         this.id = id;
-        this.version = version;
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getName() {
+        return name;
     }
 
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getType() {
-        return type;
-    }
+    public abstract CompletableFuture<T> getVersion(String version);
 
 }

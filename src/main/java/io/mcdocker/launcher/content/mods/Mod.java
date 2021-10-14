@@ -19,8 +19,6 @@
 package io.mcdocker.launcher.content.mods;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 public abstract class Mod<T extends ModManifest> {
 
@@ -29,8 +27,6 @@ public abstract class Mod<T extends ModManifest> {
     public Mod(T manifest) {
         this.manifest = manifest;
     }
-
-    public abstract CompletableFuture<Set<ModVersion>> getVersions();
 
     public String getName() {
         return manifest.getName();

@@ -21,6 +21,7 @@ package io.mcdocker.launcher.content.mods.impl.modrinth;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.mcdocker.launcher.content.mods.ModDetails;
 import io.mcdocker.launcher.content.mods.ModProvider;
 import io.mcdocker.launcher.utils.http.Method;
 import io.mcdocker.launcher.utils.http.RequestBuilder;
@@ -32,23 +33,50 @@ import java.util.concurrent.CompletableFuture;
 public class Modrinth implements ModProvider<ModrinthFilter, ModrinthMod> {
 
     private static final Gson gson = new Gson();
-
-    private final String URL = "https://api.modrinth.com";
+    private static final String URL = "https://api.modrinth.com";
 
     @Override
-    public CompletableFuture<List<ModrinthMod>> getMods(ModrinthFilter filter) {
+    public CompletableFuture<List<ModDetails<ModrinthMod>>> getMods(ModrinthFilter filter) {
         return CompletableFuture.supplyAsync(() -> {
             JsonObject response = gson.fromJson(RequestBuilder.getBuilder()
                     .setURL(URL + "/api/v1/mod" + (filter == null ? "" : "?" + filter.getQuery()))
                     .setMethod(Method.GET)
                     .send(true), JsonObject.class);
-            List<ModrinthMod> mods = new ArrayList<>();
+            List<ModDetails<ModrinthMod>> mods = new ArrayList<>();
             for (JsonElement hit : response.get("hits").getAsJsonArray()) {
-                JsonObject mod = hit.getAsJsonObject();
-                mods.add(new ModrinthMod(mod));
+                JsonObject data = hit.getAsJsonObject();
+                mods.add(getMod(data, "mod_id"));
             }
             return mods;
         });
+    }
+
+    @Override
+    public CompletableFuture<ModDetails<ModrinthMod>> getMod(String id) {
+        return CompletableFuture.supplyAsync(() -> {
+            String response = RequestBuilder.getBuilder()
+                    .setURL(URL + "/api/v1/mod/" + id)
+                    .setMethod(Method.GET)
+                    .send(true);
+            if (response == null) return null;
+            return getMod(gson.fromJson(response, JsonObject.class), "id");
+        });
+    }
+
+    private ModDetails<ModrinthMod> getMod(JsonObject data, String idKey) {
+        String name = data.get("title").getAsString();
+        return new ModDetails<>(name, data.get(idKey).getAsString().replace("local-", "")) {
+            @Override
+            public CompletableFuture<ModrinthMod> getVersion(String version) {
+                return CompletableFuture.supplyAsync(() -> {
+                    JsonObject response = gson.fromJson(RequestBuilder.getBuilder()
+                            .setURL(URL + "/api/v1/version/" + version)
+                            .setMethod(Method.GET)
+                            .send(true), JsonObject.class);
+                    return new ModrinthMod(name, response);
+                });
+            }
+        };
     }
 
 }

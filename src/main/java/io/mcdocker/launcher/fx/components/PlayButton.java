@@ -27,7 +27,6 @@ import io.mcdocker.launcher.content.clients.Client;
 import io.mcdocker.launcher.content.clients.ClientManifest;
 import io.mcdocker.launcher.content.clients.impl.vanilla.Vanilla;
 import io.mcdocker.launcher.content.clients.impl.vanilla.VanillaManifest;
-import io.mcdocker.launcher.content.mods.Mod;
 import io.mcdocker.launcher.content.mods.impl.modrinth.Modrinth;
 import io.mcdocker.launcher.launch.LaunchWrapper;
 import io.mcdocker.launcher.utils.Logger;
@@ -39,10 +38,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import static io.mcdocker.launcher.utils.FXUtils.editFx;
 
@@ -63,10 +62,10 @@ public class PlayButton extends AnchorPane {
             if (containers.size() == 0) containers.add(new Container(new Dockerfile()));
 
             Container container = containers.get(0);
-            container.getDockerfile().setMods(new Modrinth().getMods().join().stream().map(Mod::getManifest).collect(Collectors.toList()));
+            container.getDockerfile().setMods(Collections.singletonList(new Modrinth().getMod("AANobbMI").join().getVersion("YAGZ1cCS").join().getManifest()));
             VanillaManifest client = container.getDockerfile().getClient(VanillaManifest.class);
             if (client == null) {
-                client = new Vanilla().getClient("1.12.2").join().get().getManifest();
+                client = new Vanilla().getClient("1.8.9").join().get().getManifest();
                 container.getDockerfile().setClient(client);
             }
             container.save();
