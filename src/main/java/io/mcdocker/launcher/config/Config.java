@@ -1,3 +1,23 @@
+/*
+ *
+ *   MCDocker, an open source Minecraft launcher.
+ *   Copyright (C) 2021 MCDocker
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.mcdocker.launcher.config;
 
 import com.google.gson.Gson;
@@ -45,9 +65,22 @@ public class Config {
         }
     }
 
+    public void save(JsonObject cfg) {
+        try {
+            FileWriter writer = new FileWriter(configFile);
+
+            writer.write(gson.toJson(cfg));
+            writer.flush();
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public ConfigSerializer getConfigSerialized() {
         try {
-            JsonReader reader = new JsonReader(new FileReader(configFile));
+            JsonReader reader = new JsonReader(new FileReader(configFile)   );
             return gson.fromJson(reader, ConfigSerializer.class);
         } catch (FileNotFoundException e) {
             Logger.err("Config file not found");
@@ -71,7 +104,28 @@ public class Config {
         return deepSearch(name, getConfigJson());
     }
 
-    public Object deepSearch(String name, JsonObject obj) {
+    public void saveOption(String name, Object value) {
+        JsonElement element = deepSearch(name, getConfigJson());
+        if(element == null) return;
+
+        try {
+            JsonReader reader = new JsonReader(new FileReader(configFile));
+            JsonObject config = gson.fromJson(reader, JsonObject.class);
+
+            if(value instanceof String) config.getAsJsonObject(name.split("\\.")[0]).addProperty(name.split("\\.")[1], String.valueOf(value));
+            else if(value instanceof Boolean) config.getAsJsonObject(name.split("\\.")[0]).addProperty(name.split("\\.")[1], Boolean.valueOf(String.valueOf(value)));
+            else if(value instanceof Number) config.getAsJsonObject(name.split("\\.")[0]).addProperty(name.split("\\.")[1], Double.valueOf(String.valueOf(value)));
+
+            save(config);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public JsonElement deepSearch(String name, JsonObject obj) {
         try {
             List<String> path = new LinkedList<>(Arrays.asList(name.split("\\.")));
             if(path.size() == 1) {

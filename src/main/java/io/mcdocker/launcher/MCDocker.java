@@ -19,6 +19,7 @@
 package io.mcdocker.launcher;
 
 import io.mcdocker.launcher.config.Config;
+import io.mcdocker.launcher.discord.Discord;
 import io.mcdocker.launcher.fx.MainScene;
 import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.OSUtils;
@@ -28,6 +29,9 @@ import java.io.IOException;
 public class MCDocker {
 
     private static String[] arguments = new String[]{};
+    private final static Discord discord = new Discord();
+
+    public final static String version = "0.1.0";
 
     public static void main(String[] args) throws IOException {
         OSUtils.getUserDataFile().mkdir();
@@ -45,6 +49,9 @@ public class MCDocker {
 
         Thread shutdownHook = new Thread(MCDocker::shutdown);
         Runtime.getRuntime().addShutdownHook(shutdownHook);
+
+        discord.init();
+
         MainScene.launch(MainScene.class, args);
     }
 
@@ -61,6 +68,7 @@ public class MCDocker {
 
     private static void shutdown() {
         Logger.log("MCDocker is shutting down\r\n");
+        discord.shutdown();
     }
 
 }

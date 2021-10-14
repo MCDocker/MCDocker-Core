@@ -51,7 +51,7 @@ public class SettingsScene extends ScrollPane {
 
                 List<SettingsEntry> entries = new ArrayList<>();
                 for(Map.Entry<String, JsonElement> setting : obj.getValue().getAsJsonObject().entrySet()) {
-                    entries.add(new SettingsEntry(setting.getKey(), "desc", setting.getValue())); // TODO: Implment descriptions
+                    entries.add(new SettingsEntry(category, setting.getKey(), "description", setting.getValue())); // TODO: Implment descriptions
                 }
 
                 settingsList.getChildren().add(new SettingsGroup(category, entries));

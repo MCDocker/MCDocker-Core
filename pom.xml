@@ -18,6 +18,10 @@
             <id>jtoml</id>
             <url>https://raw.github.com/agrison/jtoml/mvn-repo/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -38,6 +42,12 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.JnCrMx</groupId>
+            <artifactId>discord-game-sdk4j</artifactId>
+            <version>0.5.4</version>
+        </dependency>
+
         <!-- General End -->
 
         <!-- Data -->
