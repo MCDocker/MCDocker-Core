@@ -26,62 +26,57 @@ import de.jcm.discordgamesdk.activity.Activity;
 import de.jcm.discordgamesdk.activity.ActivityType;
 import io.mcdocker.launcher.MCDocker;
 import io.mcdocker.launcher.config.Config;
-import io.mcdocker.launcher.utils.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Discord {
 
     private Core core;
-    private boolean quit = false;
+    private boolean running = true;
 
-    public void init() throws IOException {
-        File sdk = DiscordUtils.downloadDiscordSDK();
-        if (sdk == null) {
-            Logger.log("SDK is null. Continuing");
-            return;
-        }
-
-        Core.init(sdk);
+    public void init() {
         CompletableFuture.runAsync(() -> {
-            try(CreateParams params = new CreateParams()) {
+            try {
+                File sdk = DiscordUtils.downloadDiscordSDK();
+                if (sdk == null) return;
+
+                Core.init(sdk);
+                CreateParams params = new CreateParams();
                 params.setClientID(889845849578962964L);
                 params.setFlags(CreateParams.getDefaultFlags());
 
-                try(Core core = new Core(params)) {
-                    this.core = core;
+                Core core = new Core(params);
+                this.core = core;
 
-                    Activity activity = new Activity();
-                    activity.timestamps().setStart(Instant.now());
-                    activity.setType(ActivityType.PLAYING);
-                    activity.setDetails("Using MCDocker");
-                    activity.assets().setLargeImage("logo_background");
-                    activity.assets().setLargeText("Version " + MCDocker.version);
+                Activity activity = new Activity();
+                activity.timestamps().setStart(Instant.now());
+                activity.setType(ActivityType.PLAYING);
+                activity.setDetails("Using MCDocker");
+                activity.assets().setLargeImage("logo_background");
+                activity.assets().setLargeText("v" + MCDocker.version);
 
-                    changeRPC(activity);
+                changeRPC(activity);
 
-                    while(Config.getConfig().getConfigSerialized().general.DiscordRPC) {
-                        core.runCallbacks();
-                        try { Thread.sleep(16);}
-                        catch(InterruptedException e) { e.printStackTrace(); }
+                while (running) {
+                    if (Config.getConfig().getConfigSerialized().general.DiscordRPC) core.runCallbacks();
+                    try {
+                        Thread.sleep(16);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
 
     }
 
     public void shutdown() {
-        quit = true;
+        running = false;
         core.close();
     }
 
