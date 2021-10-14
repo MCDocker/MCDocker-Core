@@ -36,7 +36,6 @@ public class DiscordUtils {
         String name = "discord_game_sdk";
         String suffix;
 
-
         String arch = System.getProperty("os.arch").toLowerCase(Locale.ROOT);
 
         switch (OSUtils.getOperatingSystem()) {
@@ -47,20 +46,18 @@ public class DiscordUtils {
             case OTHER: throw new RuntimeException("Cannot determine OS Type");
         }
 
-        if(arch.equals("amd64"))
-            arch = "x86_64";
+        if (arch.equals("amd64")) arch = "x86_64";
 
-        File launcher_natives = new File(OSUtils.getUserData() + File.separator + "launcher_natives");
-        launcher_natives.mkdir();
+        File launcherNatives = new File(OSUtils.getUserDataFile(), "launcher_natives");
+        if (!launcherNatives.exists()) launcherNatives.mkdir();
 
-        File dir = new File(launcher_natives + File.separator + "discord");
-        dir.mkdir();
+        File dir = new File(launcherNatives, "discord");
+        if (!dir.exists()) dir.mkdir();
 
-        File discordSDK = new File(dir + File.separator + name + suffix);
+        File discordSDK = new File(dir, name + suffix);
+        if (discordSDK.exists()) return discordSDK;
 
-        if(discordSDK.exists()) return discordSDK;
-
-        String zipPath = "lib" + File.separator + arch + File.separator + name + suffix;
+        String zipPath = "lib/" + arch + "/" + name + suffix;
 
         URL downloadUrl = new URL("https://dl-game-sdk.discordapp.net/2.5.6/discord_game_sdk.zip");
         ZipInputStream zin = new ZipInputStream(downloadUrl.openStream());
