@@ -20,7 +20,8 @@
 
 package io.mcdocker.launcher.discord;
 
-import io.mcdocker.launcher.utils.OSUtils;
+import io.mcdocker.launcher.utils.Folders;
+import io.mcdocker.launcher.utils.OperatingSystem;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +39,7 @@ public class DiscordUtils {
 
         String arch = System.getProperty("os.arch").toLowerCase(Locale.ROOT);
 
-        switch (OSUtils.getOperatingSystem()) {
+        switch (OperatingSystem.OS) {
             case WINDOWS: suffix = ".dll"; break;
             case LINUX: suffix = ".so"; break;
             case MACOS: suffix = ".dylib"; break;
@@ -48,7 +49,7 @@ public class DiscordUtils {
 
         if (arch.equals("amd64")) arch = "x86_64";
 
-        File launcherNatives = new File(OSUtils.getUserDataFile(), "launcher_natives");
+        File launcherNatives = new File(Folders.USER_DATA, "launcher_natives");
         if (!launcherNatives.exists()) launcherNatives.mkdir();
 
         File dir = new File(launcherNatives, "discord");

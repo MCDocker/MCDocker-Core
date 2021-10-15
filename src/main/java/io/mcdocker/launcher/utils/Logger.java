@@ -29,7 +29,7 @@ import java.util.Date;
 public class Logger {
 
     private static String date = new SimpleDateFormat("dd-MM-yy").format(new Date().getTime());
-    private final static File logFile = new File(OSUtils.getUserData() + "logs/log-" + date + ".log");
+    private final static File logFile = new File(new File(Folders.USER_DATA, "logs"), "log-" + date + ".log");
 
     public static void log(Object log) {
         try {

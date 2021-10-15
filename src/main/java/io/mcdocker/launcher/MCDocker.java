@@ -21,8 +21,9 @@ package io.mcdocker.launcher;
 import io.mcdocker.launcher.config.Config;
 import io.mcdocker.launcher.discord.Discord;
 import io.mcdocker.launcher.fx.MainScene;
+import io.mcdocker.launcher.utils.Folders;
 import io.mcdocker.launcher.utils.Logger;
-import io.mcdocker.launcher.utils.OSUtils;
+import io.mcdocker.launcher.utils.OperatingSystem;
 
 import java.io.IOException;
 
@@ -34,18 +35,18 @@ public class MCDocker {
     public final static String version = "0.1.0";
 
     public static void main(String[] args) throws IOException {
-        OSUtils.getUserDataFile().mkdir();
+        Folders.USER_DATA.mkdirs();
 
         Logger.log("MCDocker starting");
 
         arguments = args;
 
         Logger.log("Using Java Version - " + System.getProperty("java.version"));
-        Logger.log("MCDocker resources location: " + OSUtils.getUserData());
+        Logger.log("MCDocker resources location: " + Folders.USER_DATA);
 
         Config.getConfig().init();
 
-        Logger.log("Operating System - " + OSUtils.getOperatingSystem().getName());
+        Logger.log("Operating System - " + OperatingSystem.OS.getName());
 
         Thread shutdownHook = new Thread(MCDocker::shutdown);
         Runtime.getRuntime().addShutdownHook(shutdownHook);

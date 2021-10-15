@@ -19,7 +19,7 @@
 package io.mcdocker.launcher.container;
 
 import com.google.gson.Gson;
-import io.mcdocker.launcher.utils.OSUtils;
+import io.mcdocker.launcher.utils.Folders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +33,7 @@ import java.util.List;
 public class Container {
 
     private static final Gson gson = new Gson();
-    private static final File containersFolder = new File(OSUtils.getUserDataFile(), "containers");
+    private static final File containersFolder = new File(Folders.USER_DATA, "containers");
     private static final String dockerfileName = "mcdocker.json";
 
     private final File folder;

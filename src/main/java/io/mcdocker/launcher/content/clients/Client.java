@@ -21,7 +21,8 @@ package io.mcdocker.launcher.content.clients;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import io.mcdocker.launcher.utils.OSUtils;
+import io.mcdocker.launcher.utils.Folders;
+import io.mcdocker.launcher.utils.OperatingSystem;
 import io.mcdocker.launcher.utils.http.HTTPUtils;
 import io.mcdocker.launcher.utils.http.Method;
 import io.mcdocker.launcher.utils.http.RequestBuilder;
@@ -39,10 +40,10 @@ import java.util.stream.StreamSupport;
 public abstract class Client<T extends ClientManifest> {
 
     protected static final Gson gson = new Gson();
-    protected static final File javaFolder = new File(OSUtils.getUserDataFile(), "java");
-    protected static final File librariesFolder = new File(OSUtils.getUserDataFile(), "libraries");
-    protected static final File nativesFolder = new File(OSUtils.getUserDataFile(), "natives");
-    protected static final File assetsFolder = new File(OSUtils.getUserDataFile(), "assets");
+    protected static final File javaFolder = new File(Folders.USER_DATA, "java");
+    protected static final File librariesFolder = new File(Folders.USER_DATA, "libraries");
+    protected static final File nativesFolder = new File(Folders.USER_DATA, "natives");
+    protected static final File assetsFolder = new File(Folders.USER_DATA, "assets");
 
     protected final T manifest;
 
@@ -64,7 +65,7 @@ public abstract class Client<T extends ClientManifest> {
 
         return CompletableFuture.supplyAsync(() -> {
             String tempOs = "linux";
-            switch (OSUtils.getOperatingSystem()) {
+            switch (OperatingSystem.OS) {
                 case MACOS:
                     tempOs = "mac";
                 case WINDOWS:
@@ -72,7 +73,7 @@ public abstract class Client<T extends ClientManifest> {
             }
             final String os = tempOs;
             String tempArch = "x64";
-            switch (OSUtils.getArchitecture()) { // TODO: Add more architectures.
+            switch (System.getProperty("os.arch")) { // TODO: Add more architectures.
                 case "amd64":
                     tempArch = "x64";
             }
