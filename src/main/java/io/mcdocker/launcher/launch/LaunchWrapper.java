@@ -21,8 +21,9 @@ package io.mcdocker.launcher.launch;
 import io.mcdocker.launcher.auth.Account;
 import io.mcdocker.launcher.container.Container;
 import io.mcdocker.launcher.content.clients.Client;
+import io.mcdocker.launcher.utils.Folders;
 import io.mcdocker.launcher.utils.Logger;
-import io.mcdocker.launcher.utils.OSUtils;
+import io.mcdocker.launcher.utils.OperatingSystem;
 import io.mcdocker.launcher.utils.StringUtils;
 
 import java.io.File;
@@ -33,9 +34,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class LaunchWrapper {
 
-    private static final File versionsFolder = new File(OSUtils.getUserData() + "versions");
-    private final static File nativesFolder = new File(OSUtils.getUserData() + "natives");
-    private final static File assetsFolder = new File(OSUtils.getUserData() + "assets");
+    private static final File versionsFolder = new File(Folders.USER_DATA, "versions");
+    private final static File nativesFolder = new File(Folders.USER_DATA, "natives");
+    private final static File assetsFolder = new File(Folders.USER_DATA, "assets");
 
     private final Container container;
     private final Client<?> client;
@@ -74,10 +75,10 @@ public class LaunchWrapper {
                 Logger.log(StringUtils.format("Finished downloading in ${0}ms.", end - start));
 
                 StringBuilder librariesBuilder = new StringBuilder();
-                librariesList.forEach(s -> librariesBuilder.append(s.replace("\\", "/")).append((OSUtils.isWindows() ? ";" : ":")));
+                librariesList.forEach(s -> librariesBuilder.append(s.replace("\\", "/")).append((OperatingSystem.OS == OperatingSystem.WINDOWS ? ";" : ":")));
                 if (librariesBuilder.length() == 0) throw new Exception("Libraries length is 0");
                 librariesBuilder.deleteCharAt(librariesBuilder.toString().length() - 1);
-                String libraries = librariesBuilder + (OSUtils.isWindows() ? ";" : ":") + versionsFolder.getPath().replace("\\", "/") + "/" + client.getTypeName() + "/" + client.getManifest().getName() + ".jar";
+                String libraries = librariesBuilder + (OperatingSystem.OS == OperatingSystem.WINDOWS ? ";" : ":") + versionsFolder.getPath().replace("\\", "/") + "/" + client.getTypeName() + "/" + client.getManifest().getName() + ".jar";
 
                 String arguments = client.getManifest().getStartupArguments()
                         .replace("${auth_player_name}", account.getUsername())

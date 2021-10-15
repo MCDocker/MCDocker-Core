@@ -23,7 +23,7 @@ import com.google.gson.JsonObject;
 import io.mcdocker.launcher.auth.Account;
 import io.mcdocker.launcher.auth.AuthenticationException;
 import io.mcdocker.launcher.auth.EmailPasswordAuthentication;
-import io.mcdocker.launcher.utils.OSUtils;
+import io.mcdocker.launcher.utils.Folders;
 import io.mcdocker.launcher.utils.http.Method;
 import io.mcdocker.launcher.utils.http.RequestBuilder;
 
@@ -43,7 +43,7 @@ public class MojangAuth implements EmailPasswordAuthentication {
     private final JsonObject payload = new JsonObject();
 
     public MojangAuth() {
-        File file = new File(OSUtils.getMinecraftPath() + "clientId.txt"); // Use the same clientToken as the vanilla launcher so other accessTokens aren't invalidated.
+        File file = new File(Folders.MINECRAFT, "clientId.txt"); // Use the same clientToken as the vanilla launcher so other accessTokens aren't invalidated.
         String clientId = UUID.randomUUID().toString();
         try {
             if (!file.exists()) {

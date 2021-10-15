@@ -25,11 +25,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
+import io.mcdocker.launcher.utils.Folders;
 import io.mcdocker.launcher.utils.Logger;
-import io.mcdocker.launcher.utils.OSUtils;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,7 +38,7 @@ public class Config {
     private static final Config INSTANCE = new Config();
     public static Config getConfig() {return INSTANCE;}
 
-    private final File configFile = new File(OSUtils.getUserData() + File.separator + "config.json");
+    private final File configFile = new File(Folders.USER_DATA, "config.json");
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public void init() throws IOException {

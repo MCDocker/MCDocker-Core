@@ -22,7 +22,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.mcdocker.launcher.content.clients.Client;
-import io.mcdocker.launcher.utils.OSUtils;
+import io.mcdocker.launcher.utils.Folders;
+import io.mcdocker.launcher.utils.OperatingSystem;
 import io.mcdocker.launcher.utils.http.HTTPUtils;
 import io.mcdocker.launcher.utils.http.Method;
 import io.mcdocker.launcher.utils.http.RequestBuilder;
@@ -41,7 +42,7 @@ import java.util.concurrent.CompletableFuture;
 public class VanillaClient extends Client<VanillaManifest> {
 
     private final JsonObject data;
-    private final File versionsFolder = new File(OSUtils.getUserDataFile(), "versions/" + getTypeName());
+    private final File versionsFolder = new File(Folders.USER_DATA, "versions/" + getTypeName());
 
     public VanillaClient(String dataUrl, JsonObject data) {
         super(new VanillaManifest(
@@ -166,7 +167,7 @@ public class VanillaClient extends Client<VanillaManifest> {
 
                 JsonObject nativePlatform = null;
 
-                switch (OSUtils.getOperatingSystem()) {
+                switch (OperatingSystem.OS) {
                     case WINDOWS:
                         if (classifiers.has("natives-windows"))
                             nativePlatform = classifiers.getAsJsonObject("natives-windows");
