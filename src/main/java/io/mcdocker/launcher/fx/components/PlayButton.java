@@ -34,6 +34,7 @@ import io.mcdocker.launcher.utils.Logger;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -78,25 +79,38 @@ public class PlayButton extends AnchorPane {
             btn.setText(playText);
             ClientManifest finalClient = client;
             btn.setOnAction(actionEvent -> {
-                try {
-                    Client<?> c = Client.of(finalClient);
-                    LaunchWrapper launchWrapper = new LaunchWrapper(container, c);
-                    Process process = launchWrapper.launch(accountFuture.get()).get();
-                    editFx(() -> {
-                        btn.setDisable(true);
-                        btn.setText("LAUNCHED");
-                    });
-                    BufferedReader input = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                    String line;
-                    while ((line = input.readLine()) != null) Logger.debug(line);
-                    input.close();
-                    editFx(() -> {
-                        btn.setDisable(false);
-                        btn.setText(playText);
-                    });
-                } catch (IOException | InterruptedException | ExecutionException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        Client<?> c = Client.of(finalClient);
+                        LaunchWrapper launchWrapper = new LaunchWrapper(container, c);
+                        Process process = launchWrapper.launch(accountFuture.get()).get();
+
+                        editFx(() -> {
+                            btn.setDisable(true);
+                            btn.setText("LAUNCHED");
+                        });
+
+                        BufferedReader input = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                        String line;
+                        while ((line = input.readLine()) != null) Logger.log(line);
+                        input.close();
+
+                        editFx(() -> {
+                            btn.setDisable(false);
+                            btn.setText(playText);
+                        });
+
+                        process.onExit().thenRun(() -> {
+                           if(process.exitValue() != 0) {
+
+                           }
+                        });
+
+                    } catch (IOException | InterruptedException | ExecutionException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                });
             });
         } catch (IOException e) {
             e.printStackTrace();

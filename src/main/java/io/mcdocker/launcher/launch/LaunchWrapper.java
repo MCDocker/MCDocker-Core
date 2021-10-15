@@ -93,12 +93,13 @@ public class LaunchWrapper {
                         .replace("${user_type}", "1") // TODO: Figure out user types.
                         .replace("${natives}", nativesFolder + "/" + client.getManifest().getName() + "/")
                         .replace("${libraries}", libraries)
-                        .replace("${min_memory}", "2048")
-                        .replace("${max_memory}", "8128")
+                        .replace("${min_memory}", "512")
+                        .replace("${max_memory}", "2048")
                         .replace("${main_class}", client.getManifest().getMainClass())
                         .replace("${version_type}", "MCDocker");
 
-                return Runtime.getRuntime().exec(javaPath.get() + " " + arguments, new String[0], container.getFolder());
+//                return Runtime.getRuntime().exec(javaPath.get() + " " + arguments, new String[0], container.getFolder());
+                return Runtime.getRuntime().exec(javaPath.get() + " " + arguments, null, container.getFolder()); // Set as null in order to work for
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
