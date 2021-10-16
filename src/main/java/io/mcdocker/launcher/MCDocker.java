@@ -18,6 +18,8 @@
 
 package io.mcdocker.launcher;
 
+import de.jcm.discordgamesdk.Core;
+import de.jcm.discordgamesdk.CreateParams;
 import io.mcdocker.launcher.config.Config;
 import io.mcdocker.launcher.discord.Discord;
 import io.mcdocker.launcher.fx.MainScene;
@@ -30,9 +32,9 @@ import java.io.IOException;
 public class MCDocker {
 
     private static String[] arguments = new String[]{};
-    private final static Discord discord = new Discord();
-
     public final static String version = "0.1.0";
+
+    private static Discord discord;
 
     public static void main(String[] args) throws IOException {
         Folders.USER_DATA.mkdirs();
@@ -51,7 +53,14 @@ public class MCDocker {
         Thread shutdownHook = new Thread(MCDocker::shutdown);
         Runtime.getRuntime().addShutdownHook(shutdownHook);
 
-        discord.init();
+        Discord.init();
+        try(CreateParams params = new CreateParams()) {
+            params.setFlags(CreateParams.getDefaultFlags());
+            params.setClientID(889845849578962964L);
+
+            discord = new Discord(new Core(params));
+            discord.start();
+        }
 
         MainScene.launch(MainScene.class, args);
     }
@@ -67,9 +76,13 @@ public class MCDocker {
         return "";
     }
 
+    public static Discord getDiscord() {
+        return discord;
+    }
+
     private static void shutdown() {
         Logger.log("MCDocker is shutting down\r\n");
-        discord.shutdown();
+        getDiscord().shutdown();
     }
 
 }

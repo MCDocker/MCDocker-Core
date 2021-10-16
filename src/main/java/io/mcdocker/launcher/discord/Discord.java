@@ -26,62 +26,86 @@ import de.jcm.discordgamesdk.activity.Activity;
 import de.jcm.discordgamesdk.activity.ActivityType;
 import io.mcdocker.launcher.MCDocker;
 import io.mcdocker.launcher.config.Config;
+import io.mcdocker.launcher.content.clients.Client;
+import io.mcdocker.launcher.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.concurrent.CompletableFuture;
+import java.util.Locale;
+import java.util.concurrent.*;
 
 public class Discord {
 
-    private Core core;
     private boolean running = true;
 
-    public void init() {
+    private final Core core;
+
+    public Discord(Core core) {
+        this.core = core;
+    }
+
+    public static void init() {
+        try {
+            File sdk = DiscordUtils.downloadDiscordSDK();
+            if (sdk == null) return;
+
+            Core.init(sdk);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void start() {
+        setPresence(presenceInit());
+
         CompletableFuture.runAsync(() -> {
-            try {
-                File sdk = DiscordUtils.downloadDiscordSDK();
-                if (sdk == null) return;
-
-                Core.init(sdk);
-                CreateParams params = new CreateParams();
-                params.setClientID(889845849578962964L);
-                params.setFlags(CreateParams.getDefaultFlags());
-
-                Core core = new Core(params);
-                this.core = core;
-
-                Activity activity = new Activity();
-                activity.timestamps().setStart(Instant.now());
-                activity.setType(ActivityType.PLAYING);
-                activity.setDetails("Using MCDocker");
-                activity.assets().setLargeImage("logo_background");
-                activity.assets().setLargeText("v" + MCDocker.version);
-
-                changeRPC(activity);
-
-                while (running) {
-                    if (Config.getConfig().getConfigSerialized().general.DiscordRPC) core.runCallbacks();
-                    try {
-                        Thread.sleep(16);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            while (running) {
+                core.runCallbacks();
+                try {
+                    Thread.sleep(16);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         });
-
     }
 
-    public void shutdown() {
-        running = false;
-        core.close();
-    }
-
-    private void changeRPC(Activity activity) {
+    public void setPresence(Activity activity) {
+        core.activityManager().clearActivity();
         core.activityManager().updateActivity(activity);
+    }
+
+    public void shutdown() { running = false; }
+
+    public static Activity presenceInit() {
+        Activity activity = new Activity();
+        activity.timestamps().setStart(Instant.now());
+        activity.setType(ActivityType.PLAYING);
+        activity.setDetails("Using MCDocker");
+        activity.assets().setLargeImage("logo_background");
+        activity.assets().setLargeText("v" + MCDocker.version);
+
+        return activity;
+    }
+
+    public static Activity presencePlaying(Client<?> client) {
+        Activity activity = new Activity();
+        activity.setDetails("Playing Minecraft");
+        activity.setState("Version " + client.getManifest().getName());
+        activity.setType(ActivityType.PLAYING);
+        activity.timestamps().setStart(Instant.now());
+        activity.assets().setLargeImage(getLargeImage(client));
+        activity.assets().setLargeText(StringUtils.uppercaseFirstLetterOfString(client.getTypeName()));
+
+        return activity;
+    }
+
+    private static String getLargeImage(Client<?> client) {
+        switch (client.getTypeName().toLowerCase()) {
+            case "vanilla": return "mc_vanilla";
+            default: return "mc_vanilla"; // TODO: Add 'mc_forge' for Forge and 'mc_fabric' for Fabric
+        }
     }
 
 }

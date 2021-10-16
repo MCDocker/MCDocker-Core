@@ -18,6 +18,7 @@
 
 package io.mcdocker.launcher.fx.components;
 
+import io.mcdocker.launcher.MCDocker;
 import io.mcdocker.launcher.auth.Account;
 import io.mcdocker.launcher.auth.Authentication;
 import io.mcdocker.launcher.auth.impl.OfflineAuth;
@@ -29,6 +30,7 @@ import io.mcdocker.launcher.content.clients.impl.vanilla.Vanilla;
 import io.mcdocker.launcher.content.clients.impl.vanilla.VanillaManifest;
 import io.mcdocker.launcher.content.mods.impl.curseforge.CurseForge;
 import io.mcdocker.launcher.content.mods.impl.modrinth.Modrinth;
+import io.mcdocker.launcher.discord.Discord;
 import io.mcdocker.launcher.launch.LaunchWrapper;
 import io.mcdocker.launcher.utils.Logger;
 import javafx.fxml.FXMLLoader;
@@ -89,6 +91,8 @@ public class PlayButton extends AnchorPane {
                         editFx(() -> {
                             btn.setDisable(true);
                             btn.setText("LAUNCHED");
+                            System.out.println(c);
+                            MCDocker.getDiscord().setPresence(Discord.presencePlaying(c));
                         });
 
                         BufferedReader input = new BufferedReader(new InputStreamReader(process.getErrorStream()));
@@ -99,11 +103,12 @@ public class PlayButton extends AnchorPane {
                         editFx(() -> {
                             btn.setDisable(false);
                             btn.setText(playText);
+                            MCDocker.getDiscord().setPresence(Discord.presenceInit());
                         });
 
                         process.onExit().thenRun(() -> {
                            if(process.exitValue() != 0) {
-
+                               new Popup("Game Crashed - " + process.exitValue(), "game crash error mesg");
                            }
                         });
 
