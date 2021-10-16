@@ -26,8 +26,10 @@ import io.mcdocker.launcher.fx.MainScene;
 import io.mcdocker.launcher.utils.Folders;
 import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.OperatingSystem;
+import javafx.application.Application;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 public class MCDocker {
 
@@ -59,7 +61,7 @@ public class MCDocker {
             params.setClientID(889845849578962964L);
 
             discord = new Discord(new Core(params));
-            discord.start();
+            CompletableFuture.runAsync(discord::start);
         }
 
         MainScene.launch(MainScene.class, args);

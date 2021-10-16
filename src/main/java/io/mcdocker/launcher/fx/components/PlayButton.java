@@ -63,10 +63,10 @@ public class PlayButton extends AnchorPane {
             if (containers.size() == 0) containers.add(new Container(new Dockerfile()));
 
             Container container = containers.get(0);
-            container.getDockerfile().setMods(List.of(
-                    new Modrinth().getMod("AANobbMI").join().getVersion("YAGZ1cCS").join().getManifest(),
-                    new CurseForge().getMod("238222").join().getVersion("2370313").join().getManifest()
-            ));
+//            container.getDockerfile().setMods(List.of(
+//                    new Modrinth().getMod("AANobbMI").join().getVersion("YAGZ1cCS").join().getManifest(),
+//                    new CurseForge().getMod("238222").join().getVersion("2370313").join().getManifest()
+//            ));
             VanillaManifest client = container.getDockerfile().getClient(VanillaManifest.class);
             if (client == null) {
                 client = new Vanilla().getClient("1.8.9").join().get().getManifest();
@@ -91,7 +91,6 @@ public class PlayButton extends AnchorPane {
                         editFx(() -> {
                             btn.setDisable(true);
                             btn.setText("LAUNCHED");
-                            System.out.println(c);
                             MCDocker.getDiscord().setPresence(Discord.presencePlaying(c));
                         });
 

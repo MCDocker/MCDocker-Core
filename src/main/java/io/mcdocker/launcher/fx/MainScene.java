@@ -18,7 +18,10 @@
 
 package io.mcdocker.launcher.fx;
 
+import io.mcdocker.launcher.MCDocker;
+import io.mcdocker.launcher.discord.Discord;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -61,6 +64,7 @@ public class MainScene extends Application {
             if(panel.getClass() == HomeScene.class) panel.setVisible(true);
             panels.getChildren().add(panel);
         }
+
     }
 
     public static List<Region> getPanelsList() {
@@ -77,6 +81,4 @@ public class MainScene extends Application {
         if (panelsList.contains(panel)) return;
         panelsList.add(panel);
     }
-
-
 }

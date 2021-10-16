@@ -59,7 +59,7 @@ public class Discord {
     public void start() {
         setPresence(presenceInit());
 
-        CompletableFuture.runAsync(() -> {
+//        CompletableFuture.runAsync(() -> {
             while (running) {
                 core.runCallbacks();
                 try {
@@ -68,7 +68,7 @@ public class Discord {
                     e.printStackTrace();
                 }
             }
-        });
+//        });
     }
 
     public void setPresence(Activity activity) {
@@ -76,7 +76,10 @@ public class Discord {
         core.activityManager().updateActivity(activity);
     }
 
-    public void shutdown() { running = false; }
+    public void shutdown() {
+//        core.close();
+        running = false;
+    }
 
     public static Activity presenceInit() {
         Activity activity = new Activity();
