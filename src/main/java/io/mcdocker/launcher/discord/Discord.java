@@ -27,6 +27,7 @@ import de.jcm.discordgamesdk.activity.ActivityType;
 import io.mcdocker.launcher.MCDocker;
 import io.mcdocker.launcher.config.Config;
 import io.mcdocker.launcher.content.clients.Client;
+import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.StringUtils;
 
 import java.io.File;
@@ -46,6 +47,7 @@ public class Discord {
     }
 
     public static void init() {
+        Logger.log("Initiating Discord");
         try {
             File sdk = DiscordUtils.downloadDiscordSDK();
             if (sdk == null) return;
@@ -59,16 +61,14 @@ public class Discord {
     public void start() {
         setPresence(presenceInit());
 
-//        CompletableFuture.runAsync(() -> {
-            while (running) {
-                core.runCallbacks();
-                try {
-                    Thread.sleep(16);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        while (running) {
+            core.runCallbacks();
+            try {
+                Thread.sleep(16);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-//        });
+        }
     }
 
     public void setPresence(Activity activity) {
@@ -77,7 +77,6 @@ public class Discord {
     }
 
     public void shutdown() {
-//        core.close();
         running = false;
     }
 
@@ -88,6 +87,7 @@ public class Discord {
         activity.setDetails("Using MCDocker");
         activity.assets().setLargeImage("logo_background");
         activity.assets().setLargeText("v" + MCDocker.version);
+
 
         return activity;
     }

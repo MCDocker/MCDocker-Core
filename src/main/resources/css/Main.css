@@ -41,6 +41,10 @@
     thirtyText: #FFFFFF4D;
 }
 
+* {
+    -fx-background-radius: 0px;
+}
+
 Button:focused {
 
 }

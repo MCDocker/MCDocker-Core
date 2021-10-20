@@ -29,9 +29,11 @@ import io.mcdocker.launcher.utils.Folders;
 import io.mcdocker.launcher.utils.Logger;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Config {
 
@@ -58,7 +60,6 @@ public class Config {
             writer.write(gson.toJson(cfg));
             writer.flush();
             writer.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -71,7 +72,6 @@ public class Config {
             writer.write(gson.toJson(cfg));
             writer.flush();
             writer.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,6 +121,29 @@ public class Config {
             e.printStackTrace();
         }
 
+    }
+
+    public ConfigCategory getCategory(String name) {
+
+        for(Field field : ConfigSerializer.class.getFields()) {
+            field.setAccessible(true);
+            if(field.getType() == ConfigCategory.class) {
+                try {
+                    ConfigCategory category = (ConfigCategory) field.get(new ConfigSerializer());
+                    if(category.name.equalsIgnoreCase(name)) return category;
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    public ConfigSetting getSetting(String name, ConfigCategory category) {
+        for(ConfigSetting setting : category.settings) {
+            if(setting.getName().equalsIgnoreCase(name)) return setting;
+        }
+        return null;
     }
 
 

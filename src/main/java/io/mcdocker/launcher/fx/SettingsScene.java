@@ -21,7 +21,9 @@ package io.mcdocker.launcher.fx;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.mcdocker.launcher.config.Config;
+import io.mcdocker.launcher.config.ConfigCategory;
 import io.mcdocker.launcher.config.ConfigSerializer;
+import io.mcdocker.launcher.config.ConfigSetting;
 import io.mcdocker.launcher.fx.components.ContainerEntry;
 import io.mcdocker.launcher.fx.components.settings.SettingsEntry;
 import io.mcdocker.launcher.fx.components.settings.SettingsGroup;
@@ -45,13 +47,21 @@ public class SettingsScene extends ScrollPane {
         try {
             scene.load();
 
+            JsonObject config = Config.getConfig().getConfigJson();
             VBox settingsList = (VBox) scene.getNamespace().get("settingsContainer");
-            for(Map.Entry<String, JsonElement> obj : Config.getConfig().getConfigJson().entrySet()) {
-                String category = obj.getKey();
+            for(Map.Entry<String, JsonElement> obj : config.entrySet()) {
+                String category = config.getAsJsonObject(obj.getKey()).get("name").getAsString();
 
                 List<SettingsEntry> entries = new ArrayList<>();
-                for(Map.Entry<String, JsonElement> setting : obj.getValue().getAsJsonObject().entrySet()) {
-                    entries.add(new SettingsEntry(category, setting.getKey(), "description", setting.getValue())); // TODO: Implment descriptions
+                for(Map.Entry<String, JsonElement> settings : obj.getValue().getAsJsonObject().entrySet()) {
+                    if(settings.getValue().isJsonArray()) {
+                        for(JsonElement setting : settings.getValue().getAsJsonArray()) {
+                            ConfigSetting stg = Config.getConfig().getSetting(setting.getAsJsonObject().get("name").getAsString(), Config.getConfig().getCategory(category));
+                            entries.add(new SettingsEntry(category, setting.getAsJsonObject().get("name").getAsString(), stg.getDescription(), setting.getAsJsonObject().get("value")));
+                        }
+                    }
+
+//                    entries.add(new SettingsEntry(category, , "description", setting.getValue())); // TODO: Implment descriptions
                 }
 
                 settingsList.getChildren().add(new SettingsGroup(category, entries));

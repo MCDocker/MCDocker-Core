@@ -52,35 +52,31 @@ public class SettingsEntry extends AnchorPane {
             Label labelName = (Label) lookup("#settingName");
             Label labelDescription = (Label) lookup("#settingDescription");
 
-            StringBuilder builder = new StringBuilder();
-            for(String str : name.split("_"))
-                builder.append(str).append(" ");
-
-            labelName.setText(builder.toString());
+            labelName.setText(name);
             labelDescription.setText(description);
 
-            if(value.getAsJsonPrimitive().isBoolean()) {
-                CheckBox cb = new CheckBox();
-                cb.setSelected(value.getAsBoolean());
-
-                cb.setOnAction((e) -> Config.getConfig().saveOption(category + "." + name, cb.isSelected()));
-
-                getChildren().add(cb);
-                setRightAnchor(cb, 5.00);
-            } else if(value.getAsJsonPrimitive().isString()) {
-                TextField field = new TextField();
-                field.setText(value.getAsString());
-
-                EventHandler<KeyEvent> event = keyEvent -> Config.getConfig().saveOption(category + "." + name, field.getText());
-                field.addEventHandler(KeyEvent.KEY_RELEASED, event);
-
-                getChildren().add(field);
-                setRightAnchor(field, 5.00);
-            }
-            else if(value.getAsJsonPrimitive().isNumber()) {
-                Spinner<Double> spinner = new Spinner<>();
-                // TODO: Do spinner
-            }
+//            if(value.getAsJsonPrimitive().isBoolean()) {
+//                CheckBox cb = new CheckBox();
+//                cb.setSelected(value.getAsBoolean());
+//
+//                cb.setOnAction((e) -> Config.getConfig().saveOption(category + "." + name, cb.isSelected()));
+//
+//                getChildren().add(cb);
+//                setRightAnchor(cb, 5.00);
+//            } else if(value.getAsJsonPrimitive().isString()) {
+//                TextField field = new TextField();
+//                field.setText(value.getAsString());
+//
+//                EventHandler<KeyEvent> event = keyEvent -> Config.getConfig().saveOption(category + "." + name, field.getText());
+//                field.addEventHandler(KeyEvent.KEY_RELEASED, event);
+//
+//                getChildren().add(field);
+//                setRightAnchor(field, 5.00);
+//            }
+//            else if(value.getAsJsonPrimitive().isNumber()) {
+//                Spinner<Double> spinner = new Spinner<>();
+//                // TODO: Do spinner
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();

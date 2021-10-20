@@ -35,7 +35,7 @@ public class OfflineAuth implements Authentication {
     }
 
     public OfflineAuth() {
-        this("TypeScripter");
+        this("Player");
     }
 
     @Override

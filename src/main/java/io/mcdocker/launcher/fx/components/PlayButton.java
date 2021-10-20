@@ -69,7 +69,7 @@ public class PlayButton extends AnchorPane {
 //            ));
             VanillaManifest client = container.getDockerfile().getClient(VanillaManifest.class);
             if (client == null) {
-                client = new Vanilla().getClient("1.8.9").join().get().getManifest();
+                client = new Vanilla().getClient("1.17").join().get().getManifest();
                 container.getDockerfile().setClient(client);
             }
             container.save();
@@ -82,44 +82,49 @@ public class PlayButton extends AnchorPane {
             ClientManifest finalClient = client;
             btn.setOnAction(actionEvent -> {
 
-                CompletableFuture.runAsync(() -> {
-                    try {
-                        Client<?> c = Client.of(finalClient);
-                        LaunchWrapper launchWrapper = new LaunchWrapper(container, c);
-                        Process process = launchWrapper.launch(accountFuture.get()).get();
+                play(finalClient, container, accountFuture, btn, playText);
 
-                        editFx(() -> {
-                            btn.setDisable(true);
-                            btn.setText("LAUNCHED");
-                            MCDocker.getDiscord().setPresence(Discord.presencePlaying(c));
-                        });
-
-                        BufferedReader input = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                        String line;
-                        while ((line = input.readLine()) != null) Logger.log(line);
-                        input.close();
-
-                        editFx(() -> {
-                            btn.setDisable(false);
-                            btn.setText(playText);
-                            MCDocker.getDiscord().setPresence(Discord.presenceInit());
-                        });
-
-                        process.onExit().thenRun(() -> {
-                           if(process.exitValue() != 0) {
-                               new Popup("Game Crashed - " + process.exitValue(), "game crash error mesg");
-                           }
-                        });
-
-                    } catch (IOException | InterruptedException | ExecutionException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                });
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    public void play(ClientManifest finalClient, Container container, CompletableFuture<Account> accountFuture, Button btn, String playText) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                Client<?> c = Client.of(finalClient);
+                LaunchWrapper launchWrapper = new LaunchWrapper(container, c);
+                Process process = launchWrapper.launch(accountFuture.get()).get();
+
+                editFx(() -> {
+                    btn.setDisable(true);
+                    btn.setText("LAUNCHED");
+                    MCDocker.getDiscord().setPresence(Discord.presencePlaying(c));
+                });
+
+                BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = input.readLine()) != null) Logger.log(line);
+                input.close();
+
+                editFx(() -> {
+                    btn.setDisable(false);
+                    btn.setText(playText);
+                    MCDocker.getDiscord().setPresence(Discord.presenceInit());
+                });
+
+                process.onExit().thenRun(() -> {
+                    if(process.exitValue() != 0) {
+                        new Popup("Game Crashed - " + process.exitValue(), "game crash error mesg");
+                    }
+                });
+
+            } catch (IOException | InterruptedException | ExecutionException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 }

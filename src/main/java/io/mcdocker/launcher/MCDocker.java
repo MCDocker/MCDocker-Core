@@ -55,14 +55,8 @@ public class MCDocker {
         Thread shutdownHook = new Thread(MCDocker::shutdown);
         Runtime.getRuntime().addShutdownHook(shutdownHook);
 
-        Discord.init();
-        try(CreateParams params = new CreateParams()) {
-            params.setFlags(CreateParams.getDefaultFlags());
-            params.setClientID(889845849578962964L);
-
-            discord = new Discord(new Core(params));
-            CompletableFuture.runAsync(discord::start);
-        }
+        initDiscord();
+        initArgs();
 
         MainScene.launch(MainScene.class, args);
     }
@@ -71,15 +65,33 @@ public class MCDocker {
     public static String getArgument(String argument) {
         for(String arg : getArguments()) {
             if(arg.split("=")[0].equalsIgnoreCase(argument)) {
-                if(arg.split("=").length > 0) return arg.split("=")[1];
+                if(arg.split("=").length != 1) return arg.split("=")[1];
                 else return arg;
             }
         }
-        return "";
+        return null;
     }
-
     public static Discord getDiscord() {
         return discord;
+    }
+
+    private static void initArgs() {
+        Logger.log("Initiating Arguments");
+
+        // Launch Wrapper Arguments
+
+
+    }
+
+    private static void initDiscord() {
+        Discord.init();
+        try(CreateParams params = new CreateParams()) {
+            params.setFlags(CreateParams.getDefaultFlags());
+            params.setClientID(889845849578962964L);
+
+            discord = new Discord(new Core(params));
+            CompletableFuture.runAsync(discord::start);
+        }
     }
 
     private static void shutdown() {
