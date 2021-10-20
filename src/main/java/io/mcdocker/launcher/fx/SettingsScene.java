@@ -27,7 +27,9 @@ import io.mcdocker.launcher.config.ConfigSetting;
 import io.mcdocker.launcher.fx.components.ContainerEntry;
 import io.mcdocker.launcher.fx.components.settings.SettingsEntry;
 import io.mcdocker.launcher.fx.components.settings.SettingsGroup;
+import io.mcdocker.launcher.utils.Logger;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
@@ -50,6 +52,16 @@ public class SettingsScene extends ScrollPane {
             JsonObject config = Config.getConfig().getConfigJson();
             VBox settingsList = (VBox) scene.getNamespace().get("settingsContainer");
             for(Map.Entry<String, JsonElement> obj : config.entrySet()) {
+
+                if(!config.has(obj.getKey()) || !config.get(obj.getKey()).isJsonObject()) {
+                    Logger.err("Not a valid setting");
+                    continue;
+                }
+
+                if(!config.getAsJsonObject(obj.getKey()).has("settings")) {
+                    continue;
+                }
+
                 String category = config.getAsJsonObject(obj.getKey()).get("name").getAsString();
 
                 List<SettingsEntry> entries = new ArrayList<>();
@@ -57,17 +69,23 @@ public class SettingsScene extends ScrollPane {
                     if(settings.getValue().isJsonArray()) {
                         for(JsonElement setting : settings.getValue().getAsJsonArray()) {
                             ConfigSetting stg = Config.getConfig().getSetting(setting.getAsJsonObject().get("name").getAsString(), Config.getConfig().getCategory(category));
-                            entries.add(new SettingsEntry(category, setting.getAsJsonObject().get("name").getAsString(), stg.getDescription(), setting.getAsJsonObject().get("value")));
+
+                            Class<?> clazz = Class.forName(stg.getNode());
+                            Node node = (Node) clazz.newInstance();
+
+                            if(stg.isAdvanced() && !Config.getConfig().deepSearch("advanced", Config.getConfig().getConfigJson()).getAsJsonObject().get("value").getAsBoolean()) continue;
+
+                            entries.add(new SettingsEntry(category, setting.getAsJsonObject().get("name").getAsString(), stg.getDescription(), setting.getAsJsonObject().get("value"), node));
                         }
                     }
-
-//                    entries.add(new SettingsEntry(category, , "description", setting.getValue())); // TODO: Implment descriptions
                 }
+
+                if(entries.isEmpty()) continue;
 
                 settingsList.getChildren().add(new SettingsGroup(category, entries));
             }
 
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }

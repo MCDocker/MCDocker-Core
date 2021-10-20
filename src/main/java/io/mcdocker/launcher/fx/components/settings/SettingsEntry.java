@@ -24,12 +24,14 @@ import com.google.gson.JsonElement;
 import io.mcdocker.launcher.config.Config;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 
 public class SettingsEntry extends AnchorPane {
 
@@ -37,7 +39,7 @@ public class SettingsEntry extends AnchorPane {
     private final String description;
     private final Object value;
 
-    public SettingsEntry(String category, String name, String description, JsonElement value) {
+    public SettingsEntry(String category, String name, String description, JsonElement value, Node node) {
         this.name = name;
         this.description = description;
         this.value = value;
@@ -51,32 +53,14 @@ public class SettingsEntry extends AnchorPane {
 
             Label labelName = (Label) lookup("#settingName");
             Label labelDescription = (Label) lookup("#settingDescription");
+            BorderPane rightSide = (BorderPane) lookup("#rightSide");
 
             labelName.setText(name);
             labelDescription.setText(description);
 
-//            if(value.getAsJsonPrimitive().isBoolean()) {
-//                CheckBox cb = new CheckBox();
-//                cb.setSelected(value.getAsBoolean());
-//
-//                cb.setOnAction((e) -> Config.getConfig().saveOption(category + "." + name, cb.isSelected()));
-//
-//                getChildren().add(cb);
-//                setRightAnchor(cb, 5.00);
-//            } else if(value.getAsJsonPrimitive().isString()) {
-//                TextField field = new TextField();
-//                field.setText(value.getAsString());
-//
-//                EventHandler<KeyEvent> event = keyEvent -> Config.getConfig().saveOption(category + "." + name, field.getText());
-//                field.addEventHandler(KeyEvent.KEY_RELEASED, event);
-//
-//                getChildren().add(field);
-//                setRightAnchor(field, 5.00);
-//            }
-//            else if(value.getAsJsonPrimitive().isNumber()) {
-//                Spinner<Double> spinner = new Spinner<>();
-//                // TODO: Do spinner
-//            }
+//            rightSide.getChildren().add(node);
+            rightSide.setCenter(node);
+
 
         } catch (Exception e) {
             e.printStackTrace();

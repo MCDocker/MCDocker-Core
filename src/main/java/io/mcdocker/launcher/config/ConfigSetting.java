@@ -48,6 +48,6 @@ public class ConfigSetting {
 
     public String getDescription() {return description;}
     public String getName() { return name; }
-    public Class<?> getNode() throws ClassNotFoundException { return Class.forName(node); }
+    public String getNode() throws ClassNotFoundException { return node; }
     public boolean isAdvanced() {return advanced;}
 }

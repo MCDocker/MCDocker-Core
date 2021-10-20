@@ -34,4 +34,8 @@
         <Label fx:id="settingDescription" styleClass="settingDescription" />
     </VBox>
 
+    <BorderPane AnchorPane.rightAnchor="5" AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="0" fx:id="rightSide">
+
+    </BorderPane>
+
 </fx:root>
