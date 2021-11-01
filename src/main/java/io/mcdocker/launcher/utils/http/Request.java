@@ -20,7 +20,6 @@ package io.mcdocker.launcher.utils.http;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
-import io.mcdocker.launcher.fx.components.Notification;
 import io.mcdocker.launcher.utils.Logger;
 
 import java.io.*;
@@ -95,8 +94,6 @@ public class Request {
     }
     private void sendConnectError(IOException e) {
         Logger.err("Could not send request to `" + url + "`. Message: " + e.getMessage());
-
-        new Notification("Failed to connect", "Failed to connect to " + url + ". Please check your internet connection and try again", Notification.NotificationType.ERROR).display();
     }
 
 }

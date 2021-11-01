@@ -26,10 +26,18 @@ public class ConfigCategory {
 
     public final String name;
     public final ConfigSetting[] settings;
+    public transient final boolean hidden;
 
     public ConfigCategory(String name, ConfigSetting... settings) {
         this.name = name;
         this.settings = settings;
+        this.hidden = false;
+    }
+
+    public ConfigCategory(String name, Boolean hidden, ConfigSetting... settings) {
+        this.name = name;
+        this.settings = settings;
+        this.hidden = hidden;
     }
 
 }

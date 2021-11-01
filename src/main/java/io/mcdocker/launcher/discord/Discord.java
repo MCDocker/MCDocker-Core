@@ -53,7 +53,7 @@ public class Discord {
             if (sdk == null) return;
 
             Core.init(sdk);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

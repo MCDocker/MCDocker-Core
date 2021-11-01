@@ -22,11 +22,9 @@ import de.jcm.discordgamesdk.Core;
 import de.jcm.discordgamesdk.CreateParams;
 import io.mcdocker.launcher.config.Config;
 import io.mcdocker.launcher.discord.Discord;
-import io.mcdocker.launcher.fx.MainScene;
 import io.mcdocker.launcher.utils.Folders;
 import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.OperatingSystem;
-import javafx.application.Application;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -57,8 +55,6 @@ public class MCDocker {
 
         initDiscord();
         initArgs();
-
-        MainScene.launch(MainScene.class, args);
     }
 
     public static String[] getArguments() { return arguments; }
@@ -77,26 +73,24 @@ public class MCDocker {
 
     private static void initArgs() {
         Logger.log("Initiating Arguments");
-
-        // Launch Wrapper Arguments
-
-
     }
 
-    private static void initDiscord() {
+    public static void initDiscord() {
         Discord.init();
-        try(CreateParams params = new CreateParams()) {
-            params.setFlags(CreateParams.getDefaultFlags());
+        try {
+            CreateParams params = new CreateParams();
+            params.setFlags(CreateParams.Flags.NO_REQUIRE_DISCORD);
             params.setClientID(889845849578962964L);
 
             discord = new Discord(new Core(params));
             CompletableFuture.runAsync(discord::start);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
     }
 
     private static void shutdown() {
         Logger.log("MCDocker is shutting down\r\n");
-        getDiscord().shutdown();
     }
 
 }

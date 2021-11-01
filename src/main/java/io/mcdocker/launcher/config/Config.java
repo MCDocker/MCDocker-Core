@@ -49,6 +49,12 @@ public class Config {
             configFile.createNewFile();
             save(new ConfigSerializer());
             Logger.log("Created new config");
+        } else {
+            JsonReader reader = new JsonReader(new FileReader(configFile));
+            ConfigSerializer config = gson.fromJson(reader, ConfigSerializer.class);
+
+            // TODO: Add checks for every config property in the ConfigSerializer class and the file to make sure there are no missing properties
+
         }
         Logger.log("Loading config from '" + configFile.getPath() + "'");
     }
@@ -79,7 +85,7 @@ public class Config {
 
     public ConfigSerializer getConfigSerialized() {
         try {
-            JsonReader reader = new JsonReader(new FileReader(configFile)   );
+            JsonReader reader = new JsonReader(new FileReader(configFile));
             return gson.fromJson(reader, ConfigSerializer.class);
         } catch (FileNotFoundException e) {
             Logger.err("Config file not found");

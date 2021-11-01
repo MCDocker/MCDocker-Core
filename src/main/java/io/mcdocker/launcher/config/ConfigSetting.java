@@ -20,8 +20,6 @@
 
 package io.mcdocker.launcher.config;
 
-import javafx.scene.Node;
-
 public class ConfigSetting {
 
     private final String name;
