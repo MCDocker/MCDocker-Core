@@ -20,6 +20,8 @@ package io.mcdocker.launcher;
 
 import de.jcm.discordgamesdk.Core;
 import de.jcm.discordgamesdk.CreateParams;
+import io.javalin.Javalin;
+import io.mcdocker.launcher.auth.impl.MicrosoftAuth;
 import io.mcdocker.launcher.config.Config;
 import io.mcdocker.launcher.discord.Discord;
 import io.mcdocker.launcher.utils.Folders;
@@ -27,14 +29,16 @@ import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.OperatingSystem;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class MCDocker {
 
     private static String[] arguments = new String[]{};
-    public final static String version = "0.1.0";
-
+    private final static String version = "0.1.0";
     private static Discord discord;
+    private static Javalin javalin;
 
     public static void main(String[] args) throws IOException {
         Folders.USER_DATA.mkdirs();
@@ -55,27 +59,16 @@ public class MCDocker {
 
         initDiscord();
         initArgs();
-    }
 
-    public static String[] getArguments() { return arguments; }
-    public static String getArgument(String argument) {
-        for(String arg : getArguments()) {
-            if(arg.split("=")[0].equalsIgnoreCase(argument)) {
-                if(arg.split("=").length != 1) return arg.split("=")[1];
-                else return arg;
-            }
-        }
-        return null;
-    }
-    public static Discord getDiscord() {
-        return discord;
+        startServer();
+        MicrosoftAuth auth = new MicrosoftAuth();
+        auth.authenticate(System.out::println);
     }
 
     private static void initArgs() {
         Logger.log("Initiating Arguments");
     }
-
-    public static void initDiscord() {
+    private static void initDiscord() {
         Discord.init();
         try {
             CreateParams params = new CreateParams();
@@ -87,6 +80,34 @@ public class MCDocker {
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String getArgument(String argument) {
+        for(String arg : arguments) {
+            if(arg.split("=")[0].equalsIgnoreCase(argument)) {
+                if(arg.split("=").length != 1) return arg.split("=")[1];
+                else return arg;
+            }
+        }
+        return null;
+    }
+    public static Discord getDiscord() {
+        return discord;
+    }
+    public static String getVersion() { return version; }
+    public static Javalin getJavalin() { return javalin; }
+
+    public static void startServer() {
+        Logger.log("Starting server on port 5005");
+        javalin = Javalin.create().start(5005);
+
+//        javalin.get("/", (ctx) -> {
+//            for(Map.Entry<String, List<String>> entry : ctx.queryParamMap().entrySet()) {
+//                if(entry.getKey().equalsIgnoreCase("code")) {
+//
+//                }
+//            }
+//        });
     }
 
     private static void shutdown() {

@@ -86,7 +86,7 @@ public class Discord {
         activity.setType(ActivityType.PLAYING);
         activity.setDetails("Using MCDocker");
         activity.assets().setLargeImage("logo_background");
-        activity.assets().setLargeText("v" + MCDocker.version);
+        activity.assets().setLargeText("v" + MCDocker.getVersion());
 
 
         return activity;

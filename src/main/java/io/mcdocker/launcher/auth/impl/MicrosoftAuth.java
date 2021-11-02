@@ -22,25 +22,22 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import io.javalin.Javalin;
 import io.mcdocker.launcher.auth.Account;
 import io.mcdocker.launcher.auth.Authentication;
 import io.mcdocker.launcher.auth.AuthenticationException;
 import io.mcdocker.launcher.utils.StringUtils;
-import io.mcdocker.launcher.utils.http.HTTPUtils;
 import io.mcdocker.launcher.utils.http.Method;
 import io.mcdocker.launcher.utils.http.RequestBuilder;
-import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.scene.web.WebView;
-import javafx.stage.Stage;
 
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import static io.mcdocker.launcher.MCDocker.getJavalin;
 
 public class MicrosoftAuth implements Authentication {
-
-    private final String clientID = "00000000402b5328";
-    private final String oauthURL = "https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code&scope=service%3A%3Auser.auth.xboxlive.com%3A%3AMBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf";
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -48,23 +45,19 @@ public class MicrosoftAuth implements Authentication {
     public CompletableFuture<Account> authenticate(Consumer<String> status) {
         CompletableFuture<Account> future = new CompletableFuture<>();
 
-        WebView webView = new WebView();
-        webView.getEngine().load(oauthURL);
+        String oauthURL = "https://login.live.com/oauth20_authorize.srf?client_id=3139b833-8d6f-4a6e-b406-5a075ee17fd4&response_type=code&scope=XboxLive.signin%20offline_access";
 
-        VBox vBox = new VBox(webView);
-        Scene scene = new Scene(vBox, 450, 600);
+        getJavalin().get("/", (ctx) -> {
+            if(ctx.queryParamMap().containsKey("code")) {
+                String code = ctx.queryParam("code");
 
-        Stage window = new Stage();
-        window.setTitle("Microsoft Authentication");
-        window.setScene(scene);
-        window.show();
+//                if (code == null) return;
 
-        webView.getEngine().locationProperty().addListener((observableValue, s, after) -> {
-            if (after.replaceAll("https://", "").replaceAll("http://", "").startsWith("login.live.com/oauth20_desktop.srf?code=")) {
-                String code = HTTPUtils.getQuery(after).get("code");
-                window.close();
-                if (code == null) return;
+                ctx.result("You may now close this window");
 
+                // TODO DO AUTHENTICATION ON SERVER END
+
+                /*
                 status.accept("Converting Code to Token");
 
                 JsonObject codeToToken = codeToToken(code);
@@ -108,17 +101,27 @@ public class MicrosoftAuth implements Authentication {
                 }
 
                 status.accept("Welcome, " + account.getUsername() + ".");
+                 */
 
-                future.complete(account);
+                future.complete(new Account("player", "0", "0", new JsonArray()));
             }
         });
+
+        Desktop desktop = Desktop.getDesktop();
+        try {
+            desktop.browse(URI.create(oauthURL));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return future;
     }
 
     private JsonObject codeToToken(String code) {
+        String clientID = "3139b833-8d6f-4a6e-b406-5a075ee17fd4";
         String res = RequestBuilder.getBuilder()
                 .setURL("https://login.live.com/oauth20_token.srf")
-                .setBody(StringUtils.format("client_id=${0}&code=${1}&grant_type=authorization_code&redirect_uri=${2}", clientID, code, "https://login.live.com/oauth20_desktop.srf"))
+                .setBody(StringUtils.format("client_id=${0}&code=${1}&grant_type=authorization_code&redirect_uri=${2}", clientID, code, "http://localhost:5005/"))
                 .setMethod(Method.POST)
                 .addHeader("Content-Type", "application/x-www-form-urlencoded").send(true);
 
