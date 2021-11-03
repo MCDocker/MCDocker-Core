@@ -60,7 +60,7 @@ public class Request {
             for(Header header : headers)
                 connection.setRequestProperty(header.getKey(), header.getValue());
 
-            if(method == Method.POST && body != null) {
+            if(method != Method.GET && body != null) {
                 connection.setDoOutput(true);
                 OutputStream outStream = connection.getOutputStream();
                 OutputStreamWriter outStreamWriter = new OutputStreamWriter(outStream, StandardCharsets.UTF_8);

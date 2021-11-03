@@ -29,8 +29,6 @@ import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.OperatingSystem;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class MCDocker {
@@ -39,6 +37,8 @@ public class MCDocker {
     private final static String version = "0.1.0";
     private static Discord discord;
     private static Javalin javalin;
+
+    private static final String APIUrl = "http://localhost:6167/api/";
 
     public static void main(String[] args) throws IOException {
         Folders.USER_DATA.mkdirs();
@@ -61,8 +61,8 @@ public class MCDocker {
         initArgs();
 
         startServer();
-        MicrosoftAuth auth = new MicrosoftAuth();
-        auth.authenticate(System.out::println);
+//        MicrosoftAuth auth = new MicrosoftAuth();
+//        auth.authenticate(System.out::println);
     }
 
     private static void initArgs() {
@@ -97,17 +97,11 @@ public class MCDocker {
     public static String getVersion() { return version; }
     public static Javalin getJavalin() { return javalin; }
 
+    public static String getAPIUrl() {return APIUrl;}
+
     public static void startServer() {
         Logger.log("Starting server on port 5005");
         javalin = Javalin.create().start(5005);
-
-//        javalin.get("/", (ctx) -> {
-//            for(Map.Entry<String, List<String>> entry : ctx.queryParamMap().entrySet()) {
-//                if(entry.getKey().equalsIgnoreCase("code")) {
-//
-//                }
-//            }
-//        });
     }
 
     private static void shutdown() {

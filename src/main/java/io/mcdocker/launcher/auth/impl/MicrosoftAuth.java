@@ -23,6 +23,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.javalin.Javalin;
+import io.mcdocker.launcher.MCDocker;
 import io.mcdocker.launcher.auth.Account;
 import io.mcdocker.launcher.auth.Authentication;
 import io.mcdocker.launcher.auth.AuthenticationException;
@@ -51,17 +52,17 @@ public class MicrosoftAuth implements Authentication {
             if(ctx.queryParamMap().containsKey("code")) {
                 String code = ctx.queryParam("code");
 
-//                if (code == null) return;
+                if (code == null) {
+                    ctx.result("Code is null");
+                    return;
+                }
 
                 ctx.result("You may now close this window");
 
-                // TODO DO AUTHENTICATION ON SERVER END
-
-                /*
                 status.accept("Converting Code to Token");
 
                 JsonObject codeToToken = codeToToken(code);
-                String accessToken = codeToToken.get("access_token").getAsString();
+                String accessToken = codeToToken.getAsJsonObject("additionalContent").get("access_token").getAsString();
 
                 status.accept("Authenticating with XBL");
 
@@ -101,7 +102,6 @@ public class MicrosoftAuth implements Authentication {
                 }
 
                 status.accept("Welcome, " + account.getUsername() + ".");
-                 */
 
                 future.complete(new Account("player", "0", "0", new JsonArray()));
             }
@@ -118,12 +118,10 @@ public class MicrosoftAuth implements Authentication {
     }
 
     private JsonObject codeToToken(String code) {
-        String clientID = "3139b833-8d6f-4a6e-b406-5a075ee17fd4";
         String res = RequestBuilder.getBuilder()
-                .setURL("https://login.live.com/oauth20_token.srf")
-                .setBody(StringUtils.format("client_id=${0}&code=${1}&grant_type=authorization_code&redirect_uri=${2}", clientID, code, "http://localhost:5005/"))
+                .setURL(MCDocker.getAPIUrl() + "auth/microsoft?code=" + code)
                 .setMethod(Method.POST)
-                .addHeader("Content-Type", "application/x-www-form-urlencoded").send(true);
+                .send();
 
         return gson.fromJson(res, JsonObject.class);
     }
@@ -134,7 +132,7 @@ public class MicrosoftAuth implements Authentication {
         JsonObject properties = new JsonObject();
         properties.addProperty("AuthMethod", "RPS");
         properties.addProperty("SiteName", "user.auth.xboxlive.com");
-        properties.addProperty("RpsTicket", accessToken);
+        properties.addProperty("RpsTicket", "d=" + accessToken);
 
         body.add("Properties", properties);
         body.addProperty("RelyingParty", "http://auth.xboxlive.com");
