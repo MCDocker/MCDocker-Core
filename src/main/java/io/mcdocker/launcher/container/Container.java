@@ -29,6 +29,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Container {
 
@@ -69,6 +70,10 @@ public class Container {
         writer.close();
     }
 
+    public void delete() {
+        Folders.deleteFolder(folder);
+    }
+
     public static @Nullable Container fromFolder(File folder) throws IOException {
         File dockerFile = new File(folder, dockerfileName);
         if (dockerFile.exists()) return fromFile(dockerFile);
@@ -81,6 +86,13 @@ public class Container {
 
     public static @NotNull Container fromDockerfile(Dockerfile dockerfile) throws IOException {
         return new Container(dockerfile);
+    }
+
+    public static Container getContainerById(String id) {
+        for (Container container : getContainers()) {
+            if (Objects.equals(container.getDockerfile().getId().toString(), id)) return container;
+        }
+        return null;
     }
 
     public static @NotNull List<Container> getContainers() {
