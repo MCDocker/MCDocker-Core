@@ -21,7 +21,8 @@ package io.mcdocker.launcher;
 import de.jcm.discordgamesdk.Core;
 import de.jcm.discordgamesdk.CreateParams;
 import io.javalin.Javalin;
-import io.mcdocker.launcher.auth.impl.MicrosoftAuth;
+import io.javalin.core.util.JavalinLogger;
+import io.mcdocker.launcher.auth.AccountsManager;
 import io.mcdocker.launcher.config.Config;
 import io.mcdocker.launcher.discord.Discord;
 import io.mcdocker.launcher.utils.Folders;
@@ -49,10 +50,10 @@ public class MCDocker {
 
         Logger.log("Using Java Version - " + System.getProperty("java.version"));
         Logger.log("MCDocker resources location: " + Folders.USER_DATA);
+        Logger.log("Operating System - " + OperatingSystem.OS.getName());
 
         Config.getConfig().init();
-
-        Logger.log("Operating System - " + OperatingSystem.OS.getName());
+        AccountsManager.getInstance().init();
 
         Thread shutdownHook = new Thread(MCDocker::shutdown);
         Runtime.getRuntime().addShutdownHook(shutdownHook);
@@ -99,6 +100,7 @@ public class MCDocker {
 
     public static void startServer() {
         Logger.log("Starting server on port 5005");
+        JavalinLogger.enabled = false;
         javalin = Javalin.create().start(5005);
     }
 
