@@ -61,8 +61,6 @@ public class MCDocker {
         initArgs();
 
         startServer();
-//        MicrosoftAuth auth = new MicrosoftAuth();
-//        auth.authenticate(System.out::println);
     }
 
     private static void initArgs() {

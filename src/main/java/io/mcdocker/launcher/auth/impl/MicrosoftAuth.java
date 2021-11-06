@@ -57,53 +57,55 @@ public class MicrosoftAuth implements Authentication {
                     return;
                 }
 
-                ctx.result("You may now close this window");
+                CompletableFuture.runAsync(() -> {
+                    ctx.result("You may now close this window");
+                }).thenRun(() -> {
+                    status.accept("Converting Code to Token");
 
-                status.accept("Converting Code to Token");
+                    JsonObject codeToToken = codeToToken(code);
+                    String accessToken = codeToToken.getAsJsonObject("additionalContent").get("access_token").getAsString();
 
-                JsonObject codeToToken = codeToToken(code);
-                String accessToken = codeToToken.getAsJsonObject("additionalContent").get("access_token").getAsString();
+                    status.accept("Authenticating with XBL");
 
-                status.accept("Authenticating with XBL");
+                    JsonObject authWithXBL = authWithXBL(accessToken);
+                    String xblToken = authWithXBL.get("Token").getAsString();
+                    String userhash = authWithXBL.getAsJsonObject("DisplayClaims").getAsJsonArray("xui").get(0).getAsJsonObject().get("uhs").getAsString();
 
-                JsonObject authWithXBL = authWithXBL(accessToken);
-                String xblToken = authWithXBL.get("Token").getAsString();
-                String userhash = authWithXBL.getAsJsonObject("DisplayClaims").getAsJsonArray("xui").get(0).getAsJsonObject().get("uhs").getAsString();
+                    status.accept("Authenticating with XSTS");
 
-                status.accept("Authenticating with XSTS");
-
-                JsonObject authWithXSTS = authWithXSTS(xblToken);
-                if (authWithXSTS.has("XErr")) {
-                    switch (authWithXSTS.get("XErr").getAsString()) {
-                        case "2148916233":
-                            future.completeExceptionally(new MicrosoftAuthenticationException("You do not have an Xbox Account. Please make one."));
-                        case "2148916235":
-                            future.completeExceptionally(new MicrosoftAuthenticationException("Xbox Live is not available in your country."));
-                        case "2148916238":
-                            future.completeExceptionally(new MicrosoftAuthenticationException("Your account is marked as \"Under 18\". Please add this account to a family or choose another account."));
+                    JsonObject authWithXSTS = authWithXSTS(xblToken);
+                    if (authWithXSTS.has("XErr")) {
+                        switch (authWithXSTS.get("XErr").getAsString()) {
+                            case "2148916233":
+                                future.completeExceptionally(new MicrosoftAuthenticationException("You do not have an Xbox Account. Please make one."));
+                            case "2148916235":
+                                future.completeExceptionally(new MicrosoftAuthenticationException("Xbox Live is not available in your country."));
+                            case "2148916238":
+                                future.completeExceptionally(new MicrosoftAuthenticationException("Your account is marked as \"Under 18\". Please add this account to a family or choose another account."));
+                        }
+                        return;
                     }
-                    return;
-                }
-                String xstsToken = authWithXSTS.get("Token").getAsString();
+                    String xstsToken = authWithXSTS.get("Token").getAsString();
 
-                JsonObject authWithMC = authWithMC(userhash, xstsToken);
-                String mcAccessToken = authWithMC.get("access_token").getAsString();
+                    JsonObject authWithMC = authWithMC(userhash, xstsToken);
+                    String mcAccessToken = authWithMC.get("access_token").getAsString();
 
-                JsonObject checkOwnership = checkOwnership(mcAccessToken);
-                if (checkOwnership.getAsJsonArray("items").isEmpty()) {
-                    future.completeExceptionally(new MicrosoftAuthenticationException("You do not own Minecraft. Please buy it at minecraft.net"));
-                    return;
-                }
+                    JsonObject checkOwnership = checkOwnership(mcAccessToken);
+                    if (checkOwnership.getAsJsonArray("items").isEmpty()) {
+                        future.completeExceptionally(new MicrosoftAuthenticationException("You do not own Minecraft. Please buy it at minecraft.net"));
+                        return;
+                    }
 
-                Account account = getAccount(mcAccessToken);
-                if (account == null) {
-                    future.completeExceptionally(new MicrosoftAuthenticationException("Minecraft Account could not be found."));
-                    return;
-                }
+                    Account account = getAccount(mcAccessToken);
+                    if (account == null) {
+                        future.completeExceptionally(new MicrosoftAuthenticationException("Minecraft Account could not be found."));
+                        return;
+                    }
 
-                status.accept("Welcome, " + account.getUsername() + ".");
+                    status.accept("Welcome, " + account.getUsername() + ".");
 
-                future.complete(new Account("player", "0", "0", new JsonArray()));
+                    future.complete(new Account(account.getUsername(), account.getUniqueId(), account.getAccessToken(), new JsonArray()));
+                });
             }
         });
 
