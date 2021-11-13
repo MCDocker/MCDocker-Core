@@ -36,7 +36,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class VanillaClient extends Client<VanillaManifest> {
@@ -127,6 +129,7 @@ public class VanillaClient extends Client<VanillaManifest> {
 
             JsonArray natives = new JsonArray();
             List<String> librariesList = new ArrayList<>();
+            Map<String, String> librariesMap = new HashMap<>();
 
             for (JsonElement library : data.getAsJsonArray("libraries")) {
                 JsonObject lib = library.getAsJsonObject();
@@ -138,14 +141,27 @@ public class VanillaClient extends Client<VanillaManifest> {
                 JsonObject artifact = lib.getAsJsonObject("downloads").getAsJsonObject("artifact");
                 String path = artifact.get("path").getAsString();
                 String url = artifact.get("url").getAsString();
+                String name = lib.get("name").getAsString();
+                String libraryName = name.split(":")[name.split(":").length - 2];
+                String version = name.split(":")[name.split(":").length - 1];
+
+                if(librariesMap.containsKey(libraryName) && Integer.parseInt(librariesMap.get(libraryName).replaceAll("\\.", "")) <= Integer.parseInt(version.replaceAll("\\.", ""))) {
+                    String pathToRemove = librariesFolder.getPath() + "/" + path.replace(version, librariesMap.get(libraryName)); // For some reason it errors when this is inline in the `librariesList.remove(pathToRemove)` part. I have no idea why
+                    librariesMap.remove(libraryName);
+                    librariesList.remove(pathToRemove);
+                }
+
+                librariesMap.put(libraryName, version);
 
                 if (!librariesFolder.exists()) librariesFolder.mkdirs();
                 File libraryFile = new File(librariesFolder, path);
+
                 if (!libraryFile.getParentFile().exists()) libraryFile.getParentFile().mkdirs();
                 if(!libraryFile.exists()) HTTPUtils.download(url, libraryFile);
 
                 librariesList.add(libraryFile.getPath());
             }
+
             downloadNatives(natives);
             return librariesList;
         });

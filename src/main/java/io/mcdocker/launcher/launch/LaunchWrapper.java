@@ -91,7 +91,7 @@ public class LaunchWrapper {
                         .replace("${auth_access_token}", account.getAccessToken())
                         .replace("${auth_session}", "0") // TODO: Figure out how to get this session ID.
                         .replace("${user_properties}", "{}") // TODO: Figure out these properties.
-                        .replace("${user_type}", "1") // TODO: Figure out user types.
+                        .replace("${user_type}", "1")
                         .replace("${natives}", nativesFolder + "/" + client.getManifest().getName() + "/")
                         .replace("${libraries}", libraries)
                         .replace("${min_memory}", "512")
@@ -99,7 +99,8 @@ public class LaunchWrapper {
                         .replace("${main_class}", client.getManifest().getMainClass())
                         .replace("${version_type}", "MCDocker");
 
-//                return Runtime.getRuntime().exec(javaPath.get() + " " + arguments, new String[0], container.getFolder());
+                Logger.log("Command: " + javaPath.get() + " " + arguments);
+
                 return Runtime.getRuntime().exec(javaPath.get() + " " + arguments, null, container.getFolder()); // Set as null in order to work for
             } catch (Exception e) {
                 e.printStackTrace();
