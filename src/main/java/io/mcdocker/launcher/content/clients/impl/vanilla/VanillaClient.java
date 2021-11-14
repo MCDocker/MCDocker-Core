@@ -23,6 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.mcdocker.launcher.content.clients.Client;
 import io.mcdocker.launcher.utils.Folders;
+import io.mcdocker.launcher.utils.NumberUtils;
 import io.mcdocker.launcher.utils.OperatingSystem;
 import io.mcdocker.launcher.utils.http.HTTPUtils;
 import io.mcdocker.launcher.utils.http.Method;
@@ -145,7 +146,7 @@ public class VanillaClient extends Client<VanillaManifest> {
                 String libraryName = name.split(":")[name.split(":").length - 2];
                 String version = name.split(":")[name.split(":").length - 1];
 
-                if(librariesMap.containsKey(libraryName) && Integer.parseInt(librariesMap.get(libraryName).replaceAll("\\.", "")) <= Integer.parseInt(version.replaceAll("\\.", ""))) {
+                if(librariesMap.containsKey(libraryName) && NumberUtils.parseInt(librariesMap.get(libraryName).replaceAll("\\.", "")) != null && NumberUtils.parseInt(version.replaceAll("\\.", "")) != null && NumberUtils.parseInt(librariesMap.get(libraryName).replaceAll("\\.", "")) <= NumberUtils.parseInt(version.replaceAll("\\.", ""))) {
                     String pathToRemove = librariesFolder.getPath() + "/" + path.replace(version, librariesMap.get(libraryName)); // For some reason it errors when this is inline in the `librariesList.remove(pathToRemove)` part. I have no idea why
                     librariesMap.remove(libraryName);
                     librariesList.remove(pathToRemove);

@@ -36,6 +36,7 @@ public class Dockerfile {
     private String name = "Untitled";
     private JsonObject client;
     private List<ModManifest> mods = new ArrayList<>();
+    private int memory = 2048;
 
     @Deprecated
     public void setId(UUID id) {
@@ -76,6 +77,14 @@ public class Dockerfile {
 
     public void setMods(List<ModManifest> mods) {
         this.mods = mods;
+    }
+
+    public void setMemory(Integer memory) {
+        this.memory = memory;
+    }
+
+    public Integer getMemory() {
+        return memory;
     }
 
 }

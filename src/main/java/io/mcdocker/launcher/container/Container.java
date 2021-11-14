@@ -19,14 +19,12 @@
 package io.mcdocker.launcher.container;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import io.mcdocker.launcher.utils.Folders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

@@ -85,7 +85,7 @@ public class LaunchWrapper {
                         .replace("${version_name}", client.getManifest().getName())
                         .replace("${game_directory}", container.getFolder().getPath())
                         .replace("${assets_root}", assetsFolder.getPath())
-                        .replace("${game_assets}", assetsFolder.getPath() + "\\virtual\\" + index.get()) // TODO: Figure out how to handle assets for versions below 1.6
+                        .replace("${game_assets}", assetsFolder.getPath() + "/virtual/" + index.get())
                         .replace("${assets_index_name}", index.get())
                         .replace("${auth_uuid}", account.getUniqueId())
                         .replace("${auth_access_token}", account.getAccessToken())
@@ -95,11 +95,9 @@ public class LaunchWrapper {
                         .replace("${natives}", nativesFolder + "/" + client.getManifest().getName() + "/")
                         .replace("${libraries}", libraries)
                         .replace("${min_memory}", "512")
-                        .replace("${max_memory}", "2048")
+                        .replace("${max_memory}", container.getDockerfile().getMemory().toString())
                         .replace("${main_class}", client.getManifest().getMainClass())
                         .replace("${version_type}", "MCDocker");
-
-                Logger.log("Command: " + javaPath.get() + " " + arguments);
 
                 return Runtime.getRuntime().exec(javaPath.get() + " " + arguments, null, container.getFolder()); // Set as null in order to work for
             } catch (Exception e) {
