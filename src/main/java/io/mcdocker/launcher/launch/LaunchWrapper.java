@@ -18,9 +18,12 @@
 
 package io.mcdocker.launcher.launch;
 
+import com.google.gson.GsonBuilder;
+import io.mcdocker.launcher.MCDocker;
 import io.mcdocker.launcher.auth.Account;
 import io.mcdocker.launcher.container.Container;
 import io.mcdocker.launcher.content.clients.Client;
+import io.mcdocker.launcher.discord.Discord;
 import io.mcdocker.launcher.utils.Folders;
 import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.OperatingSystem;
@@ -47,6 +50,7 @@ public class LaunchWrapper {
     }
 
     public CompletableFuture<Process> launch(Account account) {
+
         return CompletableFuture.supplyAsync(() -> {
             try {
                 AtomicReference<String> javaPath = new AtomicReference<>("java");
@@ -98,6 +102,9 @@ public class LaunchWrapper {
                         .replace("${max_memory}", container.getDockerfile().getMemory().toString())
                         .replace("${main_class}", client.getManifest().getMainClass())
                         .replace("${version_type}", "MCDocker");
+
+                MCDocker.initDiscord();
+                if(MCDocker.getDiscord() != null) MCDocker.getDiscord().setPresence(Discord.presencePlaying(client));
 
                 return Runtime.getRuntime().exec(javaPath.get() + " " + arguments, null, container.getFolder()); // Set as null in order to work for
             } catch (Exception e) {

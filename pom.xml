@@ -16,10 +16,6 @@
 
     <repositories>
         <repository>
-            <id>jtoml</id>
-            <url>https://raw.github.com/agrison/jtoml/mvn-repo/</url>
-        </repository>
-        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
@@ -27,11 +23,6 @@
 
     <dependencies>
         <!-- General -->
-        <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>flatlaf</artifactId>
-            <version>1.6</version>
-        </dependency>
         <dependency>
             <groupId>com.github.JnCrMx</groupId>
             <artifactId>discord-game-sdk4j</artifactId>

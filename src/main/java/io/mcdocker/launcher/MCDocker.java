@@ -67,7 +67,7 @@ public class MCDocker {
     private static void initArgs() {
         Logger.log("Initiating Arguments");
     }
-    private static void initDiscord() {
+    public static void initDiscord() {
         Discord.init();
         try {
             CreateParams params = new CreateParams();
@@ -76,9 +76,7 @@ public class MCDocker {
 
             discord = new Discord(new Core(params));
             CompletableFuture.runAsync(discord::start);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        } catch (RuntimeException ignored) { Logger.err("Could not initiate Discord SDK. Is the Discord Client running?"); }
     }
 
     public static String getArgument(String argument) {

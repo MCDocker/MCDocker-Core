@@ -88,7 +88,6 @@ public class Discord {
         activity.assets().setLargeImage("logo_background");
         activity.assets().setLargeText("v" + MCDocker.getVersion());
 
-
         return activity;
     }
 
@@ -106,8 +105,9 @@ public class Discord {
 
     private static String getLargeImage(Client<?> client) {
         switch (client.getTypeName().toLowerCase()) {
-            case "vanilla": return "mc_vanilla";
-            default: return "mc_vanilla"; // TODO: Add 'mc_forge' for Forge and 'mc_fabric' for Fabric
+            case "forge": return "mc_forge";
+            case "fabric": return "mc_fabric";
+            default: return "mc_vanilla";
         }
     }
 
