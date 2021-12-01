@@ -177,8 +177,9 @@ public class FabricClient extends Client<FabricManifest> {
                 librariesList.add(libraryFile.getPath());
             }
 
-//            librariesList.add("/home/drydandyfan/.mcdocker/versions/vanilla/1.17.1.jar");
-            // TODO: Add base client to libraries list
+            File clientFile = new File(versionsFolder, manifest.getInheritance() + ".jar");
+            if(!clientFile.exists()) throw new IllegalStateException("Client file does not exist"); // Client should be downloaded as stated in the downloadClient() method
+            librariesList.add(clientFile.getPath());
 
             return librariesList;
         });

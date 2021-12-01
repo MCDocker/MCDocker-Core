@@ -165,6 +165,10 @@ public class VanillaClient extends Client<VanillaManifest> {
                 librariesList.add(libraryFile.getPath());
             }
 
+            File clientFile = new File(versionsFolder, manifest.getName() + ".jar");
+            if(!clientFile.exists()) throw new IllegalStateException("Client file does not exist"); // Client should be downloaded as stated in the downloadClient() method
+            librariesList.add(clientFile.getPath());
+
             downloadNatives(natives);
             return librariesList;
         });
