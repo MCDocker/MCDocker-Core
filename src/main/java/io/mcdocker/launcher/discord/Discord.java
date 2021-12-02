@@ -59,7 +59,7 @@ public class Discord {
     }
 
     public void start() {
-        setPresence(presenceInit());
+//        setPresence(presenceInit());
 
         while (running) {
             core.runCallbacks();

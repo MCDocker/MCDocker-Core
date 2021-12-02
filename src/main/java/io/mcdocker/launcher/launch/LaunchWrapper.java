@@ -98,18 +98,16 @@ public class LaunchWrapper {
                         .replace("${user_properties}", "{}") // TODO: Figure out these properties.
                         .replace("${user_type}", "1")
                         .replace("${natives}", nativesFolder + "/" + client.getManifest().getName() + "/")
-//                        .replace("${libraries}", libraries)
+                        .replace("${libraries}", libraries)
                         .replace("${min_memory}", "512")
                         .replace("${max_memory}", container.getDockerfile().getMemory().toString())
                         .replace("${main_class}", client.getManifest().getMainClass())
                         .replace("${version_type}", "MCDocker");
 
-                System.out.println(arguments);
-
                 MCDocker.initDiscord();
                 if(MCDocker.getDiscord() != null) MCDocker.getDiscord().setPresence(Discord.presencePlaying(client));
 
-                return Runtime.getRuntime().exec(javaPath.get() + " " + arguments.replace("${libraries}", libraries), null, container.getFolder()); // Set as null in order to work for
+                return Runtime.getRuntime().exec(javaPath.get() + " " + arguments, null, container.getFolder()); // Set as null in order to work for
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
