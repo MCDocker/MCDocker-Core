@@ -43,12 +43,12 @@ public class Config {
     private final File configFile = new File(Folders.USER_DATA, "config.json");
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+    public File getConfigFile() { return configFile; }
+
     public void init() throws IOException {
-        Logger.log("Initiating Config");
         if(!configFile.exists()) {
             configFile.createNewFile();
             save(new ConfigSerializer());
-            Logger.log("Created new config");
         } else {
             JsonReader reader = new JsonReader(new FileReader(configFile));
             ConfigSerializer config = gson.fromJson(reader, ConfigSerializer.class);
@@ -56,7 +56,6 @@ public class Config {
             // TODO: Add checks for every config property in the ConfigSerializer class and the file to make sure there are no missing properties
 
         }
-        Logger.log("Loading config from '" + configFile.getPath() + "'");
     }
 
     public void save(ConfigSerializer cfg) {

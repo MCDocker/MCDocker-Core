@@ -28,6 +28,7 @@ import io.mcdocker.launcher.discord.Discord;
 import io.mcdocker.launcher.utils.Folders;
 import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.OperatingSystem;
+import org.eclipse.jetty.util.log.Slf4jLog;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -95,13 +96,10 @@ public class MCDocker {
     public static Javalin getJavalin() { return javalin; }
 
     public static String getAPIUrl() {return APIUrl;}
-
     public static void startServer() {
-        Logger.log("Starting server on port 5005");
         JavalinLogger.enabled = false;
-        javalin = Javalin.create().start(5005);
+        javalin = Javalin.create().start(51566);
     }
-
     private static void shutdown() {
         Logger.log("MCDocker is shutting down\r\n");
     }

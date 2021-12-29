@@ -27,19 +27,11 @@ import io.mcdocker.launcher.content.clients.Client;
 import io.mcdocker.launcher.content.clients.impl.vanilla.VanillaClient;
 import io.mcdocker.launcher.content.clients.impl.vanilla.VanillaManifest;
 import io.mcdocker.launcher.utils.Folders;
-import io.mcdocker.launcher.utils.NumberUtils;
-import io.mcdocker.launcher.utils.OperatingSystem;
 import io.mcdocker.launcher.utils.http.HTTPUtils;
 import io.mcdocker.launcher.utils.http.Method;
 import io.mcdocker.launcher.utils.http.RequestBuilder;
-import org.rauschig.jarchivelib.Archiver;
-import org.rauschig.jarchivelib.ArchiverFactory;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 

@@ -1,0 +1,10 @@
+HKEY_CLASSES_ROOT
+   alert
+      (Default) = "URL:Alert Protocol"
+      URL Protocol = ""
+      DefaultIcon
+         (Default) = "alert.exe,1"
+      shell
+         open
+            command
+               (Default) = "C:\Program Files\Alert\alert.exe" "%1"

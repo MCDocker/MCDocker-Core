@@ -21,7 +21,6 @@
 package io.mcdocker.launcher.content.clients.impl.fabric;
 
 import io.mcdocker.launcher.content.clients.ClientManifest;
-import io.mcdocker.launcher.content.clients.impl.vanilla.VanillaClient;
 import io.mcdocker.launcher.content.clients.impl.vanilla.VanillaManifest;
 
 public class FabricManifest extends ClientManifest {

@@ -46,9 +46,9 @@ public class MicrosoftAuth implements Authentication {
     public CompletableFuture<Account> authenticate(Consumer<String> status) {
         CompletableFuture<Account> future = new CompletableFuture<>();
 
-        String oauthURL = "https://login.live.com/oauth20_authorize.srf?client_id=3139b833-8d6f-4a6e-b406-5a075ee17fd4&response_type=code&scope=XboxLive.signin%20offline_access";
+        String oauthURL = "https://login.live.com/oauth20_authorize.srf?client_id=ad15277d-c44c-43c8-89ee-67b44dac5a84&response_type=code&scope=XboxLive.signin%20offline_access";
 
-        getJavalin().get("/", (ctx) -> {
+        getJavalin().get("/auth/microsoft", (ctx) -> {
             if(ctx.queryParamMap().containsKey("code")) {
                 String code = ctx.queryParam("code");
 

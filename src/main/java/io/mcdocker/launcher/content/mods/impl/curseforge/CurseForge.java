@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.mcdocker.launcher.content.Filter;
+import io.mcdocker.launcher.content.mods.Filter;
 import io.mcdocker.launcher.content.mods.ModDetails;
 import io.mcdocker.launcher.content.mods.ModProvider;
 import io.mcdocker.launcher.utils.http.Method;

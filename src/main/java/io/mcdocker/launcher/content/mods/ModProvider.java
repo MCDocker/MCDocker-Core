@@ -18,8 +18,6 @@
 
 package io.mcdocker.launcher.content.mods;
 
-import io.mcdocker.launcher.content.Filter;
-
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 

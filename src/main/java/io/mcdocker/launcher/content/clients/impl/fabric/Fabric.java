@@ -28,7 +28,6 @@ import io.mcdocker.launcher.content.clients.ClientDetails;
 import io.mcdocker.launcher.content.clients.ClientProvider;
 import io.mcdocker.launcher.content.clients.impl.vanilla.Vanilla;
 import io.mcdocker.launcher.content.clients.impl.vanilla.VanillaClient;
-import io.mcdocker.launcher.content.clients.impl.vanilla.VanillaManifest;
 import io.mcdocker.launcher.utils.http.Method;
 import io.mcdocker.launcher.utils.http.RequestBuilder;
 

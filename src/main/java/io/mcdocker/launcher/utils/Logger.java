@@ -57,6 +57,26 @@ public class Logger {
         }
     }
 
+    public static void logfile(Object msg) {
+        try {
+            if(!logFile.exists()) {
+                logFile.getParentFile().mkdir();
+                logFile.createNewFile();
+            }
+
+
+            FileWriter writer = new FileWriter(logFile, true);
+
+            System.out.println(msg);
+
+            writer.write(msg + "\r\n");
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void logToFile(String type, Object message) throws IOException {
         if(!logFile.exists()) {
             logFile.getParentFile().mkdir();

@@ -18,7 +18,7 @@
 
 package io.mcdocker.launcher.content.mods.impl.modrinth;
 
-import io.mcdocker.launcher.content.Filter;
+import io.mcdocker.launcher.content.mods.Filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -113,6 +113,23 @@ public class ModrinthFilter implements Filter {
             return new ModrinthFilter(categories, versions, license, clientSide, serverSide);
         }
 
+    }
+
+    public enum ModrinthCategories {
+        WORLDGEN,
+        TECHNOLOGY,
+        FOOD,
+        MAGIC,
+        STORAGE,
+        LIBRARY,
+        ADVENTURE,
+        UTILITY,
+        DECORATION,
+        MISC,
+        EQUIPMENT,
+        CURSED,
+        FABRIC,
+        FORGE;
     }
 
 }
