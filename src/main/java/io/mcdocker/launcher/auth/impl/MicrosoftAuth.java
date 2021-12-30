@@ -63,6 +63,13 @@ public class MicrosoftAuth implements Authentication {
                     status.accept("Converting Code to Token");
 
                     JsonObject codeToToken = codeToToken(code);
+
+                    if(codeToToken == null) {
+                        status.accept("Code to Token failed");
+                        future.completeExceptionally(new AuthenticationException("Failed to convert code to token"));
+                        return;
+                    }
+
                     String accessToken = codeToToken.getAsJsonObject("additionalContent").get("access_token").getAsString();
 
                     status.accept("Authenticating with XBL");

@@ -1,0 +1,63 @@
+/*
+ *
+ *   MCDocker, an open source Minecraft launcher.
+ *   Copyright (C) 2021 MCDocker
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
+plugins {
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+    id "java"
+}
+
+group = "io.mcdocker"
+archivesBaseName = "MCDocker"
+version = "0.0.1"
+
+sourceCompatibility = targetCompatibility = "11"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven { url "https://jitpack.io/" }
+}
+
+configurations {
+    shade
+    implementation.extendsFrom(shade)
+}
+
+dependencies {
+    /* General */
+    shade("com.github.JnCrMx:discord-game-sdk4j:0.5.4")
+    shade("io.javalin:javalin:4.1.1")
+    shade("org.slf4j:slf4j-nop:1.7.31")
+    shade("info.picocli:picocli:4.6.1")
+    shade("org.reflections:reflections:0.10.2")
+
+    /* Data handling */
+    shade("com.google.code.gson:gson:2.8.8")
+    shade("org.rauschig:jarchivelib:0.7.1")
+}
+
+shadowJar {
+    configurations = [project.configurations.shade]
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    archiveClassifier.set('')
+}
+
+jar.finalizedBy(shadowJar)

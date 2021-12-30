@@ -32,8 +32,6 @@ import java.util.function.Consumer;
 
 public class ProtocolHandler {
 
-    private static ProtocolHandler INSTANCE;
-    public static ProtocolHandler getHandler() {return INSTANCE;}
     public final String installPath;
 
     public ProtocolHandler(String installPath) {

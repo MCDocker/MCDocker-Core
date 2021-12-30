@@ -12,3 +12,6 @@ level.dat
 options.txt
 usercache.json
 *.log
+gradle/
+.gradle/
+build/

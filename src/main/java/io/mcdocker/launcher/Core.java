@@ -28,18 +28,14 @@ import io.mcdocker.launcher.cmds.accounts.CmdAccounts;
 import io.mcdocker.launcher.cmds.containers.CmdContainer;
 import io.mcdocker.launcher.cmds.mods.CmdMods;
 import io.mcdocker.launcher.config.Config;
-import io.mcdocker.launcher.protocol.ProtocolHandler;
+import io.mcdocker.launcher.plugins.PluginManager;
 import io.mcdocker.launcher.utils.Folders;
 import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.OperatingSystem;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
@@ -52,12 +48,13 @@ public class Core implements Runnable {
 
     private static final CommandLine cli = new CommandLine(new Core());
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws IOException {
         boolean firstTime = !Config.getConfig().getConfigFile().exists();
 
         Folders.USER_DATA.mkdirs();
         Config.getConfig().init();
         AccountsManager.getInstance().init();
+//        PluginManager.getManager().registerPlugins();
 
         if(firstTime) {
             firstTime();
@@ -72,7 +69,7 @@ public class Core implements Runnable {
         System.exit(exitCode);
     }
 
-    private static void firstTime() throws URISyntaxException {
+    private static void firstTime() {
         System.out.println("Welcome to MCDocker new user!");
         System.out.println("This is an interactive setup made to simplify your experience with MCDocker.");
         System.out.println("Lets begin!");
@@ -115,7 +112,15 @@ public class Core implements Runnable {
                 CompletableFuture<Account> future = accountCompletableFuture.whenComplete((account, throwable) -> {
                     System.out.println("Logged in as " + account.getUsername());
                     AccountsManager.getInstance().addAccount(account);
+                }).exceptionally(throwable -> {
+                    MCDocker.stopServer();
+                    return null;
                 });
+
+                if(future.join() == null) {
+                    System.out.println("Failed to login. Is the MCDocker API online?");
+                    break;
+                }
 
                 future.join();
                 break;
@@ -123,32 +128,6 @@ public class Core implements Runnable {
 
             System.out.println("Invalid authentication method. Please try again");
         }
-
-//        String installDir = "/usr/bin/";
-//
-//        while (true) {
-//
-//
-//            System.out.println("Installing MCDocker to " + installDir);
-//
-//            File thisJar = new File(Core.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-//
-//            System.out.println(new File(installDir, "mcdocker").toPath());
-//
-//            try {
-//                Files.copy(thisJar.toPath(), new File(installDir, "mcdocker").toPath(), StandardCopyOption.REPLACE_EXISTING);
-//                System.out.println("MCDocker installed successfully");
-//                break;
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                System.err.println("Failed to install MCDocker to " + installDir + ". Do you have permission?");
-//            }
-//        }
-//
-//        if(OperatingSystem.OS == OperatingSystem.MACOS) { System.out.println("The protocol handler will be added to MacOS eventually. Skipping protocol installation"); }
-//
-//        ProtocolHandler handler = new ProtocolHandler(installDir);
-//        handler.registerLinux().join();
 
         System.out.println("Setup complete!");
         System.exit(0);
@@ -163,4 +142,6 @@ public class Core implements Runnable {
     public void run() {
         Logger.logfile(cli.getUsageMessage());
     }
+
+    public static CommandLine getCli() {return cli;}
 }

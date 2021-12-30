@@ -100,6 +100,11 @@ public class MCDocker {
         JavalinLogger.enabled = false;
         javalin = Javalin.create().start(51566);
     }
+
+    public static void stopServer() {
+        CompletableFuture.runAsync(() -> javalin.stop());
+    }
+
     private static void shutdown() {
         Logger.log("MCDocker is shutting down\r\n");
     }
