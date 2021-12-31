@@ -20,7 +20,6 @@
 
 package io.mcdocker.launcher.protocol;
 
-import io.mcdocker.launcher.utils.OperatingSystem;
 import io.mcdocker.launcher.utils.http.HTTPUtils;
 
 import java.io.BufferedReader;
@@ -47,36 +46,30 @@ public class ProtocolHandler {
     }
 
     public CompletableFuture<Boolean> registerLinux() {
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        return CompletableFuture.supplyAsync(() -> {
+            HTTPUtils.download("https://raw.githubusercontent.com/MCDocker/Assets/main/linux.sh", new File(installPath + "/linux.sh"));
 
-        HTTPUtils.download("https://raw.githubusercontent.com/MCDocker/Assets/main/linux.sh", new File(installPath + "/linux.sh"));
+            File script = new File(installPath + "/linux.sh");
 
-        File script = new File(installPath + "/linux.sh");
+            ProcessBuilder builder = new ProcessBuilder("/bin/sh", '"' + script.getAbsolutePath() + '"');
+            System.out.println(builder.command());
+            try {
+                Process process = builder.start();
+                System.out.println(process.info().command());
 
-        ProcessBuilder builder = new ProcessBuilder("/bin/sh", '"' + script.getAbsolutePath() + '"');
-        System.out.println(builder.command());
-        try {
-            Process process = builder.start();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
 
-            System.out.println(process.info().command());
-
-            StringBuilder output = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                System.out.println("Exit code: " + process.onExit().join().exitValue());
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
             }
-
-            process.onExit().thenAccept(exitCode -> {
-                System.out.println("Exit code: " + exitCode);
-                future.complete(true);
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-            future.completeExceptionally(e);
-        }
-
-        return future;
+        });
     }
 
 }
