@@ -18,7 +18,6 @@
 
 package io.mcdocker.launcher.launch;
 
-import com.google.gson.GsonBuilder;
 import io.mcdocker.launcher.MCDocker;
 import io.mcdocker.launcher.auth.Account;
 import io.mcdocker.launcher.container.Container;
@@ -31,7 +30,6 @@ import io.mcdocker.launcher.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
@@ -100,7 +98,7 @@ public class LaunchWrapper {
                         .replace("${natives}", nativesFolder + "/" + client.getManifest().getName() + "/")
                         .replace("${libraries}", libraries)
                         .replace("${min_memory}", "512")
-                        .replace("${max_memory}", container.getDockerfile().getMemory().toString())
+                        .replace("${max_memory}", Integer.toString(container.getDockerfile().getMemory()))
                         .replace("${main_class}", client.getManifest().getMainClass())
                         .replace("${version_type}", "MCDocker");
 
