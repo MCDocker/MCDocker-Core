@@ -44,13 +44,13 @@ dependencies {
     /* General */
     shade("com.github.JnCrMx:discord-game-sdk4j:0.5.4")
     shade("io.javalin:javalin:4.1.1")
-    shade("org.slf4j:slf4j-nop:1.7.31")
-    shade("info.picocli:picocli:4.6.1")
+    shade("org.slf4j:slf4j-nop:1.7.32")
+    shade("info.picocli:picocli:4.6.2")
     shade("org.reflections:reflections:0.10.2")
 
     /* Data handling */
-    shade("com.google.code.gson:gson:2.8.8")
-    shade("org.rauschig:jarchivelib:0.7.1")
+    shade("com.google.code.gson:gson:2.8.9")
+    shade("org.rauschig:jarchivelib:1.2.0")
 }
 
 shadowJar {
