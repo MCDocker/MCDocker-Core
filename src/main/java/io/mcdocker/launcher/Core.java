@@ -54,7 +54,7 @@ public class Core implements Runnable {
         Folders.USER_DATA.mkdirs();
         Config.getConfig().init();
         AccountsManager.getInstance().init();
-//        PluginManager.getManager().registerPlugins();
+//        PluginManager.getManager().registerPlugins(); do this
 
         if(firstTime) {
             firstTime();
