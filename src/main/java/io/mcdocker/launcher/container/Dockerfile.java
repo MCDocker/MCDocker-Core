@@ -79,11 +79,11 @@ public class Dockerfile {
         this.mods = mods;
     }
 
-    public void setMemory(Integer memory) {
+    public void setMemory(int memory) {
         this.memory = memory;
     }
 
-    public Integer getMemory() {
+    public int getMemory() {
         return memory;
     }
 
