@@ -58,6 +58,10 @@ shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     archiveClassifier.set('')
+
+    manifest {
+        attributes 'Main-Class': "io.mcdocker.launcher.Core"
+    }
 }
 
 jar.finalizedBy(shadowJar)
