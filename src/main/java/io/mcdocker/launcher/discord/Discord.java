@@ -21,20 +21,17 @@
 package io.mcdocker.launcher.discord;
 
 import de.jcm.discordgamesdk.Core;
-import de.jcm.discordgamesdk.CreateParams;
 import de.jcm.discordgamesdk.activity.Activity;
 import de.jcm.discordgamesdk.activity.ActivityType;
 import io.mcdocker.launcher.MCDocker;
-import io.mcdocker.launcher.config.Config;
 import io.mcdocker.launcher.content.clients.Client;
 import io.mcdocker.launcher.utils.Logger;
 import io.mcdocker.launcher.utils.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.Instant;
-import java.util.Locale;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Discord {
 
@@ -59,16 +56,9 @@ public class Discord {
     }
 
     public void start() {
-//        setPresence(presenceInit());
-
-        while (running) {
-            core.runCallbacks();
-            try {
-                Thread.sleep(16);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
+            if (running) core.runCallbacks();
+        }, 0, 16, TimeUnit.MILLISECONDS);
     }
 
     public void setPresence(Activity activity) {
