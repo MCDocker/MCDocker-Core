@@ -40,7 +40,7 @@ public class MCDocker {
     private static Discord discord;
     private static Javalin javalin;
 
-    private static final String APIUrl = "http://localhost:6167/api/";
+    private static final String APIUrl = "http://20.113.69.92:8080/api/";
 
     public static void main(String[] args) throws IOException {
         Folders.USER_DATA.mkdirs();
