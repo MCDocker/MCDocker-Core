@@ -1,4 +1,4 @@
-import '../content/client.dart';
+import '../content/client/client.dart';
 
 class Launcher {
   final Client client;

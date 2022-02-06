@@ -6,7 +6,7 @@ import 'package:http/http.dart';
 
 import '../../mcdocker.dart';
 import '../../platform/platform_utils.dart';
-import '../../server/http_wrapper.dart';
+import '../../utils/http_wrapper.dart';
 import '../account.dart';
 import '../authentication.dart';
 
@@ -15,7 +15,7 @@ class MicrosoftAuth extends Authentication {
   Future<Account> authenticate({StreamConsumer<String>? status}) async {
     Completer<Account> completer = Completer();
 
-    Future<HttpServer> server = HTTPWrapper().start(6167);
+    Future<HttpServer> server = HTTPUtils().start(6167);
     PlatformUtils().wrapper.openUrl(
         "https://login.live.com/oauth20_authorize.srf?client_id=ad15277d-c44c-43c8-89ee-67b44dac5a84&response_type=code&scope=XboxLive.signin%20offline_access");
 

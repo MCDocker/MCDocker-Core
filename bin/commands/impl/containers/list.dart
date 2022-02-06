@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 
+import '../../../container/container.dart';
 import '../../../platform/platform_utils.dart';
 
 class ListCommand extends Command {
@@ -12,8 +13,6 @@ class ListCommand extends Command {
 
   @override
   void run() {
-    print(PlatformUtils().wrapper.minecraftPath +
-        " | " +
-        PlatformUtils().wrapper.mcdockerPath);
+    print(Container.getContainers());
   }
 }
