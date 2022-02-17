@@ -3,7 +3,7 @@ class ClientManifest {
   int javaVersion;
   String mainClass;
   String startupArguments;
-  final String type;
+  final Type type;
 
   ClientManifest(this.name, this.javaVersion, this.mainClass,
       this.startupArguments, this.type);

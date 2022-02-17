@@ -1,16 +1,13 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:http/http.dart';
-import 'package:system_info2/system_info2.dart';
-
+import 'auth/account.dart';
+import 'auth/authentication.dart';
 import 'commands/manager.dart';
+import 'container/container.dart';
+import 'container/docker.dart';
 import 'content/client/client_manifest.dart';
-import 'content/client/vanilla/client.dart';
+import 'content/client/vanilla/manifest.dart';
+import 'content/client/vanilla/provider.dart';
 import 'platform/platform_utils.dart';
 import 'utils/color.dart';
-import 'utils/progress_bar.dart';
 
 String apiUrl = "http://20.113.69.92:8080/api/";
 
@@ -18,8 +15,6 @@ Future<void> main(List<String> arguments) async {
   if (arguments.isNotEmpty && arguments[0].startsWith("mcdocker://")) {
     print("MCDocker initiated from uri schema");
   }
-
-  VanillaClient(ClientManifest("test", 8, "s", "", "")).downloadJava();
 
   if (!PlatformUtils().mcdockerDir.existsSync() || arguments.isEmpty) {
     await PlatformUtils().mcdockerDir.create();
@@ -31,3 +26,15 @@ Future<void> main(List<String> arguments) async {
   }
   CommandManager().run(arguments);
 }
+
+// void testLaunch() async {
+//   Container container = Container(DockerFile());
+//   VanillaManifest vanillaClient =
+//       (await VanillaProvider().getClient("1.8.9")).manifest;
+//   container.dockerfile.client = vanillaClient.toJson();
+//   container.dockerfile.name = 'Test Container';
+//   container.saveSync();
+
+//   Account account = Account("Player420", "0", "0", []);
+//   ClientManifest manifest = container.dockerfile.
+// }

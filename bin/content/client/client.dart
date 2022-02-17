@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:http/http.dart';
 import 'package:path/path.dart';
-import 'package:system_info2/system_info2.dart';
 
 import '../../platform/platform_utils.dart';
 import '../../utils/http_wrapper.dart';
-import '../version.dart';
 import 'client_manifest.dart';
 
 abstract class Client<T extends ClientManifest> {
@@ -31,7 +30,9 @@ abstract class Client<T extends ClientManifest> {
     Directory javaVersionFolder =
         Directory(join(javaFolder.path, manifest.javaVersion.toString()));
 
-    if (javaVersionFolder.existsSync()) {
+    if (javaVersionFolder.existsSync() &&
+        Directory(join(javaVersionFolder.listSync()[0].path, 'bin'))
+            .existsSync()) {
       return Future.value(
           File(join(javaVersionFolder.listSync()[0].path, 'bin')));
     }
@@ -63,8 +64,8 @@ abstract class Client<T extends ClientManifest> {
       for (var el in json) {
         if ((el['binary']['image_type'] == 'jre' ||
                 el['binary']['image_type'] == 'jdk') &&
-            el['binary']['architecture'] == 'x64' &&
-            el['binary']['os'] == 'windows') {
+            el['binary']['architecture'] == arch &&
+            el['binary']['os'] == os) {
           binary = el['binary'];
           break;
         }
@@ -78,12 +79,21 @@ abstract class Client<T extends ClientManifest> {
       await HTTPUtils.downloadFile(
           binary['package']['link'].toString(), archiveFile);
 
+      final inputStream = InputFileStream(archiveFile.path);
+      try {
+        final archive = ZipDecoder().decodeBuffer(inputStream);
+        extractArchiveToDisk(archive, javaVersionFolder.path);
+        return File(join(javaVersionFolder.listSync()[0].path, "bin"));
+      } catch (e) {
+        print(e);
+      }
+
       return Future.value();
     });
   }
 
   Future<File> downloadClient();
   Future<List<String>> downloadLibraries();
-  void downloadNatives(List<Map<String, dynamic>> natives);
+  void downloadNatives(List<dynamic> natives);
   Future<String> downloadAssets();
 }

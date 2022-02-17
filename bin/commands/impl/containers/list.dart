@@ -1,7 +1,6 @@
 import 'package:args/command_runner.dart';
 
 import '../../../container/container.dart';
-import '../../../platform/platform_utils.dart';
 
 class ListCommand extends Command {
   @override

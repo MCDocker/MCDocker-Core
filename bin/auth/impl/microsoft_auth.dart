@@ -36,8 +36,9 @@ class MicrosoftAuth extends Authentication {
           server.forEach((req) {
             var params = req.uri.queryParameters;
 
-            if (!params.containsKey("code"))
+            if (!params.containsKey("code")) {
               sendResponse(req, 'Code not found');
+            }
 
             var codeToToken = _codeToToken(params['code'].toString());
             // if (codeToToken == null) sendResponse(req, )

@@ -9,7 +9,7 @@ class DockerFile {
   String uuid = Uuid().v4();
   List<Mod> mods = [];
   int memory = 2048;
-  var client;
+  var client = {};
 
   DockerFile();
 
